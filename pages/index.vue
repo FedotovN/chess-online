@@ -1,17 +1,34 @@
 <script setup lang="ts">
-    import { BaseButton } from 'kneekeetah-vue-ui-kit';
-    function goToStartPage() {
-        useRouter().push({ name: 'another' });
-    }
+    import list from "../players.json";
+    import { BaseButton, BaseTable, BaseTableColumn, BaseTabs, BaseTab } from 'kneekeetah-vue-ui-kit';
+    const players = ref(list);
+    definePageMeta({
+        layout: 'main',
+    })
 </script>
 <template>
-    <div class="flex justify-center items-center flex-col gap-3 p-3 bg-gray-100 w-full h-screen">
-        <div class="w-[450px] text-center flex flex-col gap-5">
-            <h1 class="text-2xl  text-gray-700">Chess Online</h1>
-            <BaseButton outlined fill @click="goToStartPage">Start</BaseButton>
-            <div class="flex gap-2">
-                <nuxt-link to="https://github.com/FedotovN">Github</nuxt-link>
-                <nuxt-link to="https://t.me/nikitofedotov">Telegram</nuxt-link> 
+    <div class="flex h-full w-full">
+        <div class="flex w-full justify-center items-center">
+            <div class="flex flex-col">
+                <div class="flex items-center justify-between gap-2">
+                    <div class="h-full gap-2">
+                        <BaseTabs v-slot="{ toggle }" width="100%" default-first>
+                            <BaseTab id="0" @toggle="toggle" title="Leaderboard">
+                                <div class="flex gap-2 p-3">
+                                    <BaseTable :items="players">
+                                        <base-table-column title="ID" field="id"></base-table-column>
+                                        <base-table-column title="Name" field="name"></base-table-column>
+                                        <base-table-column title="Played" field="stats.played"></base-table-column>
+                                        <base-table-column title="Total Score" field="stats.score"></base-table-column>
+                                    </BaseTable>
+                                </div>
+                            </BaseTab>
+                            <BaseTab id="1" @toggle="toggle" title="Friends list">
+                                Friends list
+                            </BaseTab>
+                        </BaseTabs>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

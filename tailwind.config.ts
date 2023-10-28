@@ -2,6 +2,7 @@
 export default {
   content: [
     "./pages/**/*.vue",
+    "./layouts/**/*.vue",
   ],
   presets: [],
   darkMode: 'class',

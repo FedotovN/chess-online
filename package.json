@@ -16,7 +16,7 @@
     "vue-router": "^4.2.5"
   },
   "dependencies": {
-    "kneekeetah-vue-ui-kit": "^0.0.2",
+    "kneekeetah-vue-ui-kit": "^0.0.4",
     "tailwindcss": "^3.3.5"
   }
 }
