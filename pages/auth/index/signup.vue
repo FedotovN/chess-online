@@ -15,7 +15,6 @@
 </template>
 <script setup>
     import { BaseButton, BaseInput, BaseLoader, useToast } from 'kneekeetah-vue-ui-kit';
-    import AuthService from "@/services/auth/index";
     definePageMeta({
         title: "Signup",
     })
@@ -33,7 +32,7 @@
         loading.value = true;
         const { email, password, nickname } = form.value;
         try {
-            await AuthService.signup(nickname, email, password);
+            await useAuth().signup(nickname, email, password);
             add({ color: 'success', content: 'Регистрация прошла успешно.', delay: 5000 });
             useRouter().push('/auth/login');
         } catch (e) {

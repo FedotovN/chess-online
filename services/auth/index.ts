@@ -1,8 +1,8 @@
 import { updateProfile, createUserWithEmailAndPassword,
         signInWithEmailAndPassword,
-        GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+        GoogleAuthProvider, signInWithPopup, type UserCredential } from "firebase/auth";
 import { auth } from "~/api/config";
-import { createUserInDatabase, updateUserInDatabase, type UserWithId } from "./helpers/userUpdate";
+import { createUserInDatabase, updateUserInDatabase, findUserInDatabase, type UserWithId } from "./helpers/user";
 import User from "~/models/auth/User";
 class AuthService {
     async signup(name: string, userEmail: string, password: string) {
@@ -12,16 +12,25 @@ class AuthService {
         await createUserInDatabase(new User(name, userEmail, user.photoURL, null, user.uid));
         await this.logout();
     }
-    async login (email: string, password: string) {
-        await signInWithEmailAndPassword(auth, email, password);
+    async login (email: string, password: string): Promise<User> {
+        const find = async (uid: string) => findUserInDatabase(uid) as unknown as User;
+        const { user: firebaseUser } = (await signInWithEmailAndPassword(auth, email, password));
+        const user = await find(firebaseUser.uid);
+        if (!user) {
+            await createUserInDatabase(firebaseUser);
+            return await find(firebaseUser.uid);
+        }
+        return user;
     }
     async logout() {
         await auth.signOut()
     }
-    async loginWithGoogle() {
+    async loginWithGoogle(): Promise<UserCredential> {
         const provider = new GoogleAuthProvider();
-        const { user: { displayName, email, uid, photoURL } } = await signInWithPopup(auth, provider);
+        const cred = await signInWithPopup(auth, provider);
+        const { user: { displayName, email, uid, photoURL } } = cred;
         await createUserInDatabase(new User(displayName, email, photoURL, null, uid));
+        return cred;
     }
     async update(data: UserWithId) {
         if (!auth.currentUser) return;

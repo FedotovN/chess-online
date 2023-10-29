@@ -15,7 +15,6 @@
 </template>
 <script setup lang="ts">
     import { BaseButton, BaseInput, useToast } from 'kneekeetah-vue-ui-kit';
-    import AuthService from "@/services/auth/index";
     definePageMeta({
         title: "Login",
     })
@@ -33,7 +32,7 @@
         loading.value = true;
         const { email, password } = form.value;
         try {
-            await AuthService.login(email, password);
+            await useAuth().login(email, password);
             console.log('success');
             await useRouter().push('/');
             add({ color: 'success', content: 'Добро пожаловать.', delay: 5000 });
