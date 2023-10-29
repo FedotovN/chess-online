@@ -1,15 +1,14 @@
 @tailwind utilities;
 
 .auth-card {
-    @apply border border-gray-300 shadow px-2 py-1 rounded;
+    @apply border border-gray-300 bg-white shadow px-2 py-1 rounded;
 }
 .bounce-enter-active,
 .bounce-leave-active {
-  transition: all 0.15s;
+  transition: all .15s;
 }
 .bounce-enter-from,
 .bounce-leave-to {
   opacity: 0;
-  scale: .98;
-  filter: blur(1rem);
+  scale: .995;
 }
