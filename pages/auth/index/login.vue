@@ -35,7 +35,7 @@
             await useAuth().login(email, password);
             console.log('success');
             await useRouter().push('/');
-            add({ color: 'success', content: 'Добро пожаловать.', delay: 5000 });
+            add({ color: 'success', content: `Добро пожаловать, ${ useAuth().getUser?.displayName }!`, delay: 5000 });
         } catch (e) {
             console.error(e);
             add({ color: 'alert', content: 'Ошибка при попытке входа.', delay: 5000 });
