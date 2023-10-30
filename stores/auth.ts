@@ -1,13 +1,9 @@
-import { defineStore, storeToRefs } from "pinia"
-import { findUserInDatabase } from "@/services/auth/helpers/user";
+import { defineStore } from "pinia"
 import AuthService from "@/services/auth/index";
 import User from "~/models/auth/User"
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "~/api/config";
 export const useAuth = defineStore('auth', {
     state: () => ({
         user: null as User | null,
-        loading: true,
     }),
     getters: {
         getUser: s => s.user,
@@ -23,15 +19,4 @@ export const useAuth = defineStore('auth', {
             await AuthService.logout();
         }
     }
-});
-onAuthStateChanged(auth, async user => {
-    const { user: storedUser, loading } = storeToRefs(useAuth());
-    if (user === null) { 
-        storedUser.value = null; 
-        return; 
-    }
-    const found = (await findUserInDatabase(user.uid)) as User | undefined; 
-    const withoutStats = { ...user, stats: null };
-    storedUser.value = found || withoutStats;
-    loading.value = false;
 });

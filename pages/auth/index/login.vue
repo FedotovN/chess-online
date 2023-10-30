@@ -18,6 +18,9 @@
     definePageMeta({
         title: "Login",
     })
+    useHead({
+        title: 'Login',
+    })
     const validate = () => { 
         return form.value.email !== 'BEPIS';
     };
@@ -26,19 +29,18 @@
     const { add } = useToast();
     async function submit() {
         if (!validate()) {
-            add({ color: 'alert', content: 'С валидацией вот то-то не так!' });
+            add({ color: 'alert', content: 'Validation went wrong' });
             return;
         };
         loading.value = true;
         const { email, password } = form.value;
         try {
             await useAuth().login(email, password);
-            console.log('success');
             await useRouter().push('/');
-            add({ color: 'success', content: `Добро пожаловать, ${ useAuth().getUser?.displayName }!`, delay: 5000 });
+            add({ color: 'success', content: `Welcome, ${ useAuth().getUser?.displayName }!`, delay: 5000 });
         } catch (e) {
             console.error(e);
-            add({ color: 'alert', content: 'Ошибка при попытке входа.', delay: 5000 });
+            add({ color: 'alert', content: 'Unexpected error.', delay: 5000 });
         } finally {
             loading.value = false;
         }

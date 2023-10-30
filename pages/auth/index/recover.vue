@@ -17,4 +17,7 @@ import { BaseInput, BaseButton } from 'kneekeetah-vue-ui-kit';
     definePageMeta({
         title: "Password Recover",
     })
+    useHead({
+        title: "Password Recover"
+    })
 </script>
