@@ -3,6 +3,7 @@ export default {
   content: [
     "./pages/**/*.vue",
     "./layouts/**/*.vue",
+    "./components/**/*.vue",
   ],
   presets: [],
   darkMode: 'class',

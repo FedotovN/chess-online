@@ -1,9 +1,10 @@
-<template>
-    <NuxtLayout name='main'>
-        <nuxt-page />
-    </NuxtLayout>
-</template>
-
 <script setup lang="ts">
-
+useHead({
+    title: 'Online Chess',    
+})
 </script>
+<template>
+    <nuxt-layout name="main">
+        <nuxt-page />
+    </nuxt-layout>
+</template>

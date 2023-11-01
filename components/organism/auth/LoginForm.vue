@@ -1,0 +1,25 @@
+<script setup lang="ts">
+    import { BaseButton, BaseInput } from 'kneekeetah-vue-ui-kit';
+</script>
+<template>
+    <div class="flex flex-col px-2 py-1 bg-white shadow h-full w-full min-w-[350px]">
+        <div class="flex justify-center py-2">
+            <p class="text-gray-700">Chess online</p>
+        </div>
+        <div class="pb-5 pt-3 w-full">
+            <BaseButton width="100%" color='alert' outlined>Log in using Google</BaseButton>
+        </div>
+        <div class="w-full relative mt-4 mb-2">
+            <span class="w-full border absolute top-1/2 -translate-y-1/2"></span>
+            <small class="absolute w-28 text-gray-600 bg-white z-10 top-1/2 -translate-y-1/2 text-center left-1/2 -translate-x-1/2 border-2 rounded py-1">Using email</small>
+        </div>
+        <div class="flex flex-col gap-6 my-8">
+            <BaseInput placeholder="Email" />
+            <BaseInput placeholder="Password" />
+        </div>
+        <div class="flex flex-col gap-2 w-full mb-4">
+            <BaseButton width="100%">Login</BaseButton>
+            <small class="">Don't have an account yet? <NuxtLink to="/auth/signup/">Sign up</NuxtLink></small>
+        </div>
+    </div>
+</template>

@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  css: ['kneekeetah-vue-ui-kit/dist/style.css', '~/style.css'],
+  css: ['kneekeetah-vue-ui-kit/dist/style.css', "~/style.css"],
   postcss: {
     plugins: {
       tailwindcss: {},
@@ -10,5 +10,8 @@ export default defineNuxtConfig({
   },
   modules: [
     '@pinia/nuxt'
-  ]
+  ],
+  app: {
+    layoutTransition: { name: 'layout', mode: 'out-in', }
+  },
 })
