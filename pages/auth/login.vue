@@ -7,10 +7,13 @@
         email: '',
         password: '',
     });
+    const loading = ref(false);
     async function signIn(usingGoogle?: boolean) {
+        loading.value = true;
         const { email, password } = form.value
-        if (usingGoogle) return signInWithGoogle();
-        return login(email, password);
+        if (usingGoogle) await signInWithGoogle();
+        else await login(email, password);
+        loading.value = false;
     }
     async function onSubmit(usingGoogle?: boolean) {
         try {
@@ -26,7 +29,7 @@
 </script>
 <template>
     <div class="h-full">
-        <OrganismAuthLoginForm v-model="form" @submit="onSubmit" @goggle="onSubmit(true)" />
+        <OrganismAuthLoginForm v-model="form" :loading="loading" @submit="onSubmit" @goggle="onSubmit(true)" />
     </div>
 </template>
 

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-    import { BaseButton, BaseInput } from 'kneekeetah-vue-ui-kit';
-    type Form = {
-            email: string,
-            password: string,
-        }
+    import { useVuelidate } from "@vuelidate/core";
+    import { required, email, minLength } from '@vuelidate/validators';
+    import { BaseButton, BaseInput, BaseLoader } from 'kneekeetah-vue-ui-kit';
+    import type Form from "@/types/props/auth/LoginFormProps";
     const props = defineProps<{
-        modelValue: Form
+        modelValue: Form,
+        loading?: boolean,
     }>();
     const emit = defineEmits<{ 
         (e: 'update:modelValue', value: Form): void,
@@ -16,7 +16,15 @@
     watch(localValue, () => {
         emit('update:modelValue', localValue.value);
     });
-    const onSubmit = () => emit('submit');
+    const rules = {
+        email: { required, email },
+        password: { required, minLength: minLength(6) },
+    }
+    const v$ = useVuelidate(rules, localValue.value);
+    const onSubmit = async () => {
+        if (!await v$.value.$validate()) return
+        emit('submit');
+    }
 </script>
 <template>
     <form @submit.prevent="onSubmit" class="flex flex-col px-2 py-1 bg-white shadow h-full w-full min-w-[380px]">
@@ -30,12 +38,15 @@
             <span class="w-full border absolute top-1/2 -translate-y-1/2"></span>
             <small class="absolute w-28 text-gray-600 bg-white z-10 top-1/2 -translate-y-1/2 text-center left-1/2 -translate-x-1/2 border-2 rounded py-1">Using email</small>
         </div>
-        <div class="flex flex-col gap-6 my-8">
-            <BaseInput v-model="localValue.email" placeholder="Email" autocomplete="email" />
-            <BaseInput v-model="localValue.password" placeholder="Password" type="password" />
+        <div class="flex flex-col gap-10 my-8">
+            <BaseInput :error-message="v$.email.$errors[0]?.$message.toString()" v-model="localValue.email" placeholder="Email" autocomplete="email" />
+            <BaseInput :error-message="v$.password.$errors[0]?.$message.toString()" v-model="localValue.password" placeholder="Password" type="password" />
         </div>
         <div class="flex flex-col gap-2 w-full mb-4">
-            <BaseButton width="100%">Login</BaseButton>
+            <BaseButton width="100%" :disabled="loading">
+                <BaseLoader v-if="loading" color="white"></BaseLoader>
+                <p v-else>Login</p>
+            </BaseButton>
             <div class="flex justify-between items-center">
                 <small class="">Don't have an account yet? <NuxtLink to="/auth/signup/">Sign up</NuxtLink></small>
                 <small><NuxtLink to="/">Home page</NuxtLink></small>

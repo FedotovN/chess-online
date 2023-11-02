@@ -10,7 +10,6 @@
     };
     const signOut = async () => {
         await push({ name: 'auth-login' });
-        await nextTick();
         await logout();
         add({ content: "You logged out", delay: 5000 });
     }
