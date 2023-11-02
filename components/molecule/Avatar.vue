@@ -5,8 +5,8 @@ import type User from '~/models/auth/User';
     }>();
 </script>
 <template>
-    <div class="flex gap-2">
+    <div class="flex gap-2 items-center">
         <AtomUserPhoto :photo-url="user.photoURL" />
-        <p>{{ user.displayName }}</p>
+        <small class="text-gray-700">{{ user.displayName }}</small>
     </div>
 </template>

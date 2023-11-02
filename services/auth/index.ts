@@ -17,7 +17,8 @@ class AuthService {
         const { user: firebaseUser } = (await signInWithEmailAndPassword(auth, email, password));
         const user = await find(firebaseUser.uid);
         if (!user) {
-            await createUserInDatabase(firebaseUser);
+            const { displayName, email, photoURL, uid } = firebaseUser;
+            await createUserInDatabase({ displayName, email, photoURL, uid });
             return await find(firebaseUser.uid);
         }
         return user;

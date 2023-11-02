@@ -9,6 +9,7 @@ export async function createUserInDatabase(user: UserWithId, override = false) {
     const existing = await findUserInDatabase(user.uid);
     if (existing && override || !existing) {
         const ref = getUserDocRef(user.uid);
+        console.log(user);
         return setDoc(ref, {...user});
     }
 }
