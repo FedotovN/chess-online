@@ -9,22 +9,22 @@
     });
     const loading = ref(false);
     async function signIn(usingGoogle?: boolean) {
-        loading.value = true;
         const { email, password } = form.value
         if (usingGoogle) await signInWithGoogle();
         else await login(email, password);
-        loading.value = false;
     }
     async function onSubmit(usingGoogle?: boolean) {
+        loading.value = true;
         try {
             await signIn(usingGoogle)
             await push('/');
             const { getUser } = useAuth();
-            add({ content: `Welcome, ${ getUser?.displayName }`, color: 'success', delay: 5000 });
+            add({ content: `Welcome, ${ getUser?.displayName || ' ...who are you?' }`, color: 'success', delay: 5000 });
         } catch (e) {
             console.error(e);
             add({ content: 'Something went wrong.', color: 'alert', delay: 5000 });
         }
+        loading.value = false;
     }
 </script>
 <template>

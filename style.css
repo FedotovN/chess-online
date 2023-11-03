@@ -1,7 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
 @tailwind utilities;
 @tailwind base;
 @tailwind components;
-
+p, a, small, h1, h2, h3, h4, h5, h6, span {  
+    font-family: 'DM Sans', sans-serif !important;
+}
 a {
     color: blue;
     cursor: pointer;

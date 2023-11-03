@@ -1,5 +1,5 @@
 import { onIdTokenChanged, type NextOrObserver, type Unsubscribe, type User as FirebaseUser } from "firebase/auth";
-import { findUserInDatabase } from "./user";
+import { findUserInDatabase } from "~/services/users/helpers";
 import { auth } from "~/api/config";
 import User from "~/models/auth/User";
 export async function waitForAuthToResolve(): Promise<User | null> {

@@ -8,7 +8,7 @@
     });
 </script>
 <template>
-    <div v-show="!loading">
+    <div class="w-full min-h-screen" v-show="!loading">
         <OverlayToast />
         <nuxt-page />
     </div>

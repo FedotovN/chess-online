@@ -1,43 +1,37 @@
 import { updateProfile, createUserWithEmailAndPassword,
         signInWithEmailAndPassword,
-        GoogleAuthProvider, signInWithPopup, type UserCredential } from "firebase/auth";
+        GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "~/api/config";
-import { createUserInDatabase, updateUserInDatabase, findUserInDatabase, type UserWithId } from "./helpers/user";
+import UsersService from "@/services/users/index";
 import User from "~/models/auth/User";
+import { extractUserInstance } from "../helpers";
+import { findUserInDatabase } from "../users/helpers";
 class AuthService {
     async signup(name: string, userEmail: string, password: string) {
         const { user } = await createUserWithEmailAndPassword(auth, userEmail, password);
-        await this.login(user.email!, password);
-        await this.update({ uid: user.uid, displayName: name });
-        await createUserInDatabase(new User(name, userEmail, user.photoURL, null, user.uid));
+        await signInWithEmailAndPassword(auth, userEmail, password);
+        const res = await UsersService.setUserToDatabase(new User(name, userEmail, user.photoURL, null, user.uid));
+        console.log(res);
         await this.logout();
     }
-    async login (email: string, password: string): Promise<User> {
-        const find = async (uid: string) => findUserInDatabase(uid) as unknown as User;
-        const { user: firebaseUser } = (await signInWithEmailAndPassword(auth, email, password));
-        const user = await find(firebaseUser.uid);
-        if (!user) {
-            const { displayName, email, photoURL, uid } = firebaseUser;
-            await createUserInDatabase({ displayName, email, photoURL, uid });
-            return await find(firebaseUser.uid);
-        }
-        return user;
+    async login (email: string, password: string) {
+        const { user: { uid } } = (await signInWithEmailAndPassword(auth, email, password));
+        const found = await UsersService.getUserInfo(uid);
+        if (!found) throw new TypeError(`User with uid ${uid} just logged in but has no info in database`);
+        return found;
     }
     async logout() {
         await auth.signOut()
     }
-    async loginWithGoogle(): Promise<UserCredential> {
+    async loginWithGoogle(): Promise<User> {
         const provider = new GoogleAuthProvider();
-        const cred = await signInWithPopup(auth, provider);
-        const { user: { displayName, email, uid, photoURL } } = cred;
-        await createUserInDatabase(new User(displayName, email, photoURL, null, uid));
-        return cred;
-    }
-    async update(data: UserWithId) {
-        if (!auth.currentUser) return;
-        if (data.displayName || data.photoURL)
-            await updateProfile(auth.currentUser, data);
-        await updateUserInDatabase(data);
+        const credentials = await signInWithPopup(auth, provider);
+        const user = extractUserInstance(credentials.user);
+        const existing = await findUserInDatabase(user.uid);
+        console.log(credentials, user);
+        return existing 
+                ? existing
+                : UsersService.setUserToDatabase(user);
     }
     isLoggedIn() {
         return auth.currentUser !== null;

@@ -3,29 +3,27 @@
     import { required, email, sameAs, minLength } from '@vuelidate/validators';
     import { BaseButton, BaseInput, BaseLoader } from 'kneekeetah-vue-ui-kit';
     import { type LocalForm, type Form } from "@/types/props/auth/SignupFormProps";
-    const props = defineProps<{
-        modelValue: Form,
-        loading?: boolean,
-    }>();
-    const emit = defineEmits<{ 
-        (e: 'update:modelValue', value: Form): void,
-        (e: 'submit'): void,
-    }>();
-    const localValue: Ref<LocalForm> = toRef(props.modelValue || {}) as Ref<Form & LocalForm>;
+    const props = defineProps<{ modelValue: Form, loading?: boolean, }>();
+    const emit = defineEmits<{ (e: 'update:modelValue', value: Form): void, (e: 'submit'): void, }>();
+
+    const localValue = toRef(props.modelValue || {}) as Ref<Form & LocalForm>;
     watch(localValue, () => {
-        const { email, name, password } = localValue.value as Exclude<Form, LocalForm>;
+        const { email, name, password } = localValue.value;
         emit('update:modelValue', { email, name, password });
     });
-    const password = computed(() => localValue.value.password);
     const rules = {
         name: { required },
         email: { required, email },
         password: { required, minLength: minLength(6) },
-        repeatPassword: { required, sameAs: sameAs(password.value) }
+        repeatPassword: { required, sameAs: sameAs(computed(() => localValue.value.password)) }
     }
-    const v$ = useVuelidate(rules, localValue.value);
+    const v$ = useVuelidate(rules, localValue);
     const onSubmit = async () => {
-        if (!await v$.value.$validate()) return;
+        if (!await v$.value.$validate()) { 
+            console.log(localValue.value.repeatPassword);
+            console.log(localValue.value.password);
+            return;
+        }
             emit('submit');
     }
 </script>
