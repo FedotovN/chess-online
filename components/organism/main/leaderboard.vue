@@ -2,7 +2,7 @@
 import players from "../../../players.json";
 import { BaseTable, BaseTableColumn } from 'kneekeetah-vue-ui-kit';
 const items = ref(players);
-
+const place = ref(-1);
 </script>
 <template>
     <div class="flex flex-col gap-3">
@@ -14,5 +14,6 @@ const items = ref(players);
             <BaseTableColumn :id="4" title="Defeat" field="stats.defeated"></BaseTableColumn>
             <BaseTableColumn :id="5" title="Total score" field="stats.score"></BaseTableColumn>
         </BaseTable>
+        <p class="text-gray-700">Your place is <span class="font-semibold">{{ place }}</span></p>
     </div>
 </template>

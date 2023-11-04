@@ -3676,10 +3676,10 @@ klona@^2.0.6:
   resolved "https://registry.yarnpkg.com/klona/-/klona-2.0.6.tgz#85bffbf819c03b2f53270412420a4555ef882e22"
   integrity sha512-dhG34DXATL5hSxJbIexCft8FChFXtmskoZYnoPWjXQuebWYCNkVeV3KkGegCK9CP1oswI/vQibS2GY7Em/sJJA==
 
-kneekeetah-vue-ui-kit@^0.0.9:
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/kneekeetah-vue-ui-kit/-/kneekeetah-vue-ui-kit-0.0.9.tgz#0c7c4f9b461704c07cf42f5b70e28b0ceb66bbff"
-  integrity sha512-DJI43jIaIw0YN435qMosNBNFRXsZMU6mr19yj/M0ngg/vd/W5eqWEs+VcPy5ez9LRzWZ1xS0qz5wzVHiVeidVg==
+kneekeetah-vue-ui-kit@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/kneekeetah-vue-ui-kit/-/kneekeetah-vue-ui-kit-0.1.0.tgz#7f41269b0cf0095d549b633a8e3c14d22a67e5d3"
+  integrity sha512-uXFSdoDjVAL/5ETXy1vxCd8HmkyAoTmSApYaLv/iV3ACrcYjVmXNvQ4sw17Pl6ZrnQIBldjoUjsfXix68l5IJg==
   dependencies:
     tippy.js "^6.3.7"
 

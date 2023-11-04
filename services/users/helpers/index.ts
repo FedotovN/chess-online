@@ -7,6 +7,7 @@ export const getUserDocRef = (uid: string) => doc(firestore, `/users/${uid}`);
 export async function findUserInDatabase(uid: string) {
         return (await getDoc(getUserDocRef(uid))).data() as unknown as User | undefined;
 }
+// TODO they look kinda same
 export async function createUserInDatabase(user: UserWithId) {
     const ref = getUserDocRef(user.uid);
     return setDoc(ref, {...user});
