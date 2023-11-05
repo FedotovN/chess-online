@@ -1,17 +1,17 @@
 import type User from "~/models/auth/User";
-import { findUserInDatabase, updateUserInDatabase, createUserInDatabase, type UserWithId } from "./helpers";
+import { updateUserInDatabase, createUserInDatabase, type UserWithId } from "./helpers";
 import { getDocumentEntity, getAllCollectionEntities } from "@/api";
 import { orderBy, limit, QueryConstraint } from "firebase/firestore";
 class UsersService {
     async setUserToDatabase(user: UserWithId) {
-        const existing = await findUserInDatabase(user.uid);
+        const existing = await this.getUserInfo(user.uid);
         await existing 
             ? updateUserInDatabase(user)
             : createUserInDatabase(user);
-        return findUserInDatabase(user.uid) as unknown as User;
+        return this.getUserInfo(user.uid) as unknown as User;
     }
     async getUserInfo(uid: string) {
-        return getDocumentEntity<User>(`users/${uid}`);
+        return await getDocumentEntity<User>(`users/${uid}`) || null;
     }
     async getAllUsers(...constraints: QueryConstraint[]) {
         return await getAllCollectionEntities<User>('users', ...constraints);

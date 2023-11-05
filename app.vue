@@ -1,9 +1,8 @@
 <script setup lang="ts">
-    // SVG Chess Icons By Cburnett - Own work, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=1499806
-    import { waitForAuthToResolve } from './services/auth/helpers/authTokenChange';
+    import AuthService from "@/services/auth"
     import { OverlayToast, OverlayModal } from 'kneekeetah-vue-ui-kit';
     const loading = ref(true);
-    waitForAuthToResolve().then(state => {
+    AuthService.waitForAuthToResolve().then(state => {
         useAuth().user = state;
         loading.value = false;
     });

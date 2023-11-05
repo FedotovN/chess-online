@@ -1,6 +1,6 @@
-import { firestore } from "~/api/config";
+import { firestore, auth } from "~/api/config";
 import { collection, getDocs, type DocumentData, getDoc, doc, query, QueryConstraint } from "firebase/firestore";
-
+import { onIdTokenChanged, type User as FirebaseUser, type NextOrObserver, type Unsubscribe} from "firebase/auth";
 type CollectionPath = string; 
 type DocumentPath = string; 
 function isCollectionPath(path: string): path is CollectionPath {
@@ -25,7 +25,7 @@ export async function getAllCollectionEntities<T = DocumentData[]>(path: string,
         console.error(e);
     }
 }
-export async function getDocumentEntity<T = DocumentData>(path: string): Promise<T | void> {
+export async function getDocumentEntity<T = DocumentData>(path: string): Promise<T | undefined> {
     if (!isDocumentPath(path))
         throw new TypeError("Provided path is not a documents pointer");
     const ref = doc(firestore, path);
@@ -34,4 +34,7 @@ export async function getDocumentEntity<T = DocumentData>(path: string): Promise
     } catch (e) {
         console.error(e);
     }
+}
+export function addAuthChangeListener(callback: NextOrObserver<FirebaseUser>): Unsubscribe {
+    return onIdTokenChanged(auth, callback);
 }

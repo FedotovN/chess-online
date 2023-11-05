@@ -1,13 +1,11 @@
 import type User from "~/models/auth/User";
-import { getDoc, doc, setDoc, updateDoc } from "firebase/firestore"
+import { doc, setDoc, updateDoc } from "firebase/firestore"
 import { firestore } from "~/api/config"
 
 export type UserWithId = Partial<User> & { uid: string }
-export const getUserDocRef = (uid: string) => doc(firestore, `/users/${uid}`);
-export async function findUserInDatabase(uid: string) {
-        return (await getDoc(getUserDocRef(uid))).data() as unknown as User | undefined;
+function getUserDocRef(uid: string) {
+    return doc(firestore, `/users/${uid}`);
 }
-// TODO they look kinda same
 export async function createUserInDatabase(user: UserWithId) {
     const ref = getUserDocRef(user.uid);
     return setDoc(ref, {...user});
