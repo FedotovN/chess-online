@@ -1,5 +1,5 @@
 import svgs from "~/assets/svg";
-import type { Side } from "~/types/chess";
+import { type Side } from "~/types/chess/Side";
 import type { FigureName } from "~/types/chess/FigureName";
 export const getSvgSrcFromFigure = (side: Side, figure: FigureName) => {
     const uppercaseFirst = (string: string) => string[0].toUpperCase() + string.slice(1);
