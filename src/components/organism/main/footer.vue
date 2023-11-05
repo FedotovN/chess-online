@@ -10,7 +10,7 @@
                 </small>
             </div>
             <div class="flex gap-2 items-center">
-                <BaseButton width="200px">Enter game</BaseButton>
+                <BaseButton width="200px" @click="useRouter().push('/game')">Enter game</BaseButton>
                 <BaseButton width="150px" color="secondary">Create game</BaseButton>
             </div>
         </div>
