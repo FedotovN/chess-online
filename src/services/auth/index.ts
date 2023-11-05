@@ -22,49 +22,30 @@ class AuthService {
             : null
     }
     async signup(name: string, userEmail: string, password: string) {
-        try {
-            const { user } = await createUserWithEmailAndPassword(auth, userEmail, password);
-            await signInWithEmailAndPassword(auth, userEmail, password);
-            const newUser = new User(name, userEmail, user.photoURL, defaultStats, user.uid)
-            await UserService.setUserToDatabase(newUser);
-            await this.logout();
-        } catch (e) {
-            console.warn("Error in signup method of Auth Service");
-            console.error(e);
-        }
+        const { user } = await createUserWithEmailAndPassword(auth, userEmail, password);
+        await signInWithEmailAndPassword(auth, userEmail, password);
+        const newUser = new User(name, userEmail, user.photoURL, defaultStats, user.uid)
+        await UserService.setUserToDatabase(newUser);
+        await this.logout();
     }
     async login (email: string, password: string) {
-        try {
-            const { user: { uid } } = (await signInWithEmailAndPassword(auth, email, password));
-            const found = await UserService.getUserInfo(uid);
-            if (!found) throw new TypeError(`User with uid ${uid} just logged in but has no info in database`);
-            return found;
-        } catch (e) {
-            console.warn("Error in login method of Auth Service");
-            console.error(e);
-        } 
+        const { user: { uid } } = (await signInWithEmailAndPassword(auth, email, password));
+        const found = await UserService.getUserInfo(uid);
+        if (!found) throw new TypeError(`User with uid ${uid} just logged in but has no info in database`);
+        return found;
     }
     async logout() {
-        try {
-            await auth.signOut();
-        } catch(e) {
-            console.error(e);
-        }
+        await auth.signOut();
     }
     async loginWithGoogle(): Promise<User | undefined> {
-        try {
-            const provider = new GoogleAuthProvider();
-            const credentials = await signInWithPopup(auth, provider);
-            const { displayName, email, photoURL, uid } = extractUserInstance(credentials.user) as User;
-            const existing = await UserService.getUserInfo(uid);
-            const newUser = new User(displayName, email, photoURL, defaultStats, uid)
-            return existing 
-                    ? existing
-                    : UserService.setUserToDatabase(newUser);
-        } catch (e) {
-            console.warn("Error in loginWithGoogle method of Auth Service");
-            console.error(e);
-        }
+        const provider = new GoogleAuthProvider();
+        const credentials = await signInWithPopup(auth, provider);
+        const { displayName, email, photoURL, uid } = extractUserInstance(credentials.user) as User;
+        const existing = await UserService.getUserInfo(uid);
+        const newUser = new User(displayName, email, photoURL, defaultStats, uid)
+        return existing 
+                ? existing
+                : UserService.setUserToDatabase(newUser);
     }
     isLoggedIn() {
         return auth.currentUser !== null;
