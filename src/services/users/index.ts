@@ -8,14 +8,14 @@ class UsersService {
             await existing 
                 ? updateDocumentEntity(`users/${user.uid}`, user)
                 : setDocumentEntity(`users/${user.uid}`, user)
-                return this.getUserInfo(user.uid) as unknown as User;
+                return this.getUserInfo(user.uid)! as unknown as User;
         } catch (e) {
             console.error(e);
         }
     }
     async getUserInfo(uid: string) {
         try {
-            return await getDocumentEntity<User>(`users/${uid}`) || null;
+            return await getDocumentEntity<User>(`users/${uid}`);
         } catch (e) {
             console.error(e);
         }

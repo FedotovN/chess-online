@@ -9,7 +9,7 @@ import { createUserWithEmailAndPassword,
 import { extractUserInstance } from "../helpers";
 const defaultStats: UserStats = { score: 0, gamesPlayed: 0, defeated: 0, won: 0, draw: 0 };
 class AuthService {
-    async waitForAuthToResolve(): Promise<User | null | undefined> {
+    async waitForAuthToResolve(): Promise<FirebaseUser | null> {
         let unsub;
         const user = await new Promise((res: (user: FirebaseUser | null) => void) => {
             unsub = addAuthChangeListener(user => {
@@ -18,8 +18,6 @@ class AuthService {
         });
         unsub!();
         return user
-            ? UserService.getUserInfo(user.uid) || null
-            : null
     }
     async signup(name: string, userEmail: string, password: string) {
         const { user } = await createUserWithEmailAndPassword(auth, userEmail, password);
