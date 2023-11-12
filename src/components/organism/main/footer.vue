@@ -1,20 +1,14 @@
 <script setup lang="ts">
-    import GameService from '~/services/chess/';
     import { BaseButton, useToast } from 'kneekeetah-vue-ui-kit';
-    const { user } = storeToRefs(useAuth());
     const { add } = useToast();
-    async function createGameRoom() {
-        if (!user.value) {
-            add({ content: "Login first", delay: 4000 }); 
-            return;
-        }
-        const room = await GameService.createChessRoom(user.value);
-        if (!room) {
-            add({ content: "Error while creating a room", delay: 4000 }); 
-            return;
-        }
-        useRouter().push(`game/${room.id}`);
+    const { create } = useGame();
+    const { push } = useRouter();
+    async function createGame() {
+        const { id } = await create();
+        add({ content: 'Game was successfuly created', color: "success" });
+        push({ name: "game-id", params: { id } });
     }
+
 </script>
 <template>
     <div class="h-12 border-t w-full backdrop-blur px-3 z-10">
@@ -26,7 +20,7 @@
             </div>
             <div class="flex gap-2 items-center">
                 <BaseButton width="200px">Enter game</BaseButton>
-                <BaseButton @click="createGameRoom" width="150px" color="secondary">Create game</BaseButton>
+                <BaseButton @click="createGame" width="150px" color="secondary">Create game</BaseButton>
             </div>
         </div>
     </div>

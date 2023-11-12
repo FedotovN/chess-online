@@ -4,33 +4,60 @@ import type { Side } from "~/types/chess/Side";
 import User from "~/models/auth/User";
 import type { Unsubscribe } from "firebase/auth";
 import type Figure from "~/models/chess/figures/Figure";
-const { user } = storeToRefs(useAuth());
-export default defineStore('game', {
+export const useGame = defineStore('game', {
     state: () => ({
         currGame: null as ChessRoom | null,
+        unsubs: {} as { [key: string]: Unsubscribe },
     }),
     actions: {
-        async createGame(side: Side = 'white') {
+        async create() {
             try {
-                if (!user.value) throw new Error("Not authenticated yet trying to create chess room");
-                return await ChessService.createChessRoom(user.value, side);
+                const { user } = useAuth();
+                if (!user) throw new Error("Not authenticated yet trying to create chess room");
+                return await ChessService.createChessRoom();
             } catch (e) {
                 console.error(e);
                 throw e;
             }
         },
-        async joinGame(id: string) {
+        listen(callback: (room: ChessRoom) => void) {
+            if (!this.currGame) throw new Error("Not in any game yet trying to listen for updates");
+            const { id } = this.currGame;
+            this.unsubs[id] = ChessService.listenToChessRoom(id, callback)!;
+        },
+        async join(id: string) {
             try {
-                if (!user.value) throw new Error("Not authenticated yet trying to join chess room");
-                await ChessService.joinChessRoom(id, user.value);
+                const { user } = useAuth();
+                if (!user) throw new Error("Not authenticated yet trying to join chess room");
+                this.currGame = await ChessService.joinChessRoom(id, user);
+                this.listen(room => this.currGame = room);
             } catch (e) {
                 console.error(e);
                 throw e;
             } 
         },
-        async leaveGame() {
-            //TODO leave game
-            this.currGame = null;
+        async leave() {
+            try {
+                const { user } = useAuth();
+                if (!this.currGame) throw new Error("Trying lo quit game but you are not in the game");
+                if (!user) throw new Error("Trying lo quit game but you are not authenticated");
+                const { id } = this.currGame;
+                await ChessService.kickFromChessRoom(id, user.uid);
+                this.unsubs[id]();
+                this.currGame = null;
+            } catch(e) {
+                console.error(e);
+            }
+        },
+        async send(room: ChessRoom) {
+            try {
+                const { user } = useAuth();
+                if (!this.currGame) throw new Error("Trying lo update game but you are not in the game");
+                if (!user) throw new Error("Trying lo quit game but you are not authenticated");
+                await ChessService.updateChessRoom(this.currGame.id, room);
+            } catch(e) {
+                console.error(e);
+            }
         }
     }
 })
