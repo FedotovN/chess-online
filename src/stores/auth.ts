@@ -1,4 +1,3 @@
-import { defineStore } from "pinia"
 import AuthService from "@/services/auth";
 import UserService from "@/services/users";
 import User from "~/models/auth/User"
