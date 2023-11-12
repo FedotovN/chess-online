@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import { OverlayToast, OverlayModal } from 'kneekeetah-vue-ui-kit';
     const loading = ref(true);
-    useAuth().waitForAuth().then(() => {
+    useAuth().onAuthResolve(user => {
         loading.value = false;
     })
 </script>

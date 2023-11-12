@@ -18,8 +18,8 @@
         try {
             await signIn(usingGoogle)
             await push('/');
-            const { getUser } = useAuth();
-            add({ content: `Welcome, ${ getUser?.displayName || ' ...who are you?' }`, color: 'success', delay: 5000 });
+            const { user } = useAuth();
+            add({ content: `Welcome, ${ user?.displayName || ' ...who are you?' }`, color: 'success', delay: 5000 });
         } catch (e) {
             console.error(e);
             add({ content: 'Something went wrong.', color: 'alert', delay: 5000 });

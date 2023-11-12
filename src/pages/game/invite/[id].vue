@@ -1,5 +1,6 @@
 <script setup lang="ts">
-    import { BaseButton } from 'kneekeetah-vue-ui-kit';    
+    import { BaseButton } from 'kneekeetah-vue-ui-kit';
+    
 </script>
 <template>
     <div class="flex h-screen w-full justify-center items-center w-92">

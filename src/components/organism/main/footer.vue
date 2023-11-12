@@ -1,8 +1,8 @@
 <script setup lang="ts">
+    import GameService from '~/services/chess/';
     import { BaseButton, useToast } from 'kneekeetah-vue-ui-kit';
     const { user } = storeToRefs(useAuth());
     const { add } = useToast();
-    import GameService from '~/services/chess/GameService';
     async function createGameRoom() {
         if (!user.value) {
             add({ content: "Login first", delay: 4000 }); 

@@ -1,8 +1,12 @@
 <script setup lang="ts">
-    
+    const loading = ref(true);
+    useAuth().onAuthResolve(user => {
+        if (!user) return navigateTo("/")
+        loading.value = false;
+    });
 </script>
 <template>
-    <div class="flex h-screen w-full justify-center items-center">
+    <div class="h-screen w-full flex justify-center items-center" v-show="!loading">
         <div class="h-[370px] w-[370px]">
             <OrganismChessBoard />
         </div>

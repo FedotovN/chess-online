@@ -1,44 +1,71 @@
 import { defineStore } from "pinia"
 import AuthService from "@/services/auth";
-import UserService from "@/services/users"
+import UserService from "@/services/users";
 import User from "~/models/auth/User"
-import { warn } from "vue";
+async function handleAuthenticatedUser(uid: string): Promise<User | undefined> {
+    const info = await UserService.getUserInfo(uid);
+    if (!info) throw new Error(`User logged into the account but has no info in database. Prevent login.\nuid: ${uid}`);
+    return info
+}
+async function getCurrUserData() {
+    try {
+        const firebaseState = await AuthService.waitForAuthToResolve();
+        return firebaseState 
+        ? await UserService.getUserInfo(firebaseState.uid) || null
+        : null
+    } catch (e) {
+        console.error(e);
+    }
+}
 export const useAuth = defineStore('auth', {
     state: () => ({
-        user: null as User | null,
+        user: undefined as User | null | undefined,
     }),
-    getters: {
-        getUser: s => s.user,
-    },
     actions: {
         async signup(name: string, email: string, password: string) {
-            await AuthService.signup(name, email, password);
+            const newUser = await AuthService.signup(name, email, password);
+            return UserService.setUserToDatabase(newUser);
         },
         async login(email: string, password: string) {
-            this.user = await AuthService.login(email, password);
+            try {
+                const { uid } = await AuthService.login(email, password);
+                const info = await handleAuthenticatedUser(uid);
+                this.user = info;
+            } catch (e) {
+                console.error(e);
+                throw e;
+            } 
         },
         async signInWithGoogle() {
-            this.user = (await AuthService.loginWithGoogle())!;
+            try {
+                const { uid } = await AuthService.loginWithGoogle();
+                const info = await handleAuthenticatedUser(uid);
+                this.user = info;
+            } catch (e) {
+                console.error(e);
+                throw e;
+            }
         },
         async logout() {
-            await AuthService.logout();
-            this.user = null;
-        },
-        async waitForAuth() {
-            if (this.user !== null || process.server) return;
-            const user = await AuthService.waitForAuthToResolve();
-            if (user === null) return this.user = null;
-            const found = await UserService.getUserInfo(user.uid);
-            if (!found) {
-                console.error("User is authenticated but has no info in DB");
-                return;
+            try {
+                await AuthService.logout();
+                this.user = null;
+            } catch (e) {
+                console.error(e);
             }
-            this.user = found
         },
-        async requireAuth() {
-            if (process.server) return true;
-            await this.waitForAuth();
-            return this.user !== null;
-        }
+        async onAuthResolve(callback: (user: User | null) => unknown | Promise<unknown>) {
+            if (process.server) return;
+            try {
+                if (this.user !== undefined) return callback(this.user);
+                this.user = await getCurrUserData();
+                if (this.user === undefined) {
+                    console.warn("No user info was found due to unexpected error yet run callback anyway with 'null' fallback value");
+                }
+                return callback(this.user || null); 
+            } catch (e) {
+                console.error(e);
+            }
+        },
     }
 });
