@@ -1,9 +1,6 @@
 import ChessRoom from "~/models/chess/room/ChessRoom";
 import ChessService from "@/services/chess";
-import type { Side } from "~/types/chess/Side";
-import User from "~/models/auth/User";
 import type { Unsubscribe } from "firebase/auth";
-import type Figure from "~/models/chess/figures/Figure";
 export const useGame = defineStore('game', {
     state: () => ({
         currGame: null as ChessRoom | null,
@@ -61,8 +58,3 @@ export const useGame = defineStore('game', {
         }
     }
 })
-interface ChessMove {
-    figure: Figure,
-    player: User,
-}
-type onChessMove = (callback: (event: ChessMove) => void) => Unsubscribe

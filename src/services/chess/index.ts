@@ -1,12 +1,14 @@
 import type { Unsubscribe } from "firebase/auth";
 import { getDocumentEntity, setDocumentEntity, updateDocumentEntity, subscribeToDocumentChanges } from "~/api";
 import type User from "~/models/auth/User";
+import Board from "~/models/chess/Board";
 import ChessRoom, { type Player } from "~/models/chess/room/ChessRoom";
 import { generateHashCode } from "~/utils";
 class ChessRoomService {
     async createChessRoom() {
         const id = generateHashCode(Math.random().toString()).toString();
-        const room = new ChessRoom([null, null], id);
+        const board = new Board()
+        const room = new ChessRoom([null, null], id, { ...board } as Board);
         await setDocumentEntity(`games/${id}`, room);
         return room;
     };

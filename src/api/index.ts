@@ -32,7 +32,7 @@ export async function setDocumentEntity<T extends WithFieldValue<object>>(path: 
     if (!isDocumentPath(path))
         throw new TypeError("Provided path is not a document pointer");
     const ref = doc(firestore, path);
-    return setDoc(ref, {...data});
+    return setDoc(ref, { ...data });
 }
 export async function addDocumentEntity<T extends WithFieldValue<object>>(path: CollectionPath, data: T) {
     if (!isCollectionPath(path))
