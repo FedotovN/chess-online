@@ -8,7 +8,7 @@
     async function signOut() {
         await logout();
         await push("/auth/login");
-        add({ content: "You logged out" });
+        add({ content: "You logged out", delay: 5000 });
     }
     const onLogin = () => push("/auth/login");
     const onSignup = () => push("/auth/signup");
@@ -28,9 +28,19 @@
                     <UserMoleculeInfo @click="openInfo" class="h-full cursor-pointer hover:bg-gray-100 px-2" :user="currentUser" />
                     <BaseButton flat color="alert" @click="signOut">Sign out</BaseButton>
                 </div>
-                <div class="flex gap-3 items-center" v-else>
-                    <BaseButton width="125px" @click="onLogin">Login</BaseButton>
-                    <BaseButton outlined color="secondary" @click="onSignup">Signup</BaseButton>
+                <div class="flex h-full gap-3 items-center" v-else>
+                    <BaseButton width="100px" @click="onLogin">
+                        <div class="flex w-full items-center justify-between">
+                            <p>Login</p>
+                            <i class="fa-solid fa-right-to-bracket"></i>
+                        </div>
+                    </BaseButton>
+                    <BaseButton width="100px" outlined color="secondary" @click="onSignup">
+                        <div class="flex w-full items-center justify-between">
+                            <p>Signup</p>
+                            <i class="fa-solid fa-user-plus"></i>
+                        </div>
+                    </BaseButton>
                 </div>
             </div>
         </div>

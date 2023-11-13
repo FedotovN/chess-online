@@ -13,7 +13,7 @@
             const { id } = await create();
             push(`game/${id}`);
         } catch (e) {
-            toast({ content: "Something went wrong during game creation.", color: 'alert' })
+            toast({ content: "Something went wrong during game creation.", color: 'alert', delay: 4000, })
             console.error(e);
         }
     }
@@ -22,8 +22,6 @@
     }
     function onConfig() {
         open('config-form');
-
-        console.log('config');
     }
 </script>
 <template>
@@ -32,8 +30,18 @@
             <i class="fa-solid fa-gear text-gray-700 group-hover:text-gray-800"></i>
         </div>
         <div class="flex gap-3">
-            <BaseButton @click="onJoin" width="125px">Join</BaseButton>
-            <BaseButton @click="createGame" width="100px" color="secondary" outlined>Create</BaseButton>
+            <BaseButton @click="onJoin" width="125px">
+                <div class="flex w-full justify-between items-center">
+                    <p>Join</p>
+                    <i class="fa-solid fa-globe"></i>
+                </div>
+            </BaseButton>
+            <BaseButton @click="createGame" width="125px" color="secondary" outlined>
+                <div class="w-full flex items-center justify-between">
+                    <p>Create</p>
+                    <i class="fa-solid fa-square-plus"></i>
+                </div>
+            </BaseButton>
         </div>
     </div>
 </template>
