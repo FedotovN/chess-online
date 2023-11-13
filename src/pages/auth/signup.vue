@@ -25,6 +25,6 @@
 </script>
 <template>
     <div class="h-full">
-        <OrganismAuthSignupForm v-model="form" :loading="loading" @submit="onSubmit" />
+        <AuthOrganismSignupForm v-model="form" @submit="onSubmit" :loading="loading"  />
     </div>
 </template>

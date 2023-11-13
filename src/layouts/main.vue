@@ -3,14 +3,14 @@
 </script>   
 <template>
     <div class="flex flex-col h-screen w-full">
-        <div class="sticky w-full top-0 z-10">
-            <OrganismMainHeader :current-user="user" />
-        </div>
+        <ClientOnly>
+            <AppOrganismHeader :current-user="user" />
+        </ClientOnly>
         <div class="flex-1 w-full">
-            <slot />
+            <nuxt-page />
         </div>
-        <div class="sticky w-full bottom-0 z-10">
-            <OrganismMainFooter />
-        </div>
+        <ClientOnly>
+            <AppOrganismFooter />
+        </ClientOnly>
     </div>
 </template>

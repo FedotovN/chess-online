@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import type { Position } from '~/types/chess/Position';
-    import type Cell from "@/types/chess/Cell";
+    import type Cell from "~/types/chess/Cell";
     const vertical = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
     const horizontal = [1, 2, 3, 4, 5, 6, 7, 8];
     const getPos = (x: number, y: string) => x + y as Position

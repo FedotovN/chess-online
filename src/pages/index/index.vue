@@ -3,6 +3,6 @@
 </script>
 <template>
     <div class="flex flex-col">
-        <TemplateMainPage />
+        Chess game
     </div>
 </template>

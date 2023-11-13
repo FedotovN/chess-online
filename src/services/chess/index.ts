@@ -4,7 +4,7 @@ import type User from "~/models/auth/User";
 import Board from "~/models/chess/Board";
 import ChessRoom, { type Player } from "~/models/chess/room/ChessRoom";
 import { generateHashCode } from "~/utils";
-class ChessRoomService {
+class ChessService {
     async createChessRoom() {
         const id = generateHashCode(Math.random().toString()).toString();
         const board = new Board()
@@ -47,4 +47,4 @@ class ChessRoomService {
         return updateDocumentEntity(`games/${id}`, target);
     }
 }
-export default new ChessRoomService();
+export default new ChessService();

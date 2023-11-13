@@ -29,7 +29,7 @@
 </script>
 <template>
     <div class="h-full">
-        <OrganismAuthLoginForm v-model="form" :loading="loading" @submit="onSubmit" @goggle="onSubmit(true)" />
+        <AuthOrganismLoginForm v-model="form" @submit="onSubmit" @goggle="onSubmit(true)" />
     </div>
 </template>
 

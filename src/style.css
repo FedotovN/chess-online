@@ -5,8 +5,8 @@
 body::-webkit-scrollbar {
     width: 0;
 }
-p, a, small, h1, h2, h3, h4, h5, h6, span {  
-    font-family: 'DM Sans', sans-serif !important;
+p, a, small, h1, h2, h3, h4, h5, h6, span { 
+    font-family: 'DM Sans', sans-serif !important; 
 }
 a {
     color: blue;

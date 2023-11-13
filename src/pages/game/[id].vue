@@ -23,6 +23,7 @@
         } catch (e) {
             await navigateTo("/");
             add({ content: `Error while connecting to the game`, color: "alert", delay: 5000 });
+            console.error(e);
         }
     });
     async function quit() {
@@ -45,7 +46,7 @@
 
         </div>
         <div class="h-[370px] w-[370px]">
-            <OrganismChessBoard />
+            board
         </div>
     </div>
 </template>
