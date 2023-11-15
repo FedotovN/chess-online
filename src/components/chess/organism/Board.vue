@@ -1,7 +1,7 @@
 <script setup lang="ts">
+    import figures from "~/models/chess/figures"
     import Board from '~/models/chess/Board';
     import type Cell from '~/types/chess/Cell';
-    import type { Position } from '~/types/chess/Position';
     const emit = defineEmits<{
         (event: 'update:modelValue', value: Board): void;
         (event: 'update', value: Board): void;
@@ -17,11 +17,13 @@
         const cell = board.value.cells[x][y]
         if (!figure) return false;
         return figure.canMoveTo(cell);
-        // return true
     }
     function clickHandler(cell: Cell) {
         if (!selected.value) {
             if (!cell.figure) return;
+            const FigureConstructor = figures[cell.figure.name];
+            const newFigure = new FigureConstructor(cell.figure.position, cell.figure.side);
+            cell.figure = newFigure;
             selected.value = cell;
             return;
         }
@@ -34,18 +36,15 @@
     }
 </script>
 <template>
-    <div class="flex flex-col w-full h-full border border-gray-700 rounded overflow-hidden" @blur.stop="selected = null">
-        <div class="w-full flex flex-1" v-for="row in Object.keys(board.cells)" @click.stop>
-            <ChessAtomCell 
-                @click="clickHandler"
-                :cell="{ 
-                    figure: cell.figure, 
-                    side: cell.side,
-                    position: { x: cell.position.x, y: cell.position.y } as Position
-                }"
-                v-for="cell in board.cells[row as string]"
-                :highlight="getHighlight(cell.position.x, cell.position.y)"
-            />
+    <div class="flex w-full h-full border border-gray-700 rounded overflow-hidden" @blur.stop="selected = null">
+        <div class="flex flex-col bg-blue-300 flex-1" v-for="column in board.cells">
+                <div class="flex flex-1" v-for="cell in column">
+                    <ChessAtomCell 
+                        @click="clickHandler"
+                        :cell="cell"
+                        :highlight="getHighlight(cell.position.x, cell.position.y)"
+                    />
+                </div>
         </div>
     </div>
 </template>
