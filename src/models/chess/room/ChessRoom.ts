@@ -1,8 +1,8 @@
 import type User from "~/models/auth/User";
-import type { Side } from "~/types/chess/Side";
+import type { Color } from "~/types/chess/Color";
 import type Board from "~/models/chess/Board";
 export interface Player extends User {
-    side: Side,
+    side: Color,
 }
 export default class ChessRoom {
     constructor(

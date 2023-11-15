@@ -32,20 +32,20 @@ export async function setDocumentEntity<T extends WithFieldValue<object>>(path: 
     if (!isDocumentPath(path))
         throw new TypeError("Provided path is not a document pointer");
     const ref = doc(firestore, path);
-    return setDoc(ref, { ...data });
+    return setDoc(ref, JSON.parse(JSON.stringify(data)));
 }
 export async function addDocumentEntity<T extends WithFieldValue<object>>(path: CollectionPath, data: T) {
     if (!isCollectionPath(path))
         throw new TypeError("Provided path is not a collection pointer");
     const ref = collection(firestore, path);
-        const { id } = await addDoc(ref, {...data});
+        const { id } = await addDoc(ref, JSON.parse(JSON.stringify(data)));
     return id;
 }
 export async function updateDocumentEntity<T extends WithFieldValue<object>>(path: DocumentPath, data: T) {
     if (!isDocumentPath(path))
         throw new TypeError("Provided path is not a document pointer");
     const ref = doc(firestore, path);
-    return updateDoc(ref, {...data});
+    return updateDoc(ref, JSON.parse(JSON.stringify(data)));
 }
 export function subscribeToDocumentChanges<T>(path: DocumentPath, callback: (entity: T) => void): Unsubscribe {
     if (!isDocumentPath(path))

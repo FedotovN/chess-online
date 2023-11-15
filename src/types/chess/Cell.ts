@@ -1,8 +1,8 @@
 import Figure from "~/models/chess/figures/Figure"
 import { type Position } from "./Position"
-import { type Side } from "./Side"
+import { type Color } from "./Color"
 export default interface Cell {
-    side: Side,
+    side: Color,
     figure: Figure | null,
     position: Position
 }

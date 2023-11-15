@@ -17,12 +17,8 @@
             console.error(e);
         }
     }
-    function onJoin() {
-        open('join-form');
-    }
-    function onConfig() {
-        open('config-form');
-    }
+    const onJoin = () => open('join-form');
+    const onConfig = () => open('config-form');
 </script>
 <template>
     <div class="flex items-center h-12 backdrop-blur-md border-t px-3 justify-between">

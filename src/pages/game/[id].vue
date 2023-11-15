@@ -1,5 +1,6 @@
 <script setup lang="ts">
     import { useToast, BaseButton } from 'kneekeetah-vue-ui-kit';
+import type Board from '~/models/chess/Board';
     import type ChessRoom from '~/models/chess/room/ChessRoom';
     const loading = ref(true);
     const { join, listen, leave, send } = useGame();
@@ -31,8 +32,8 @@
         await leave();
         add({ content: `You've left the game`, delay: 5000 });
     }
-    async function sendEvent() {
-        const newRoom = { ...currGame.value, newField: Math.random() }
+    async function onUpdate(board: Board) {
+        const newRoom = { board: { ...board } }
         await send(newRoom as ChessRoom);
     }
 </script>
@@ -42,11 +43,9 @@
         <p>Game id: {{ currGame?.id  }}</p>
         <div class="flex w-92 gap-2">
             <BaseButton raised color="alert" @click="quit">Leave</BaseButton>
-            <BaseButton rounded @click="sendEvent">Push event</BaseButton>
-
         </div>
         <div class="h-[370px] w-[370px]">
-            board
+            <ChessOrganismBoard @update="onUpdate" />
         </div>
     </div>
 </template>
