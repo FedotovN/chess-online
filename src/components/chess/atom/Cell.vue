@@ -21,7 +21,5 @@
     }">
         <img v-if="getFigureSvg" :src="getFigureSvg" />
         <div v-if="highlight" class="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 rounded-full h-3 w-3 bg-blue-400" />
-        <slot>
-            <div class="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 text-purple-300">{{ cell.figure?.position.x }}{{ cell.figure?.position.y || cell.position.y }}</div></slot>
     </div>
 </template>

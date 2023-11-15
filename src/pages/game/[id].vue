@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { useToast, BaseButton } from 'kneekeetah-vue-ui-kit';
-import type Board from '~/models/chess/Board';
+    import Board from '~/models/chess/Board';
     import type ChessRoom from '~/models/chess/room/ChessRoom';
     const loading = ref(true);
     const { join, listen, leave, send } = useGame();
@@ -9,6 +9,7 @@ import type Board from '~/models/chess/Board';
     const { id } = useRoute().params;
     const { push } = useRouter();
     const { onAuthResolve } = useAuth();
+    const board = ref(new Board());
     onAuthResolve(async user => {
         if (!user) {
             add({ content: "Let's login first!", color: "secondary", delay: 5000 });
@@ -18,8 +19,12 @@ import type Board from '~/models/chess/Board';
             await join(id as string);
             add({ content: `You've connected to the game`, color: "primary", delay: 5000 });
             loading.value = false;
-            listen(() => {
-                add({ content: 'Some game event' });
+            listen(room => {
+                const { board: newBoard } = room;
+                const temp = new Board()
+                temp.cells = newBoard.cells;
+                temp.moves = newBoard.moves;
+                board.value = temp;
             });
         } catch (e) {
             await navigateTo("/");
@@ -36,6 +41,7 @@ import type Board from '~/models/chess/Board';
         const newRoom = { board: { ...board } }
         await send(newRoom as ChessRoom);
     }
+    const getBoard = computed(() => board.value) as ComputedRef<Board>;
 </script>
 <template>
     <div class="h-screen w-full flex flex-col justify-center items-center" v-show="!loading">
@@ -45,7 +51,7 @@ import type Board from '~/models/chess/Board';
             <BaseButton raised color="alert" @click="quit">Leave</BaseButton>
         </div>
         <div class="h-[370px] w-[370px]">
-            <ChessOrganismBoard @update="onUpdate" />
+            <ChessOrganismBoard :model-value="getBoard" @update:model-value="board = $event" @update="onUpdate" />
         </div>
     </div>
 </template>

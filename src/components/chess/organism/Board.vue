@@ -3,9 +3,13 @@
     import type Cell from '~/types/chess/Cell';
     import type { Position } from '~/types/chess/Position';
     const emit = defineEmits<{
+        (event: 'update:modelValue', value: Board): void;
         (event: 'update', value: Board): void;
     }>();
-    const board: Ref<Board> = ref(new Board()) as Ref<Board>;
+    const props = defineProps<{
+        modelValue: Board;
+    }>();
+    const board = computed(() => props.modelValue);
     const selected: Ref<Cell | null> = ref(null);
     function getHighlight(x: number, y: number) {
         if (!selected.value) return false;
@@ -13,18 +17,19 @@
         const cell = board.value.cells[x][y]
         if (!figure) return false;
         return figure.canMoveTo(cell);
+        // return true
     }
     function clickHandler(cell: Cell) {
         if (!selected.value) {
             if (!cell.figure) return;
             selected.value = cell;
-            console.log('selected', cell);
             return;
         }
         const { x, y } = cell.position;
         const { x: currX, y: currY } = selected.value.position;
-        board.value.moveFigure({ x: currX, y: currY }, { x, y }, )
+        board.value.moveFigure({ x: currX, y: currY }, { x, y })
         selected.value = null;
+        emit('update:modelValue', board.value);
         emit('update', board.value);
     }
 </script>
