@@ -9,6 +9,6 @@ export default class Pawn extends Figure {
         super("pawn", position, side);
     }
     canMoveTo(cell: Cell): boolean {
-        return !!cell;
+        return cell.position.x % 2 !== 0;
     }
 }

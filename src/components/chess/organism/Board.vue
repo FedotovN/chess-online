@@ -1,5 +1,4 @@
 <script setup lang="ts">
-    import figures from "~/models/chess/figures"
     import Board from '~/models/chess/Board';
     import type Cell from '~/types/chess/Cell';
     const emit = defineEmits<{
@@ -21,9 +20,6 @@
     function clickHandler(cell: Cell) {
         if (!selected.value) {
             if (!cell.figure) return;
-            const FigureConstructor = figures[cell.figure.name];
-            const newFigure = new FigureConstructor(cell.figure.position, cell.figure.side);
-            cell.figure = newFigure;
             selected.value = cell;
             return;
         }

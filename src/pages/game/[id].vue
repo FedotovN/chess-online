@@ -2,6 +2,7 @@
     import { useToast, BaseButton } from 'kneekeetah-vue-ui-kit';
     import Board from '~/models/chess/Board';
     import type ChessRoom from '~/models/chess/room/ChessRoom';
+    import GameService from "~/services/chess"
     const loading = ref(true);
     const { join, listen, leave, send } = useGame();
     const { currGame } = storeToRefs(useGame());
@@ -20,11 +21,7 @@
             add({ content: `You've connected to the game`, color: "primary", delay: 5000 });
             loading.value = false;
             listen(room => {
-                const { board: newBoard } = room;
-                const temp = new Board()
-                temp.cells = newBoard.cells;
-                temp.moves = newBoard.moves;
-                board.value = temp;
+                board.value = room.board;
             });
         } catch (e) {
             await navigateTo("/");

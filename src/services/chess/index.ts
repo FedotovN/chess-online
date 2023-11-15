@@ -4,6 +4,7 @@ import type User from "~/models/auth/User";
 import Board from "~/models/chess/Board";
 import ChessRoom, { type Player } from "~/models/chess/room/ChessRoom";
 import { generateHashCode } from "~/utils";
+import { getBoardInstance, getRoomInstance } from "./helpers";
 class ChessService {
     async createChessRoom() {
         const id = generateHashCode(Math.random().toString()).toString();
@@ -16,13 +17,17 @@ class ChessService {
     async getChessRoom(id: string) {
         const room = await getDocumentEntity<ChessRoom>(`games/${id}`);
         if (!room) throw new Error(`Error while getting target chess room\n${id}\nDoes the room exist?`,);
-        return room;
+        return getRoomInstance(room);
     }
     async updateChessRoom(id: string, room: ChessRoom) {
         return updateDocumentEntity(`games/${id}`, room);
     } 
     listenToChessRoom(id: string, callback: (room: ChessRoom) => void): Unsubscribe | undefined {
-        return subscribeToDocumentChanges(`games/${id}`, callback);
+        return subscribeToDocumentChanges(`games/${id}`, (room: ChessRoom) => {
+            const { board } = room;
+            room.board = getBoardInstance(board);
+            callback(room);
+        });
     }
     async joinChessRoom(id: string, initiator: User) {
         const target = await this.getChessRoom(id);
