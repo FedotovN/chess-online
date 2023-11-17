@@ -12,6 +12,10 @@ export default class King extends Figure {
         if(!super.canMoveTo(board, cell)) {
             return false;
         }
-        return true;
+        const { x: currX, y: currY} = this.position;
+        const { x: targetX, y: targetY } = cell.position;
+        const absX = Math.abs(targetX - currX);
+        const absY = Math.abs(targetY - currY);
+        return absX === 1 && absY === 0 || absX === 0 && absY === 1
     }
 }
