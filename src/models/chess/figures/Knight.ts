@@ -13,6 +13,10 @@ export default class Knight extends Figure {
         if(!super.canMoveTo(board, cell)) {
             return false;
         }
-        return true;
+        const { x: currX, y: currY} = this.position;
+        const { x: targetX, y: targetY } = cell.position;
+        const absX = Math.abs(currX - targetX);
+        const absY = Math.abs(currY - targetY);
+        return absX === 1 && absY === 2 || absX === 2 && absY === 1
     }
 }
