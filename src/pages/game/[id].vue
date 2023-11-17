@@ -1,7 +1,6 @@
 <script setup lang="ts">
     import { useToast } from 'kneekeetah-vue-ui-kit';
     import Board from '~/models/chess/Board';
-    import type { Color } from '~/types/chess/Color';
     const { id } = useRoute().params;
     const { leave, updateBoard } = useGame();
     const { getOpponent, getBoard, getPlayerSide, getCurrentSide } = storeToRefs(useGame());

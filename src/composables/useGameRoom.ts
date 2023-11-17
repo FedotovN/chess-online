@@ -1,6 +1,6 @@
 import { useToast } from "kneekeetah-vue-ui-kit";
 export default function useGameRoom(roomId: string) {
-    const { join, currGame } = useGame();
+    const { join } = useGame();
     const { add } = useToast()
     const loading = ref(true);
     useAuth().onAuthResolve(async user => {
