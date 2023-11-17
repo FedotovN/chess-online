@@ -9,11 +9,8 @@ export default class Bishop extends Figure {
         super("bishop", position, side);
     }
     canMoveTo(board: Board, cell: Cell): boolean {
-        if(!super.canMoveTo(board, cell)) {
-            return false;
-        }
+        const basicRules = super.canMoveTo(board, cell)
         const emptyDiagonal = board.isEmptyDiagonal(this.position, cell.position);
-        if (emptyDiagonal) return true;
-        return false;
+        return basicRules && emptyDiagonal;
     }
 }

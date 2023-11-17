@@ -10,13 +10,9 @@ export default class Queen extends Figure {
     }
     canMoveTo(board: Board, cell: Cell): boolean {
         const basicRules = super.canMoveTo(board, cell);
-        if (!basicRules) return false;
         const emptyVertical = board.isEmptyVertical(this.position, cell.position);
-        if (emptyVertical) return true;
         const emptyHorizontal = board.isEmptyHorizontal(this.position, cell.position);
-        if (emptyHorizontal) return true;
         const emptyDiagonal = board.isEmptyDiagonal(this.position, cell.position);
-        if (emptyDiagonal) return true;
-        return false;
+        return basicRules && (emptyVertical || emptyHorizontal || emptyDiagonal);
     }
 }
