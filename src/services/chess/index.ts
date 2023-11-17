@@ -4,13 +4,12 @@ import type User from "~/models/auth/User";
 import Board from "~/models/chess/Board";
 import ChessRoom, { type Player } from "~/models/chess/room/ChessRoom";
 import { generateHashCode } from "~/utils";
-import { getBoardInstance, getRoomInstance } from "./helpers";
+import { getRoomInstance } from "./helpers";
 class ChessService {
     async createChessRoom() {
         const id = generateHashCode(Math.random().toString()).toString();
         const board = new Board()
         const room = new ChessRoom([null, null], id, { ...board } as Board);
-        console.log(room);
         await setDocumentEntity(`games/${id}`, JSON.parse(JSON.stringify(room)));
         return room;
     };
@@ -24,9 +23,7 @@ class ChessService {
     } 
     listenToChessRoom(id: string, callback: (room: ChessRoom) => void): Unsubscribe | undefined {
         return subscribeToDocumentChanges(`games/${id}`, (room: ChessRoom) => {
-            const { board } = room;
-            room.board = getBoardInstance(board);
-            callback(room);
+            callback(getRoomInstance(room));
         });
     }
     async joinChessRoom(id: string, initiator: User) {

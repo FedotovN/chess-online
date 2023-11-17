@@ -1,5 +1,5 @@
 import type ChessMove from "@/types/chess/Move";
-import type Cell from "~/types/chess/Cell";
+import Cell from "~/models/chess/Cell";
 import type { Position } from "~/types/chess/Position";
 import Pawn from "./figures/Pawn";
 import Knight from "./figures/Knight"
@@ -7,6 +7,7 @@ import Rook from "./figures/Rook"
 import King from "./figures/King"
 import Queen from "./figures/Queen"
 import Bishop from "./figures/Bishop"
+import type Figure from "./figures/Figure";
 export default class Board {
     cells: { [key: string]: Array<Cell> } = {};
     moves: ChessMove[] = [];
@@ -14,15 +15,60 @@ export default class Board {
         this.addCells();
         this.addFigures();
     }
+    moveFigure(from: Position, to: Position) {
+        const prev = this.cells[from.x][from.y];
+        const target = this.cells[to.x][to.y];
+        if (prev.comparePosition(target.position)) return;
+        if (!prev.figure) throw new Error(`No figure was found in coords x: ${from.x} y: ${from.y}`);
+        if (!prev.figure.canMoveTo(this, target)) return;
+        target.figure = prev.figure;
+        target.figure!.position = { x: to.x, y: to.y };
+        this.cells[from.x][from.y].figure = null;
+        
+        this.moves.push({ figure: this.cells[to.x][to.y].figure!.name, from, to });
+    }
+    isEmptyVertical(from: Position, to: Position) {
+        if (from.x !== to.x)
+            return false;
+        const min = Math.min(from.y, to.y);
+        const max = Math.max(from.y, to.y);
+        for (let y = min + 1; y < max; y++) {
+            if(!this.cells[from.x][y].isEmpty()) 
+                return false
+        }
+        return true
+    }
+    isEmptyHorizontal(from: Position, to: Position) {
+        if (from.y !== to.y)
+            return false;
+        const min = Math.min(from.x, to.x);
+        const max = Math.max(from.x, to.x);
+        for (let x = min + 1; x < max; x++) {
+            if(!this.cells[x][from.y].isEmpty()) 
+                return false
+        }
+        return true
+    }
+    isEmptyDiagonal(from: Position, to: Position) {
+        const absX = Math.abs(to.x - from.x);
+        const absY = Math.abs(to.y - from.y); 
+        if (absY !== absX) return false;
+        const dx = from.x < to.x ? 1 : -1
+        const dy = from.y < to.y ? 1 : -1
+        for (let i = 1; i < absY; i ++) {
+            const currPos = { x: from.x + dx * i, y: from.y + dy * i} as Position
+            if (!this.getCell(currPos).isEmpty()) return false;
+        }
+        return true;
+    }   
+    getCell(position: Position) {
+        return this.cells[position.x][position.y];
+    }
     private addCells() {
         for (let x = 0; x < 8; x++) {
             this.cells[x] = [];
             for (let y = 0; y < 8; y++) {
-                this.cells[x][y] = {
-                    figure: null,
-                    position: { x, y } as Position,
-                    side: this.getCellColor(x, y),
-                }
+                this.cells[x][y] = new Cell(this.getCellColor(x, y), null, { x, y } as Position);
             }
         }
     }
@@ -72,16 +118,6 @@ export default class Board {
         const isEvenRow = y % 2 === 0;
         const isEvenCell = (x + (isEvenRow ? 1 : 0)) % 2 === 0;
         return isEvenCell ? 'black' : 'white';        
-    }
-    moveFigure(from: Position, to: Position) {
-        const cell = this.cells[from.x][from.y];
-        if (from.x === to.x && from.y === to.y) return;
-        if (!cell.figure) throw new Error(`No figure was found in coords x: ${from.x} y: ${from.y}`);
-        this.cells[to.x][to.y].figure = cell.figure;
-        this.cells[to.x][to.y].figure!.position = { x: to.x, y: to.x };
-        this.cells[from.x][from.y].figure = null;
-        
-        this.moves.push({ figure: this.cells[to.x][to.y].figure!.name, from, to });
     }
 }
  

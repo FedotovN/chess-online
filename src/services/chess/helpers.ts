@@ -1,5 +1,5 @@
 import Figure from "~/models/chess/figures/Figure";
-import Cell from "~/types/chess/Cell";
+import Cell from "~/models/chess/Cell";
 import Board from "~/models/chess/Board";
 import { plainToClass } from "class-transformer"
 import type Move from "~/types/chess/Move";

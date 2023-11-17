@@ -2,7 +2,6 @@
     import { useToast, BaseButton } from 'kneekeetah-vue-ui-kit';
     import Board from '~/models/chess/Board';
     import type ChessRoom from '~/models/chess/room/ChessRoom';
-    import GameService from "~/services/chess"
     const loading = ref(true);
     const { join, listen, leave, send } = useGame();
     const { currGame } = storeToRefs(useGame());
@@ -41,13 +40,13 @@
     const getBoard = computed(() => board.value) as ComputedRef<Board>;
 </script>
 <template>
-    <div class="h-screen w-full flex flex-col justify-center items-center" v-show="!loading">
-        <p>Current players: {{ currGame?.players.map(player => `${player?.displayName} (${player?.side})`).join(', ')  }}</p> 
-        <p>Game id: {{ currGame?.id  }}</p>
-        <div class="flex w-92 gap-2">
-            <BaseButton raised color="alert" @click="quit">Leave</BaseButton>
+    <div class="h-screen w-full flex flex-col justify-center items-center gap-2" v-show="!loading">
+        <div class="flex flex-col border gap-1 rounded shadow px-2 py-1 w-[500px]">
+            <p class="overflow-hidden whitespace-nowrap text-ellipsis">Current players: {{ currGame?.players.map(player => `${player?.displayName} (${player?.side})`).join(', ')  }}</p> 
+            <p>Game id: {{ currGame?.id  }}</p>
+                <BaseButton raised color="alert" @click="quit">Leave</BaseButton>
         </div>
-        <div class="h-[370px] w-[370px]">
+        <div class="h-[500px] w-[500px]">
             <ChessOrganismBoard :model-value="getBoard" @update:model-value="board = $event" @update="onUpdate" />
         </div>
     </div>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import Board from '~/models/chess/Board';
-    import type Cell from '~/types/chess/Cell';
+    import type Cell from '~/models/chess/Cell';
     const emit = defineEmits<{
         (event: 'update:modelValue', value: Board): void;
         (event: 'update', value: Board): void;
@@ -15,7 +15,7 @@
         const { figure } = selected.value;
         const cell = board.value.cells[x][y]
         if (!figure) return false;
-        return figure.canMoveTo(cell);
+        return figure.canMoveTo(board.value, cell);
     }
     function clickHandler(cell: Cell) {
         if (!selected.value) {
