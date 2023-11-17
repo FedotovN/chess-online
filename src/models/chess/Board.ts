@@ -15,20 +15,20 @@ export default class Board {
         this.addCells();
         this.addFigures();
     }
-    moveFigure(from: Position, to: Position) {
+    moveFigure(from: Position, to: Position): boolean {
         const prev = this.cells[from.x][from.y];
         const target = this.cells[to.x][to.y];
-        if (prev.comparePosition(target.position)) return;
+        if (prev.comparePosition(target.position)) return false;
         if (!prev.figure) throw new Error(`No figure was found in coords x: ${from.x} y: ${from.y}`);
-        if (!prev.figure.canMoveTo(this, target)) return;
+        if (!prev.figure.canMoveTo(this, target)) return false;
         target.figure = prev.figure;
         target.figure!.position = { x: to.x, y: to.y };
         if(target.figure instanceof Pawn) {
             target.figure.isFirstMove = false;
         }
         this.cells[from.x][from.y].figure = null;
-        
         this.moves.push({ figure: this.cells[to.x][to.y].figure!.name, from, to });
+        return true;
     }
     isEmptyVertical(from: Position, to: Position) {
         if (from.x !== to.x)

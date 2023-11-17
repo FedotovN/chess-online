@@ -8,6 +8,7 @@ export default class ChessRoom {
     constructor(
         public players: [Player | null, Player | null],
         public id: string,
-        public board: Board
+        public board: Board,
+        public currentSide: Color,
     ) {}
 }

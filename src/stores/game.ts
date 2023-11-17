@@ -1,11 +1,37 @@
-import ChessRoom from "~/models/chess/room/ChessRoom";
+import ChessRoom, { type Player } from "~/models/chess/room/ChessRoom";
 import ChessService from "@/services/chess";
 import type { Unsubscribe } from "firebase/auth";
+import type Board from "~/models/chess/Board";
+import type { Color } from "~/types/chess/Color";
 export const useGame = defineStore('game', {
     state: () => ({
         currGame: null as ChessRoom | null,
         unsubs: {} as { [key: string]: Unsubscribe },
     }),
+    getters: {
+        getOpponent(state): Player | null {
+            if (!state.currGame) return null;
+            const { user } = useAuth();
+            const { players } = state.currGame;
+            if (!user || !players.length || players.length < 2) return null;
+            return players.find(p => p?.uid !== user.uid) || null;
+        },
+        getBoard(state): Board | null {
+            if (!state.currGame) return null;
+            return state.currGame.board as Board;
+        },
+        getPlayerSide(state): Color | null {
+            if (!state.currGame) return null;
+            const { user } = useAuth();
+            const { players } = state.currGame;
+            if (!user || !players.length || players.length < 2) return null;
+            return players.find(p => p?.uid === user.uid)?.side || null;
+        },
+        getCurrentSide(state): Color | null {
+            if (!state.currGame) return null;
+            return state.currGame.currentSide;
+        }
+    },
     actions: {
         async create() {
             try {
@@ -50,8 +76,18 @@ export const useGame = defineStore('game', {
             try {
                 const { user } = useAuth();
                 if (!this.currGame) throw new Error("Trying lo update game but you are not in the game");
-                if (!user) throw new Error("Trying lo quit game but you are not authenticated");
+                if (!user) throw new Error("Trying lo update game but you are not authenticated");
                 await ChessService.updateChessRoom(this.currGame.id, room);
+            } catch(e) {
+                console.error(e);
+            }
+        },
+        async updateBoard(board: Board, currentSide: Color) {
+            try {
+                const { user } = useAuth();
+                if (!this.currGame) throw new Error("Trying lo update board but you are not in the game");
+                if (!user) throw new Error("Trying lo update board but you are not authenticated");
+                await ChessService.updateChessRoom(this.currGame.id, { board, currentSide } as ChessRoom);
             } catch(e) {
                 console.error(e);
             }

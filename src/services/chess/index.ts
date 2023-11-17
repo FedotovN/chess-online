@@ -9,7 +9,7 @@ class ChessService {
     async createChessRoom() {
         const id = generateHashCode(Math.random().toString()).toString();
         const board = new Board()
-        const room = new ChessRoom([null, null], id, { ...board } as Board);
+        const room = new ChessRoom([null, null], id, { ...board } as Board, 'white');
         await setDocumentEntity(`games/${id}`, JSON.parse(JSON.stringify(room)));
         return room;
     };
