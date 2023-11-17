@@ -5,7 +5,7 @@ import type Cell from "~/models/chess/Cell";
 import type Board from "../Board";
 
 export default class Pawn extends Figure {
-    isFirstMove = true;
+    isFirstMove: boolean = true;
     constructor(public position: Position, side: Color) {
         super("pawn", position, side);
     }
@@ -13,6 +13,17 @@ export default class Pawn extends Figure {
         if(!super.canMoveTo(board, cell)) {
             return false;
         }
-        return true;
+        const { x: currX, y: currY} = this.position;
+        const { x: targetX, y: targetY } = cell.position;
+        const isEnemy = cell.figure;
+        const sameX = targetX === currX
+        const modifier = this.side === 'white' ? 1 : -1;
+        const inOneStep = currY - targetY === modifier;
+        const inTwoSteps = currY - targetY === modifier * 2;
+        const isDiagonal = inOneStep && Math.abs(targetX - currX) === 1
+        if (sameX && isEnemy) return false;
+        if (sameX && (inOneStep || this.isFirstMove && inTwoSteps)) return true;
+        if (isDiagonal && isEnemy) return true;
+        return false;
     }
 }

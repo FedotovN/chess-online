@@ -23,6 +23,9 @@ export default class Board {
         if (!prev.figure.canMoveTo(this, target)) return;
         target.figure = prev.figure;
         target.figure!.position = { x: to.x, y: to.y };
+        if(target.figure instanceof Pawn) {
+            target.figure.isFirstMove = false;
+        }
         this.cells[from.x][from.y].figure = null;
         
         this.moves.push({ figure: this.cells[to.x][to.y].figure!.name, from, to });

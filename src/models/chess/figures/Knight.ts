@@ -5,7 +5,6 @@ import type Cell from "~/models/chess/Cell";
 import type Board from "../Board";
 
 export default class Knight extends Figure {
-    isFirstMove = true;
     constructor(public position: Position, side: Color) {
         super("knight", position, side);
     }
