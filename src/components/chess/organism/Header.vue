@@ -6,6 +6,7 @@
     const props = defineProps<{
         opponent: Player | null,
         currentSide: Color | null,
+        gameId: string,
     }>();
     defineEmits<{
         (event: 'quit'):void;
@@ -16,8 +17,8 @@
         return `${uppercased} to move.`
     });
     const onInvite = () => {
-        navigator.clipboard.writeText(window.location.href);
-        add({ content: "Invite link copied to clipboard" });
+        navigator.clipboard.writeText(window.location.host + `/game/invite/${props.gameId}`)
+        add({ content: "Invite link copied to clipboard", delay: 5000 });
     }   
 </script>
 <template>
@@ -33,7 +34,7 @@
             <div class="flex items-center gap-2" v-else>
                 <small>Waiting for opponent...</small>
                 <base-loader></base-loader>
-                <BaseButton color="success" flat @click="onInvite">Send invite</BaseButton>
+                <BaseButton color="success" flat @click="onInvite">Invite link</BaseButton>
             </div>
             <div class="flex items-center gap-3">
                 <small class="text-gray-700 font-semibold">{{ side }}</small>

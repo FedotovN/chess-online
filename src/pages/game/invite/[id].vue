@@ -10,6 +10,8 @@
     try {
         if (process.client) {
             room.value = await ChessService.getChessRoom(id as string);
+            console.log(room.value);
+            
             loading.value = false;
         }
     } catch (e) {

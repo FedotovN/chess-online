@@ -26,7 +26,7 @@
 </script>
 <template>
     <div class="h-screen w-full flex flex-col" v-show="!loading">
-        <ChessOrganismHeader :opponent="getOpponent" :current-side="getCurrentSide" @quit="quit" /> 
+        <ChessOrganismHeader :game-id="(id as string)" :opponent="getOpponent" :current-side="getCurrentSide" @quit="quit" /> 
         <div class="flex-1 flex justify-center items-center">
             <div class="flex gap-2">
                 <div class="h-[500px] w-[500px]" v-if="board">
