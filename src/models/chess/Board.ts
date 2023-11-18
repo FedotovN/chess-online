@@ -8,6 +8,8 @@ import King from "./figures/King"
 import Queen from "./figures/Queen"
 import Bishop from "./figures/Bishop"
 import type Figure from "./figures/Figure";
+import type { Color } from "~/types/chess/Color";
+import { faLariSign } from "@fortawesome/free-solid-svg-icons";
 export default class Board {
     cells: { [key: string]: Array<Cell> } = {};
     moves: ChessMove[] = [];
@@ -20,7 +22,7 @@ export default class Board {
         const target = this.cells[to.x][to.y];
         if (prev.comparePosition(target.position)) return false;
         if (!prev.figure) throw new Error(`No figure was found in coords x: ${from.x} y: ${from.y}`);
-        if (!prev.figure.canMoveTo(this, target)) return false;
+        if (!prev.figure.canMoveTo(this, target) || prev.figure.attackingKing(this, target)) return false;
         target.figure = prev.figure;
         target.figure!.position = { x: to.x, y: to.y };
         if(target.figure instanceof Pawn) {
@@ -63,9 +65,49 @@ export default class Board {
             if (!this.getCell(currPos).isEmpty()) return false;
         }
         return true;
-    }   
+    }
+    isCheck(side: Color, to: Position) {
+        const { x, y } = to;
+        const figures = this.getFigures().filter(figure => figure.side !== side);
+        for (let i = 0; i < figures.length; i++) {
+            const figure = figures[i];
+            if (figure.name === 'king') continue;
+            if (figure.canMoveTo(this, this.cells[x][y])) {
+                return true;
+            }
+        }
+        return false
+    }
+    isGameOver(side: Color) {
+        const king = this.getKings().filter(king => king.side === side)[0] as King;
+        const { position } = king;
+        const isThreat = this.isCheck(side, position);
+        if (!isThreat) return false
+        const cells = this.getCells();
+        for(let i = 0; i < cells.length; i++) {
+            if (king.canMoveTo(this, cells[i])) {
+                if(this.isCheck(side === 'white' ? 'black' : 'white', cells[i].position)) continue;
+                return false
+            };
+        }
+        return true;
+    }
     getCell(position: Position) {
         return this.cells[position.x][position.y];
+    }
+    private getFigures() {
+        return Object.keys(this.cells)
+            .map(column => this.cells[column])
+            .map(column => column.filter(cell => cell.figure).map(cell => cell.figure))
+            .flat() as Figure[];
+    }
+    private getCells() {
+        return Object.keys(this.cells)
+            .map(column => this.cells[column])
+            .flat();
+    }
+    private getKings() {
+        return this.getFigures().filter(figure => figure.name === 'king') as King[];
     }
     private addCells() {
         for (let x = 0; x < 8; x++) {

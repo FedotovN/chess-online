@@ -9,7 +9,11 @@ export default class Figure {
     canMoveTo(board: Board, cell: Cell){
         const sameSide = cell.figure?.side === this.side;
         const samePosition = cell.comparePosition(this.position);
+        return !sameSide && !samePosition;
+    }
+    attackingKing(board: Board, cell: Cell) {
         const isKing = cell.figure?.name === 'king'
-        return !isKing && !sameSide && !samePosition;
+        if (!isKing) return false;
+        return this.canMoveTo(board, cell);
     }
 }

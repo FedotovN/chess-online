@@ -16,9 +16,10 @@ export default class King extends Figure {
         const { x: targetX, y: targetY } = cell.position;
         const absX = Math.abs(targetX - currX);
         const absY = Math.abs(targetY - currY);
+        const isCheck = board.isCheck(this.side, cell.position);
         const horizontalOnly = absX === 1 && absY === 0;
         const verticalOnly = absX === 0 && absY === 1;
         const diagonal = absX === 1 && absY === 1;
-        return diagonal || horizontalOnly || verticalOnly;
+        return !isCheck && (diagonal || horizontalOnly || verticalOnly);
     }
 }
