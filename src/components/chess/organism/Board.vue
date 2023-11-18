@@ -18,7 +18,6 @@
         return figure.canMoveTo(board.value, cell);
     }
     function clickHandler(cell: Cell) {
-        console.log(selected.value);
         if (!selected.value) {
             if (!cell.figure) return;
             const isEnemyFigure = cell.figure.side !== props.playerSide;

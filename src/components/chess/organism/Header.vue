@@ -1,7 +1,8 @@
 <script setup lang="ts">
-    import { BaseButton, BaseLoader } from 'kneekeetah-vue-ui-kit';
+    import { BaseButton, BaseLoader, useToast } from 'kneekeetah-vue-ui-kit';
     import { type Player } from '~/models/chess/room/ChessRoom';
     import { type Color } from '~/types/chess/Color';
+    const { add } = useToast();
     const props = defineProps<{
         opponent: Player | null,
         currentSide: Color | null,
@@ -14,6 +15,10 @@
         const uppercased = props.currentSide.slice(0, 1).toUpperCase() + props.currentSide.slice(1)
         return `${uppercased} to move.`
     });
+    const onInvite = () => {
+        navigator.clipboard.writeText(window.location.href);
+        add({ content: "Invite link copied to clipboard" });
+    }   
 </script>
 <template>
     <div class="px-3 py-1 h-12 border-b flex items-center justify-between bg-gray-100">
@@ -26,9 +31,9 @@
                 <small class="text-gray-700 font-bold">as {{ opponent.side === 'black' ? 'white' : 'black' }}</small>
             </div>
             <div class="flex items-center gap-2" v-else>
-                <BaseButton color="success" rounded>Send invite</BaseButton>
-                <small>Waiting for opponent</small>
+                <small>Waiting for opponent...</small>
                 <base-loader></base-loader>
+                <BaseButton color="success" flat @click="onInvite">Send invite</BaseButton>
             </div>
             <div class="flex items-center gap-3">
                 <small class="text-gray-700 font-semibold">{{ side }}</small>

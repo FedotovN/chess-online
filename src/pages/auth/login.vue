@@ -19,7 +19,8 @@
             await signIn(usingGoogle)
             await push('/');
             const { user } = useAuth();
-            add({ content: `Welcome, ${ user?.displayName || ' ...who are you?' }`, color: 'success', delay: 5000 });
+            if (!user) throw new Error("Just logged in but no user in store");
+            add({ content: `Welcome, ${ user.displayName }`, color: 'success', delay: 5000 });
         } catch (e) {
             console.error(e);
             add({ content: 'Something went wrong.', color: 'alert', delay: 5000 });
@@ -29,7 +30,7 @@
 </script>
 <template>
     <div class="h-full">
-        <AuthOrganismLoginForm v-model="form" @submit="onSubmit" @goggle="onSubmit(true)" />
+        <AuthOrganismLoginForm :loading="loading" v-model="form" @submit="onSubmit" @goggle="onSubmit(true)" />
     </div>
 </template>
 
