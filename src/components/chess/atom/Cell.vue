@@ -15,10 +15,11 @@
     const enemyHighlight = computed(() => props.highlight && props.cell.figure);
 </script>
 <template>
-    <div @click="emit('click', cell)" class="flex relative select-none justify-center items-center flex-1 cursor-pointer transition-all" :class="{
+    <div @click="emit('click', cell)" class="flex relative select-none justify-center items-center flex-1 transition-all" :class="{
         'bg-yellow-700 hover:bg-yellow-800 ': !enemyHighlight && cell.side === 'black',
         'bg-yellow-50 hover:bg-yellow-100 ': !enemyHighlight && cell.side === 'white',
-        'bg-red-400 hover:bg-red-600': enemyHighlight
+        'bg-red-400 hover:bg-red-600': enemyHighlight,
+        'cursor-pointer': !!cell.figure
     }">
         <img v-if="getFigureSvg" :src="getFigureSvg" class="h-full w-full" />
         <div

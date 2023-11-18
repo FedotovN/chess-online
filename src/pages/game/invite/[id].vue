@@ -9,9 +9,7 @@
     const room: Ref<ChessRoom | null> = ref(null);
     try {
         if (process.client) {
-            room.value = await ChessService.getChessRoom(id as string);
-            console.log(room.value);
-            
+            room.value = await ChessService.getChessRoom(id as string);            
             loading.value = false;
         }
     } catch (e) {

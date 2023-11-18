@@ -18,14 +18,30 @@
         return figure.canMoveTo(board.value, cell);
     }
     function clickHandler(cell: Cell) {
-        if (!selected.value) {
-            if (!cell.figure) return;
-            const isEnemyFigure = cell.figure.side !== props.playerSide;
-            const notYourMove = cell.figure.side !== props.currentSide;
-            if (isEnemyFigure || notYourMove) return;
-            selected.value = cell;
+        if (!selected.value) { 
+            selectFigure(cell);
             return;
         }
+        const { x: targetX, y: targetY } = cell.position;
+        const { x: currX, y: currY } = selected.value.position;
+        selected.value = null;
+        const result = board.value.moveFigure({ x: currX, y: currY }, { x: targetX, y: targetY });
+        if (!result) return;
+        emit('update:modelValue', board.value);
+    }
+    function selectFigure(cell: Cell) {
+        if (selected.value) return;
+        if (!cell.figure) return;
+        const isEnemyFigure = cell.figure.side !== props.playerSide;
+        const notYourMove = cell.figure.side !== props.currentSide;
+        if (isEnemyFigure || notYourMove) return;
+        selected.value = cell;
+    }
+    function onDragEnd(cell: Cell) {
+        if (!selected.value) return;
+        const isEnemyFigure = selected.value.side !== props.playerSide;
+        const notYourMove = selected.value.side !== props.currentSide;
+        if (isEnemyFigure || notYourMove) return;
         const { x, y } = cell.position;
         const { x: currX, y: currY } = selected.value.position;
         selected.value = null;
@@ -39,10 +55,13 @@
         <div class="flex flex-col bg-blue-300 flex-1" v-for="column in board.cells">
                 <div class="flex flex-1" v-for="cell in column">
                     <ChessAtomCell 
-                        :class="{ 'rotate-180': playerSide === 'black' }"
-                        @click="clickHandler"
-                        :cell="cell"
                         :highlight="getHighlight(cell.position.x, cell.position.y)"
+                        :class="{ 'rotate-180': playerSide === 'black' }"
+                        @drop.prevent="clickHandler(cell)"
+                        @dragstart="clickHandler(cell)"
+                        @click="clickHandler"
+                        @dragover.prevent
+                        :cell="cell"
                     />
                 </div>
         </div>
