@@ -19,7 +19,6 @@ export default class King extends Figure {
         const horizontalOnly = absX === 1 && absY === 0;
         const verticalOnly = absX === 0 && absY === 1;
         const diagonal = absX === 1 && absY === 1;
-        const isEnemy = !!cell.figure
-        return (diagonal && isEnemy) || (horizontalOnly || verticalOnly);
+        return diagonal || horizontalOnly || verticalOnly;
     }
 }
