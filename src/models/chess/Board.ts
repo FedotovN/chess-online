@@ -7,9 +7,6 @@ import Rook from "./figures/Rook"
 import King from "./figures/King"
 import Queen from "./figures/Queen"
 import Bishop from "./figures/Bishop"
-import type Figure from "./figures/Figure";
-import type { Color } from "~/types/chess/Color";
-import { faLariSign } from "@fortawesome/free-solid-svg-icons";
 export default class Board {
     cells: { [key: string]: Array<Cell> } = {};
     moves: ChessMove[] = [];
@@ -17,24 +14,33 @@ export default class Board {
         this.addCells();
         this.addFigures();
     }
-    moveFigure(from: Position, to: Position): boolean {
+    moveFigure(from: Position, to: Position) {
         const prev = this.cells[from.x][from.y];
         const target = this.cells[to.x][to.y];
-        if (prev.comparePosition(target.position)) return false;
-        if (!prev.figure) throw new Error(`No figure was found in coords x: ${from.x} y: ${from.y}`);
-        if (!prev.figure.canMoveTo(this, target) || prev.figure.attackingKing(this, target)) return false;
-        target.figure = prev.figure;
-        target.figure!.position = { x: to.x, y: to.y };
-        if(target.figure instanceof Pawn) {
-            target.figure.isFirstMove = false;
-        }
-        this.cells[from.x][from.y].figure = null;
+        const noFigure = !prev.figure;
+        const samePosition = prev.comparePosition(target.position);
+        const cantMove = !prev.figure?.canMoveTo(this, target);
+        if (noFigure || samePosition || cantMove) return false;
+        this.swapFigures(prev, target);
         this.moves.push({ figure: this.cells[to.x][to.y].figure!.name, from, to });
         return true;
     }
+    private swapFigures(from: Cell, to: Cell) {
+        if (!from.figure) throw new Error(`No figure was found but trying to swap`);
+        if (from.comparePosition(to.position)) return;
+        let { position: targetPos } = to;
+        to.figure = from.figure;
+        to.figure.position = targetPos;
+        from.figure = null;
+        if(to.figure instanceof Pawn) {
+            to.figure.isFirstMove = false;
+        }
+    }
+    getCell(position: Position) {
+        return this.cells[position.x][position.y];
+    }
     isEmptyVertical(from: Position, to: Position) {
-        if (from.x !== to.x)
-            return false;
+        if (!Cell.isVertical(from, to)) return false;
         const min = Math.min(from.y, to.y);
         const max = Math.max(from.y, to.y);
         for (let y = min + 1; y < max; y++) {
@@ -44,8 +50,7 @@ export default class Board {
         return true
     }
     isEmptyHorizontal(from: Position, to: Position) {
-        if (from.y !== to.y)
-            return false;
+        if (!Cell.isHorizontal(from, to)) return false;
         const min = Math.min(from.x, to.x);
         const max = Math.max(from.x, to.x);
         for (let x = min + 1; x < max; x++) {
@@ -55,59 +60,15 @@ export default class Board {
         return true
     }
     isEmptyDiagonal(from: Position, to: Position) {
-        const absX = Math.abs(to.x - from.x);
-        const absY = Math.abs(to.y - from.y); 
-        if (absY !== absX) return false;
+        if (!Cell.isDiagonal(from, to)) return false;
+        const path = Math.abs(to.y - from.y);
         const dx = from.x < to.x ? 1 : -1
         const dy = from.y < to.y ? 1 : -1
-        for (let i = 1; i < absY; i ++) {
+        for (let i = 1; i < path; i ++) {
             const currPos = { x: from.x + dx * i, y: from.y + dy * i} as Position
             if (!this.getCell(currPos).isEmpty()) return false;
         }
         return true;
-    }
-    isCheck(side: Color, to: Position) {
-        const { x, y } = to;
-        const figures = this.getFigures().filter(figure => figure.side !== side);
-        for (let i = 0; i < figures.length; i++) {
-            const figure = figures[i];
-            if (figure.name === 'king') continue;
-            if (figure.canMoveTo(this, this.cells[x][y])) {
-                return true;
-            }
-        }
-        return false
-    }
-    isGameOver(side: Color) {
-        const king = this.getKings().filter(king => king.side === side)[0] as King;
-        const { position } = king;
-        const isThreat = this.isCheck(side, position);
-        if (!isThreat) return false
-        const cells = this.getCells();
-        for(let i = 0; i < cells.length; i++) {
-            if (king.canMoveTo(this, cells[i])) {
-                if(this.isCheck(side === 'white' ? 'black' : 'white', cells[i].position)) continue;
-                return false
-            };
-        }
-        return true;
-    }
-    getCell(position: Position) {
-        return this.cells[position.x][position.y];
-    }
-    private getFigures() {
-        return Object.keys(this.cells)
-            .map(column => this.cells[column])
-            .map(column => column.filter(cell => cell.figure).map(cell => cell.figure))
-            .flat() as Figure[];
-    }
-    private getCells() {
-        return Object.keys(this.cells)
-            .map(column => this.cells[column])
-            .flat();
-    }
-    private getKings() {
-        return this.getFigures().filter(figure => figure.name === 'king') as King[];
     }
     private addCells() {
         for (let x = 0; x < 8; x++) {

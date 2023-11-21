@@ -11,4 +11,15 @@ export default class Cell {
     isEmpty() {
         return !this.figure;
     }
+    static isVertical(from: Position, to: Position) {
+        return from.x === to.x;
+    }
+    static isHorizontal(from: Position, to: Position) {
+        return from.y === to.y
+    }
+    static isDiagonal(from: Position, to: Position) {
+        const absX = Math.abs(to.x - from.x);
+        const absY = Math.abs(to.y - from.y); 
+        return absY === absX;
+    }
 }

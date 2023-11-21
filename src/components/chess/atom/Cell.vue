@@ -1,5 +1,6 @@
 <script setup lang="ts">
     import Cell from "~/models/chess/Cell";
+import type { Color } from "~/types/chess/Color";
     const props = defineProps<{
         cell: Cell,
         highlight: boolean,
@@ -10,14 +11,14 @@
     const getFigureSvg = computed(() => {
         const name = props.cell.figure?.name;
         const color = props.cell.figure?.side;
-        if (name) return getSvgSrcFromFigure(color, name);
+        if (name) return getSvgSrcFromFigure(color as Color, name);
     });
     const enemyHighlight = computed(() => props.highlight && props.cell.figure);
 </script>
 <template>
     <div @click="emit('click', cell)" class="flex relative select-none justify-center items-center flex-1 transition-all" :class="{
-        'bg-yellow-700 hover:bg-yellow-800 ': !enemyHighlight && cell.side === 'black',
-        'bg-yellow-50 hover:bg-yellow-100 ': !enemyHighlight && cell.side === 'white',
+        'bg-gray-700 hover:bg-gray-800 ': !enemyHighlight && cell.side === 'black',
+        'bg-white hover:bg-white ': !enemyHighlight && cell.side === 'white',
         'bg-red-400 hover:bg-red-600': enemyHighlight,
         'cursor-pointer': !!cell.figure
     }">

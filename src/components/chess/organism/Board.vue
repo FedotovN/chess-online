@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { useToast } from 'kneekeetah-vue-ui-kit';
-import Board from '~/models/chess/Board';
+    import Board from '~/models/chess/Board';
     import type Cell from '~/models/chess/Cell';
     import { type Color } from "~/types/chess/Color";
     const emit = defineEmits<{ (event: 'update:modelValue', value: Board): void }>();
@@ -12,15 +12,15 @@ import Board from '~/models/chess/Board';
     const board = computed(() => props.modelValue)
     const selected: Ref<Cell | null> = ref(null);
     const { add } = useToast();
+    
     function getHighlight(x: number, y: number) {
         if (!selected.value) return false;
         const { figure } = selected.value;
         const cell = board.value.cells[x][y]
         if (!figure) return false;
-        return figure.canMoveTo(board.value, cell) && !figure.attackingKing(board.value, cell);
+        return figure.canMoveTo(board.value, cell);
     }
     function clickHandler(cell: Cell) {
-        if (board.value.isGameOver('black') || board.value.isGameOver('white')) return;
         if (!selected.value) { 
             selectFigure(cell);
             return;
@@ -29,8 +29,11 @@ import Board from '~/models/chess/Board';
         const { x: currX, y: currY } = selected.value.position;
         selected.value = null;
         const result = board.value.moveFigure({ x: currX, y: currY }, { x: targetX, y: targetY });
-        if (!result) return;
-        emit('update:modelValue', board.value);
+        if (result) {
+            emit('update:modelValue', board.value);
+        } else {
+            selected.value = null;
+        }
     }
     function selectFigure(cell: Cell) {
         if (selected.value) return;
@@ -40,14 +43,6 @@ import Board from '~/models/chess/Board';
         if (isEnemyFigure || notYourMove) return;
         selected.value = cell;
     }
-    watch(board, () => {
-        if(board.value.isGameOver('white')) {
-            add({ content: "Game over. Black won" });
-        }
-        if(board.value.isGameOver('black')) {
-            add({ content: "Game over. White won" });
-        }
-    })
 </script>
 <template>
     <div :class="{ 'rotate-180': playerSide === 'black' }" class="flex w-full h-full border border-gray-700 rounded overflow-hidden" v-click-outside="() => selected = null">

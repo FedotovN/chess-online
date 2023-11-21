@@ -9,13 +9,11 @@ export default class Knight extends Figure {
         super("knight", position, side);
     }
     canMoveTo(board: Board, cell: Cell): boolean {
-        if(!super.canMoveTo(board, cell)) {
-            return false;
-        }
+        const basicRules = super.canMoveTo(board, cell);
         const { x: currX, y: currY} = this.position;
         const { x: targetX, y: targetY } = cell.position;
         const absX = Math.abs(currX - targetX);
         const absY = Math.abs(currY - targetY);
-        return absX === 1 && absY === 2 || absX === 2 && absY === 1
+        return basicRules && (absX === 1 && absY === 2 || absX === 2 && absY === 1);
     }
 }

@@ -1,7 +1,7 @@
 import Figure from "./Figure";
 import type { Position } from "~/types/chess/Position";
 import type { Color } from "~/types/chess/Color";
-import type Cell from "~/models/chess/Cell";
+import Cell from "~/models/chess/Cell";
 import type Board from "../Board";
 
 export default class King extends Figure {
@@ -9,17 +9,10 @@ export default class King extends Figure {
         super("king", position, side);
     }
     canMoveTo(board: Board, cell: Cell): boolean {
-        if(!super.canMoveTo(board, cell)) {
-            return false;
-        }
-        const { x: currX, y: currY} = this.position;
-        const { x: targetX, y: targetY } = cell.position;
-        const absX = Math.abs(targetX - currX);
-        const absY = Math.abs(targetY - currY);
-        const isCheck = board.isCheck(this.side, cell.position);
-        const horizontalOnly = absX === 1 && absY === 0;
-        const verticalOnly = absX === 0 && absY === 1;
-        const diagonal = absX === 1 && absY === 1;
-        return !isCheck && (diagonal || horizontalOnly || verticalOnly);
+        const basicRules = super.canMoveTo(board, cell);
+        const horizontalOnly = Cell.isHorizontal(this.position, cell.position);
+        const verticalOnly = Cell.isVertical(this.position, cell.position);
+        const diagonal = Cell.isDiagonal(this.position, cell.position);
+        return basicRules && (diagonal || horizontalOnly || verticalOnly);
     }
 }

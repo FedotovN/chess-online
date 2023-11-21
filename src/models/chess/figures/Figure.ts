@@ -11,9 +11,9 @@ export default class Figure {
         const samePosition = cell.comparePosition(this.position);
         return !sameSide && !samePosition;
     }
-    attackingKing(board: Board, cell: Cell) {
-        const isKing = cell.figure?.name === 'king'
-        if (!isKing) return false;
-        return this.canMoveTo(board, cell);
+    drawPath(board: Board, cell: Cell) {
+        const sameSide = cell.figure?.side === this.side;
+        const samePosition = cell.comparePosition(this.position);
+        return !sameSide && !samePosition;
     }
 }
