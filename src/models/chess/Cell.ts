@@ -22,4 +22,14 @@ export default class Cell {
         const absY = Math.abs(to.y - from.y); 
         return absY === absX;
     }
+    static isBetween(from: Position, to: Position, curr: Position) {
+        const { x: currX, y: currY } = curr;
+        const { x: fromX, y: fromY } = from;
+        const { x: toX, y: toY } = to;
+        const sameX = fromX === toX;
+        const sameY = fromY === toY;
+        const betweenX = fromX > toX ? fromX > currX && currX > toX : fromX < currX && currX < toX;
+        const betweenY = fromY > toY ? fromY > currY && currY > toY : fromY < currY && currY < toY;
+        return sameX ? betweenY : sameY ? betweenX : betweenX && betweenY;
+    }
 }

@@ -60,9 +60,9 @@ export default class Board {
         }
         return true;
     }
-    isAttacked(position: Position, side: Color) {
+    isAttacked(position: Position, enemySide: Color) {
         const cell = this.getCell(position);
-        const enemies = this.getSideFigures(side);
+        const enemies = this.getSideFigures(enemySide);
         for (let i = 0; i < enemies.length; i++) {
             const enemy = enemies[i];
             if (enemy instanceof King) {
@@ -93,11 +93,18 @@ export default class Board {
     isCheckmate(to: Color) {
         const king = this.getKing('white');
         const { position, side } = king;
-        const attackingFigure = this.isAttackedBy(position, to === 'white' ? 'black' : 'white');
+        const attackingFigure = this.isAttackedBy(position, king.getEnemySide());
         if (!attackingFigure) return false;
         // we're certainly being attacked
         const cells = this.getAllCells();
         const friendlyFigures = this.getSideFigures(side);
+        // check if we can eat attacking figure
+        const { position: attackPos } = this.getCell(attackingFigure.position);
+        const canDefend = this.isAttacked(attackPos, king.side)
+        if (canDefend) {
+            console.log('can eat', attackingFigure.name)
+            return false;
+        }
         // check if king can go somewhere
         for (let i = 0; i < cells.length; i++) {
             const cell = cells[i];
@@ -106,27 +113,9 @@ export default class Board {
                 return false;
             }
         }
-        const attackingFigureCell = this.getCell(attackingFigure.position);
-        // check if we can eat attacking figure
-        for (let i = 0; i < friendlyFigures.length; i++) {
-            const figure = friendlyFigures[i];
-            if (figure.canAttackTo(this, attackingFigureCell)){
-                console.log('Can eat attacking', attackingFigure.name)
-                return false
-            }
-        }
         // check if we can defend our king by sacrificing our figure
         const enemyPossibleMoves = cells.filter(cell => attackingFigure.canMoveTo(this, cell));
-        const { x: kingX, y: kingY } = position;
-        const { x: enemyX, y: enemyY } = attackingFigure.position;
-        const cellsBetweenKingAndEnemy = enemyPossibleMoves.filter(cell => {
-            const { x: cellX, y: cellY } = cell.position;
-            const sameX = kingX === enemyX;
-            const sameY = kingY === enemyY;
-            const betweenX = kingX > enemyX ? kingX > cellX && cellX > enemyX : kingX < cellX && cellX < enemyX;
-            const betweenY = kingY > enemyY ? kingY > cellY && cellY > enemyY : kingY < cellY && cellY < enemyY;
-            return sameX ? betweenY : sameY ? betweenX : betweenX && betweenY;
-        })
+        const cellsBetweenKingAndEnemy = enemyPossibleMoves.filter(cell => Cell.isBetween(position, attackingFigure.position, cell.position));
         for (let i = 0; i < friendlyFigures.length; i++) {
             const figure = friendlyFigures[i];
             for (let j = 0; j < cellsBetweenKingAndEnemy.length; j++) {

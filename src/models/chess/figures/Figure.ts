@@ -14,10 +14,7 @@ export default class Figure {
     canAttackTo(board: Board, cell: Cell) {
         return this.canMoveTo(board, cell);
     }
-    isAttacked(board: Board) {
-        return board.isAttacked(this.position, this.getEnemySide());
-    }
-    protected getEnemySide() {
+    getEnemySide() {
         return this.side === 'white' ? 'black' : 'white';
     }
 }
