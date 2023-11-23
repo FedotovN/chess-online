@@ -11,9 +11,13 @@ export default class Figure {
         const samePosition = cell.comparePosition(this.position);
         return !sameSide && !samePosition;
     }
-    drawPath(board: Board, cell: Cell) {
-        const sameSide = cell.figure?.side === this.side;
-        const samePosition = cell.comparePosition(this.position);
-        return !sameSide && !samePosition;
+    canAttackTo(board: Board, cell: Cell) {
+        return this.canMoveTo(board, cell);
+    }
+    isAttacked(board: Board) {
+        return board.isAttacked(this.position, this.getEnemySide());
+    }
+    protected getEnemySide() {
+        return this.side === 'white' ? 'black' : 'white';
     }
 }
