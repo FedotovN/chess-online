@@ -26,10 +26,12 @@ export default class Cell {
         const { x: currX, y: currY } = curr;
         const { x: fromX, y: fromY } = from;
         const { x: toX, y: toY } = to;
-        const sameX = fromX === toX;
-        const sameY = fromY === toY;
+        const isHorizontal = Cell.isHorizontal(from, to);
+        const isVertical = Cell.isVertical(from, to);
+        const sameX = currX === toX && currX === fromX;
+        const sameY = currY === toY && currY === fromY;
         const betweenX = fromX > toX ? fromX > currX && currX > toX : fromX < currX && currX < toX;
         const betweenY = fromY > toY ? fromY > currY && currY > toY : fromY < currY && currY < toY;
-        return sameX ? betweenY : sameY ? betweenX : betweenX && betweenY;
+        return isHorizontal ? sameY && betweenY : isVertical ? sameX && betweenX : betweenX && betweenY;
     }
 }

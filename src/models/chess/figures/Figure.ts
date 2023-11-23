@@ -1,7 +1,7 @@
 import type { FigureName } from "~/types/chess/FigureName";
 import type { Position } from "~/types/chess/Position";
 import type { Color } from "~/types/chess/Color";
-import type Cell from "~/models/chess/Cell";
+import Cell from "~/models/chess/Cell";
 import type Board from "../Board";
 
 export default class Figure {

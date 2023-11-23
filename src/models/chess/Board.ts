@@ -10,7 +10,6 @@ import Bishop from "./figures/Bishop"
 import Figure from "./figures/Figure";
 import type { Color } from "~/types/chess/Color";
 import type { FigureName } from "~/types/chess/FigureName";
-import type figures from "./figures";
 export default class Board {
     cells: { [key: string]: Array<Cell> } = {};
     moves: ChessMove[] = [];
@@ -60,22 +59,7 @@ export default class Board {
         }
         return true;
     }
-    isAttacked(position: Position, enemySide: Color) {
-        const cell = this.getCell(position);
-        const enemies = this.getSideFigures(enemySide);
-        for (let i = 0; i < enemies.length; i++) {
-            const enemy = enemies[i];
-            if (enemy instanceof King) {
-                if (enemy.canMoveTo(this, cell, false)) {
-                    return true
-                }
-                continue;
-            }
-            if (enemy.canAttackTo(this, cell)) return true;
-        }
-        return false;
-    }
-    isAttackedBy(position: Position, enemySide: Color): Figure | null {
+    isAttacked(position: Position, enemySide: Color): Figure | false {
         const cell = this.getCell(position);
         const enemies = this.getSideFigures(enemySide);
         for (let i = 0; i < enemies.length; i++) {
@@ -88,69 +72,62 @@ export default class Board {
             }
             if (enemy.canAttackTo(this, cell)) return enemy;
         }
-        return null;
+        return false;
     }
-    isCheckmate(to: Color) {
-        const king = this.getKing('white');
-        const { position, side } = king;
-        const attackingFigure = this.isAttackedBy(position, king.getEnemySide());
-        if (!attackingFigure) return false;
+    isCheckmate(side: Color) {
+        const king = this.getKing(side);
+        const { position } = king;
+        const attackingFigure = this.isAttacked(position, king.getEnemySide());
+        if (!attackingFigure) return;
         // we're certainly being attacked
         const cells = this.getAllCells();
         const friendlyFigures = this.getSideFigures(side);
         // check if we can eat attacking figure
-        const { position: attackPos } = this.getCell(attackingFigure.position);
-        const canDefend = this.isAttacked(attackPos, king.side)
-        if (canDefend) {
-            console.log('can eat', attackingFigure.name)
+        const attackingCell = this.getCell(attackingFigure.position);
+        if(this.isAttacked(attackingCell.position, king.side)){
             return false;
-        }
+        } 
         // check if king can go somewhere
         for (let i = 0; i < cells.length; i++) {
             const cell = cells[i];
             if (king.canMoveTo(this, cell)) {
-                console.log('can go somewhere from ', attackingFigure.name)
-                return false;
-            }
+                return false  
+            } 
         }
         // check if we can defend our king by sacrificing our figure
         const enemyPossibleMoves = cells.filter(cell => attackingFigure.canMoveTo(this, cell));
         const cellsBetweenKingAndEnemy = enemyPossibleMoves.filter(cell => Cell.isBetween(position, attackingFigure.position, cell.position));
         for (let i = 0; i < friendlyFigures.length; i++) {
-            const figure = friendlyFigures[i];
             for (let j = 0; j < cellsBetweenKingAndEnemy.length; j++) {
-                const saveCell = cellsBetweenKingAndEnemy[j];
-                if (figure.canMoveTo(this, saveCell)) {
-                    console.log('can stand between king and', attackingFigure.name, 'with', figure.name, 'on', saveCell.position);
-                    return false
+                if (friendlyFigures[i].canMoveTo(this, cellsBetweenKingAndEnemy[j])) {
+                    return false;
                 }
             }
         }
-        console.log('checkmate')
         return true;
+    }
+    getAllFigures() {
+        return this.getAllCells()
+                .filter(cell => !cell.isEmpty())
+                .map(cell => cell.figure) as Figure[];
+        
+    }
+    getAllCells() {
+        return Object.keys(this.cells)
+            .map(column => this.cells[column])
+            .flat()
+    }
+    getNameFigures<T extends Figure>(name: FigureName) {
+        return this.getAllFigures().filter(figure => figure.name === name) as T[];
+    }
+    getSideFigures(side: Color) {
+        return this.getAllFigures().filter(figure => figure.side === side);
     }
     private getKing(side: Color) {
         return this.getNameFigures('king').find(king => king.side === side) as King;
     }
     private getCell(position: Position) {
         return this.cells[position.x][position.y];
-    }
-    private getAllFigures() {
-        return this.getAllCells()
-                .filter(cell => !cell.isEmpty())
-                .map(cell => cell.figure) as Figure[];
-        
-    }
-    private getAllCells() {
-        return Object.keys(this.cells)
-            .map(column => this.cells[column])
-            .flat()
-    }
-    private getSideFigures(side: Color) {
-        return this.getAllFigures().filter(figure => figure.side === side);
-    }
-    private getNameFigures<T extends Figure>(name: FigureName) {
-        return this.getAllFigures().filter(figure => figure.name === name) as T[];
     }
     private swapFigures(from: Cell, to: Cell) {
         if (!from.figure) throw new Error(`No figure was found but trying to swap`);
