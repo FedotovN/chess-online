@@ -19,7 +19,7 @@ export default class King extends Figure {
         const isVertical = absX === 0 && absY === 1;
         const isDiagonal = absX === 1 && absY === 1;
         const isAttacked = checkAttack
-                ? board.isAttacked(cell.position, this.getEnemySide()) 
+                ? board.isAttacked(cell.position, this.getEnemySide())
                 : false;
         return basicRules && !isAttacked && (isDiagonal || isHorizontal || isVertical);
     }
