@@ -9,8 +9,8 @@ export default class King extends Figure {
     constructor(public position: Position, side: Color) {
         super("king", position, side);
     }
-    canMoveTo(board: Board, cell: Cell, checkAttack: boolean = true): boolean {
-        const basicRules = super.canMoveTo(board, cell);
+    isPossibleMove(board: Board, cell: Cell): boolean {
+        if(!super.isPossibleMove(board, cell)) return false;
         const { x: targetX, y: targetY } = cell.position;
         const { x: currX, y: currY } = this.position;
         const absX = Math.abs(targetX - currX);
@@ -18,9 +18,11 @@ export default class King extends Figure {
         const isHorizontal = absX === 1 && absY === 0;
         const isVertical = absX === 0 && absY === 1;
         const isDiagonal = absX === 1 && absY === 1;
-        const isAttacked = checkAttack
-                ? board.isAttacked(cell.position, this.getEnemySide())
-                : false;
-        return basicRules && !isAttacked && (isDiagonal || isHorizontal || isVertical);
+        return isDiagonal || isHorizontal || isVertical;
+    }
+
+    canMoveTo(board: Board, cell: Cell): boolean {
+        if(!super.canMoveTo(board, cell)) return false;
+        return true;
     }
 }

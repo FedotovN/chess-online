@@ -8,11 +8,16 @@ export default class Queen extends Figure {
     constructor(public position: Position, side: Color) {
         super("queen", position, side);
     }
-    canMoveTo(board: Board, cell: Cell): boolean {
-        const basicRules = super.canMoveTo(board, cell);
+    isPossibleMove(board: Board, cell: Cell): boolean {
+        if(!super.isPossibleMove(board, cell)) return false;
         const emptyVertical = board.isEmptyVertical(this.position, cell.position);
         const emptyHorizontal = board.isEmptyHorizontal(this.position, cell.position);
         const emptyDiagonal = board.isEmptyDiagonal(this.position, cell.position);
-        return basicRules && (emptyVertical || emptyHorizontal || emptyDiagonal);
+        return emptyVertical || emptyHorizontal || emptyDiagonal
+    }
+
+    canMoveTo(board: Board, cell: Cell, careful = true): boolean {
+        if(!super.canMoveTo(board, cell)) return false;
+        return true;
     }
 }

@@ -12,6 +12,7 @@ export default class Rook extends Figure {
         const basicRules = super.canMoveTo(board, cell)
         const emptyVertical = board.isEmptyVertical(this.position, cell.position);
         const emptyHorizontal = board.isEmptyHorizontal(this.position, cell.position);
-        return basicRules && (emptyHorizontal || emptyVertical);
+        const rookRules = basicRules && (emptyHorizontal || emptyVertical)
+        return rookRules ? this.checkIsDanger(board, cell) : false;
     }
 }

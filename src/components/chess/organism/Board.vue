@@ -45,7 +45,7 @@
     }
 </script>
 <template>
-  {{ board.isCheckmate('white') || board.isCheckmate('black') ? 'checkmate' : '' }}
+    {{ board.isCheck('white') }}
     <div :class="{ 'rotate-180': playerSide === 'black' }" class="flex w-full h-full border border-gray-700 rounded overflow-hidden" v-click-outside="() => selected = null">
         <div class="flex flex-col bg-blue-300 flex-1" v-for="column in board.cells">
                 <div class="flex flex-1" v-for="cell in column">

@@ -26,5 +26,6 @@ import type { Color } from "~/types/chess/Color";
         <div
         v-if="highlight && !enemyHighlight" 
         class="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 rounded-full h-4 w-4 bg-red-500 border-4 border-black"/>
+      <p class="absolute top-1/2 -translate-y-1/2 text-gray-500">{{ cell.position.x }}{{ cell.position.y }}</p>
     </div>
 </template>

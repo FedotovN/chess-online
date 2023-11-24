@@ -10,12 +10,16 @@ import Bishop from "./figures/Bishop"
 import Figure from "./figures/Figure";
 import type { Color } from "~/types/chess/Color";
 import type { FigureName } from "~/types/chess/FigureName";
+import { plainToClass } from "class-transformer";
 export default class Board {
     cells: { [key: string]: Array<Cell> } = {};
     moves: ChessMove[] = [];
     constructor() {
         this.addCells();
         this.addFigures();
+    }
+    copy() {
+        return plainToClass(Board, { ...this });
     }
     moveFigure(from: Position, to: Position) {
         const prev = this.cells[from.x][from.y];
@@ -64,21 +68,22 @@ export default class Board {
         const enemies = this.getSideFigures(enemySide);
         for (let i = 0; i < enemies.length; i++) {
             const enemy = enemies[i];
-            if (enemy instanceof King) {
-                if (enemy.canMoveTo(this, cell, false)) {
-                    return enemy
-                }
-                continue;
+            if (enemy.isPossibleMove(this, cell)) {
+                return enemy
             }
-            if (enemy.canAttackTo(this, cell)) return enemy;
         }
         return false;
+    }
+    isCheck(side: Color): Figure | false {
+        const king = this.getKing(side);
+        const { position } = king;
+        return this.isAttacked(position, king.getEnemySide());
     }
     isCheckmate(side: Color) {
         const king = this.getKing(side);
         const { position } = king;
         const attackingFigure = this.isAttacked(position, king.getEnemySide());
-        if (!attackingFigure) return;
+        if (!attackingFigure) return false;
         // we're certainly being attacked
         const cells = this.getAllCells();
         const friendlyFigures = this.getSideFigures(side);
@@ -86,14 +91,15 @@ export default class Board {
         const attackingCell = this.getCell(attackingFigure.position);
         if(this.isAttacked(attackingCell.position, king.side)){
             return false;
-        } 
+        }
         // check if king can go somewhere
         for (let i = 0; i < cells.length; i++) {
             const cell = cells[i];
             if (king.canMoveTo(this, cell)) {
-                return false  
-            } 
+                return false
+            }
         }
+        console.log('cant go anywhere')
         // check if we can defend our king by sacrificing our figure
         const enemyPossibleMoves = cells.filter(cell => attackingFigure.canMoveTo(this, cell));
         const cellsBetweenKingAndEnemy = enemyPossibleMoves.filter(cell => Cell.isBetween(position, attackingFigure.position, cell.position));
