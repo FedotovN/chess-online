@@ -68,10 +68,12 @@ export default class Board {
         const enemies = this.getSideFigures(enemySide);
         for (let i = 0; i < enemies.length; i++) {
             const enemy = enemies[i];
-            if (enemy.isPossibleMove(this, cell)) {
-                return enemy
+            if (enemy.canAttackTo(this, cell, false)) {
+                // return enemy
+                console.log('found someone');
             }
         }
+        console.log('endgetting enemy fig')
         return false;
     }
     isCheck(side: Color): Figure | false {
@@ -99,7 +101,6 @@ export default class Board {
                 return false
             }
         }
-        console.log('cant go anywhere')
         // check if we can defend our king by sacrificing our figure
         const enemyPossibleMoves = cells.filter(cell => attackingFigure.canMoveTo(this, cell));
         const cellsBetweenKingAndEnemy = enemyPossibleMoves.filter(cell => Cell.isBetween(position, attackingFigure.position, cell.position));

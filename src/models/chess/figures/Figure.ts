@@ -17,7 +17,7 @@ export default class Figure {
         return this.isPossibleMove(board, cell) && !isKing;
     }
     canAttackTo(board: Board, cell: Cell) {
-        return this.canMoveTo(board, cell);
+        return this.isPossibleMove(board, cell);
     }
     checkIsDanger(board: Board, cell: Cell) {
         const cpy = board.copy();
