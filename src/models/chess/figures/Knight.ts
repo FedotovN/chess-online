@@ -17,8 +17,8 @@ export default class Knight extends Figure {
         return absX === 1 && absY === 2 || absX === 2 && absY === 1;
     }
 
-    canMoveTo(board: Board, cell: Cell, careful = true): boolean {
+    canMoveTo(board: Board, cell: Cell): boolean {
         if (!super.canMoveTo(board, cell)) return false;
-        return true;
+        return this.checkIsDanger(board, cell);
     }
 }

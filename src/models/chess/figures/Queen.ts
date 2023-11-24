@@ -16,8 +16,8 @@ export default class Queen extends Figure {
         return emptyVertical || emptyHorizontal || emptyDiagonal
     }
 
-    canMoveTo(board: Board, cell: Cell, careful = true): boolean {
+    canMoveTo(board: Board, cell: Cell): boolean {
         if(!super.canMoveTo(board, cell)) return false;
-        return this.side === 'black' ? this.checkIsDanger(board, cell) : true;
+        return this.checkIsDanger(board, cell);
     }
 }

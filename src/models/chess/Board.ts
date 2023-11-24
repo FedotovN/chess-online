@@ -68,16 +68,15 @@ export default class Board {
         const enemies = this.getSideFigures(enemySide);
         for (let i = 0; i < enemies.length; i++) {
             const enemy = enemies[i];
-            if (enemy.canAttackTo(this, cell, false)) {
-                // return enemy
-                console.log('found someone');
+            if (enemy.canAttackTo(this, cell)) {
+                return enemy
             }
         }
-        console.log('endgetting enemy fig')
         return false;
     }
     isCheck(side: Color): Figure | false {
         const king = this.getKing(side);
+        if (!king) return false;
         const { position } = king;
         return this.isAttacked(position, king.getEnemySide());
     }

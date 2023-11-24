@@ -3,7 +3,6 @@ import type { Position } from "~/types/chess/Position";
 import type { Color } from "~/types/chess/Color";
 import Cell from "~/models/chess/Cell";
 import type Board from "../Board";
-import { plainToClass} from "class-transformer";
 
 export default class Figure {
     constructor(public name: FigureName, public position: Position, public side: Color) {}
@@ -21,10 +20,12 @@ export default class Figure {
     }
     checkIsDanger(board: Board, cell: Cell) {
         const cpy = board.copy();
+        const f = cpy.cells[this.position.x][this.position.y].figure
         cpy.cells[this.position.x][this.position.y].figure = null;
-        cpy.cells[cell.position.x][cell.position.y].figure = this;
+        cpy.cells[cell.position.x][cell.position.y].figure = f;
         (cpy.cells[cell.position.x][cell.position.y].figure as this).position = cell.position;
         return !cpy.isCheck(this.side);
+        
     }
     getEnemySide() {
         return this.side === 'white' ? 'black' : 'white';
