@@ -8,11 +8,15 @@ export default class Rook extends Figure {
     constructor(public position: Position, side: Color) {
         super("rook", position, side);
     }
-    canMoveTo(board: Board, cell: Cell): boolean {
-        const basicRules = super.canMoveTo(board, cell)
+    isPossibleMove(board: Board, cell: Cell): boolean {
+        if(!super.isPossibleMove(board, cell)) return false;
         const emptyVertical = board.isEmptyVertical(this.position, cell.position);
         const emptyHorizontal = board.isEmptyHorizontal(this.position, cell.position);
-        const rookRules = basicRules && (emptyHorizontal || emptyVertical)
-        return rookRules ? this.checkIsDanger(board, cell) : false;
+        return emptyHorizontal || emptyVertical
+    }
+
+    canMoveTo(board: Board, cell: Cell): boolean {
+        if (!super.canMoveTo(board, cell)) return false;
+        return true;
     }
 }
