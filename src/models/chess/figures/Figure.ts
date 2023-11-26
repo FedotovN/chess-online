@@ -30,4 +30,13 @@ export default class Figure {
     getEnemySide() {
         return this.side === 'white' ? 'black' : 'white';
     }
+    getMoves(board: Board) {
+        const cells = board.getAllCells();
+        const moves = [];
+        for (let i = 0; i < cells.length; i++) {
+            const cell = cells[i];
+            if (this.canMoveTo(board, cell)) moves.push(cell);
+        }
+        return moves;
+    }
 }

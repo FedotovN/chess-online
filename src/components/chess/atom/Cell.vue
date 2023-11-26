@@ -17,15 +17,12 @@ import type { Color } from "~/types/chess/Color";
 </script>
 <template>
     <div @click="emit('click', cell)" class="flex relative select-none justify-center items-center flex-1 transition-all" :class="{
-        'bg-gray-700 hover:bg-gray-800 ': !enemyHighlight && cell.side === 'black',
-        'bg-white hover:bg-white ': !enemyHighlight && cell.side === 'white',
-        'bg-red-400 hover:bg-red-600': enemyHighlight,
-        'cursor-pointer': !!cell.figure
+        'bg-gray-600 hover:bg-gray-600 ': cell.side === 'black',
+        'bg-white hover:bg-white': cell.side === 'white',
+        'cursor-pointer hover:opacity-90': !!cell.figure || highlight 
     }">
         <img v-if="getFigureSvg" :src="getFigureSvg" class="h-full w-full" />
-        <div
-        v-if="highlight && !enemyHighlight" 
-        class="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 rounded-full h-4 w-4 bg-red-500 border-4 border-black"/>
-      <p class="absolute top-1/2 -translate-y-1/2 text-gray-500">{{ cell.position.x }}{{ cell.position.y }}</p>
+        <div v-if="highlight && !enemyHighlight" class="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 rounded-full h-4 w-4 bg-gray-800 border border-gray-600 shadow-lg" />
+        <div v-else-if="enemyHighlight" class="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 rounded-full h-[98%] w-[98%] border-4 border-gray-800 bg-[rgba(0,0,0,.1)] shadow-xl" /> 
     </div>
 </template>

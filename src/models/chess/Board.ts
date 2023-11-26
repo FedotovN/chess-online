@@ -1,6 +1,4 @@
-import type ChessMove from "@/types/chess/Move";
 import Cell from "~/models/chess/Cell";
-import type { Position } from "~/types/chess/Position";
 import Pawn from "./figures/Pawn";
 import Knight from "./figures/Knight"
 import Rook from "./figures/Rook"
@@ -8,15 +6,34 @@ import King from "./figures/King"
 import Queen from "./figures/Queen"
 import Bishop from "./figures/Bishop"
 import Figure from "./figures/Figure";
-import type { Color } from "~/types/chess/Color";
-import type { FigureName } from "~/types/chess/FigureName";
 import { plainToClass } from "class-transformer";
+import { GameOverType } from "~/types/chess/Game";
+import type ChessMove from "@/types/chess/Move";
+import type { Color } from "~/types/chess/Color";
+import type { Position } from "~/types/chess/Position";
+import type { FigureName } from "~/types/chess/FigureName";
+import type { GameOverInfo } from "~/types/chess/Game";
 export default class Board {
     cells: { [key: string]: Array<Cell> } = {};
     moves: ChessMove[] = [];
     constructor() {
         this.addCells();
         this.addFigures();
+    }
+    isGameOver(): GameOverInfo | false {
+        // someday there will be a stalemate, treefold and unsifficient material draws
+        const colors = ['white', 'black'] as Color[];
+        for (let i = 0; i < colors.length; i++) {
+            const c = colors[i]
+            if(!this.isCheckmate(c)) continue;
+            return {
+                type: GameOverType.LOSE,
+                losed: c,
+                time: '~min ~sec',
+                movesAmount: this.moves.length
+            }
+        }
+        return false;
     }
     copy() {
         return plainToClass(Board, { ...this });
@@ -85,30 +102,11 @@ export default class Board {
         const { position } = king;
         const attackingFigure = this.isAttacked(position, king.getEnemySide());
         if (!attackingFigure) return false;
-        // we're certainly being attacked
-        const cells = this.getAllCells();
         const friendlyFigures = this.getSideFigures(side);
-        // check if we can eat attacking figure
-        const attackingCell = this.getCell(attackingFigure.position);
-        if(this.isAttacked(attackingCell.position, king.side)){
-            return false;
-        }
-        // check if king can go somewhere
-        for (let i = 0; i < cells.length; i++) {
-            const cell = cells[i];
-            if (king.canMoveTo(this, cell)) {
-                return false
-            }
-        }
-        // check if we can defend our king by sacrificing our figure
-        const enemyPossibleMoves = cells.filter(cell => attackingFigure.canMoveTo(this, cell));
-        const cellsBetweenKingAndEnemy = enemyPossibleMoves.filter(cell => Cell.isBetween(position, attackingFigure.position, cell.position));
         for (let i = 0; i < friendlyFigures.length; i++) {
-            for (let j = 0; j < cellsBetweenKingAndEnemy.length; j++) {
-                if (friendlyFigures[i].canMoveTo(this, cellsBetweenKingAndEnemy[j])) {
-                    return false;
-                }
-            }
+            const f = friendlyFigures[i];
+            const m = f.getMoves(this);
+            if (m.length) return false;
         }
         return true;
     }

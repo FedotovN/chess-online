@@ -11,8 +11,6 @@
      }>();
     const board = computed(() => props.modelValue)
     const selected: Ref<Cell | null> = ref(null);
-    const { add } = useToast();
-    
     function getHighlight(x: number, y: number) {
         if (!selected.value) return false;
         const { figure } = selected.value;
@@ -45,10 +43,8 @@
     }
 </script>
 <template>
-    <p>Checkmate status: {{ board.isCheckmate('white') ? 'white checkmated' : board.isCheckmate('black') ? 'black checkmated' : 'nobody checkmated' }}</p>
-    <p>Check status: {{ board.isCheck('white') ? 'white checked' : board.isCheck('black') ? 'black checked' : 'nobody checked' }}</p>
     <div :class="{ 'rotate-180': playerSide === 'black' }" class="flex w-full h-full border border-gray-700 rounded overflow-hidden" v-click-outside="() => selected = null">
-        <div class="flex flex-col bg-blue-300 flex-1" v-for="column in board.cells">
+        <div class="flex flex-col flex-1" v-for="column in board.cells">
                 <div class="flex flex-1" v-for="cell in column">
                     <ChessAtomCell 
                         :highlight="getHighlight(cell.position.x, cell.position.y)"
