@@ -1,8 +1,9 @@
 <script setup lang="ts">
-    import { useToast } from 'kneekeetah-vue-ui-kit';
+    import { Dimension } from "~/types/chess/Position";
     import Board from '~/models/chess/Board';
     import type Cell from '~/models/chess/Cell';
     import { type Color } from "~/types/chess/Color";
+    import { getHorizontalNameByIndex } from "../../../types/chess/Position";
     const emit = defineEmits<{ (event: 'update:modelValue', value: Board): void }>();
     const props = defineProps<{ 
         modelValue: Board,
@@ -41,21 +42,29 @@
         if (isEnemyFigure || notYourMove) return;
         selected.value = cell;
     }
+    const isBlackSide = computed(() => props.playerSide === 'black')
 </script>
 <template>
-    <div :class="{ 'rotate-180': playerSide === 'black' }" class="flex w-full h-full border border-gray-700 rounded overflow-hidden" v-click-outside="() => selected = null">
-        <div class="flex flex-col flex-1" v-for="column in board.cells">
-                <div class="flex flex-1" v-for="cell in column">
-                    <ChessAtomCell 
-                        :highlight="getHighlight(cell.position.x, cell.position.y)"
-                        :class="{ 'rotate-180': playerSide === 'black' }"
-                        @drop.prevent="clickHandler(cell)"
-                        @dragstart="clickHandler(cell)"
-                        @click="clickHandler"
-                        @dragover.prevent
-                        :cell="cell"
-                    />
-                </div>
+  <div class="flex h-full w-full">
+    <div class="w-full h-full flex flex-col flex-1">
+      <div class="flex w-full flex-1 border border-gray-700 rounded" v-click-outside="() => selected = null">
+        <div class="flex flex-col flex-1" v-for="column in board.cells" :class="{ 'rotate-180': isBlackSide }">
+          <div class="flex flex-1" v-for="cell in column">
+            <ChessAtomCell
+                :highlight="getHighlight(cell.position.x, cell.position.y)"
+                @drop.prevent="clickHandler(cell)"
+                @dragstart="clickHandler(cell)"
+                :class="{ 'rotate-180': isBlackSide }"
+                @click="clickHandler"
+                @dragover.prevent
+                :cell="cell"
+            />
+          </div>
         </div>
+      </div>
+      <div class="flex w-full pt-2">
+        <p class="flex-1 text-center font-bold text-sm text-gray-700" v-for="h in Dimension">{{ isBlackSide ? getHorizontalNameByIndex(7 - h) : getHorizontalNameByIndex(h) }}</p>
+      </div>
     </div>
+  </div>
 </template>

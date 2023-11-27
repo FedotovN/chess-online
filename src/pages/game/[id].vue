@@ -44,12 +44,9 @@ import type { GameOverInfo } from '~/types/chess/Game';
     <div class="h-screen w-full flex flex-col" v-show="!loading">
         <ChessOrganismHeader :game-id="(id as string)" :opponent="getOpponent" :current-side="getCurrentSide" @quit="quit" /> 
         <div class="flex-1 flex justify-center items-center">
-            <div class="flex gap-2">
-                {{ board?.isCheckmate('white') }}
-                <div class="h-[500px] w-[500px]" v-if="board">
-                    <ChessOrganismBoard v-model="board" :player-side="getPlayerSide" :current-side="getCurrentSide" />
-                </div>
-            </div>
+              <div v-if="board">
+                  <ChessOrganismBoard v-model="board" :player-side="getPlayerSide" :current-side="getCurrentSide" />
+              </div>
         </div>
     </div>
 </template>
