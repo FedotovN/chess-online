@@ -16,143 +16,85 @@ import type { GameOverInfo } from "~/types/chess/Game";
 export default class Board {
     cells: { [key: string]: Array<Cell> } = {};
     moves: ChessMove[] = [];
+    startTimestamp: number;
     constructor() {
         this.addCells();
         this.addFigures();
+        this.startTimestamp = Date.now();
     }
     isGameOver(): GameOverInfo | false {
-        // someday there will be a treefold and unsifficient material draws
-        const colors = ['white', 'black'] as Color[];
-        for (let i = 0; i < colors.length; i++) {
-            const c = colors[i]
-            if (this.isCheckmate(c)) {
-                return {
-                    type: GameOverType.LOSE,
-                    losed: c,
-                    time: '~min ~sec',
-                    movesAmount: this.moves.length
-                }
-            }
-            if (this.isStalemate(c)) {
-                return {
-                    type: GameOverType.STALEMATE,
-                    time: '~min ~sec',
-                    movesAmount: this.moves.length
-                }
-            }
+        const getInfo = (type: GameOverType, side?: Color) => {
+            return {
+                type,
+                time: this.getTime(),
+                losed: side,
+                movesAmount: this.moves.length,
+             } as GameOverInfo
         }
-        return false;
+        return (['white', 'black'] as const).map((side: Color) => {
+            if (this.isCheckmate(side)) return getInfo(GameOverType.CHECKMATE, side);
+            else if (this.isStalemate(side)) return getInfo(GameOverType.STALEMATE, side);
+            return false;
+        }).filter(i => i)[0];
     }
     copy() {
         return plainToClass(Board, { ...this });
     }
-    moveFigure(from: Position, to: Position) {
+    getTime() {
+        return `${((Date.now() - this.startTimestamp) / 6000).toFixed(2)} minutes`;
+    }   
+    doMove(from: Position, to: Position) {
+        // throw error ?
+        // undo move ?
         const prev = this.cells[from.x][from.y];
         const target = this.cells[to.x][to.y];
-        const noFigure = prev.isEmpty();
-        const samePosition = prev.comparePosition(target.position);
-        const cantMove = !prev.figure?.canMoveTo(this, target);
-        if (noFigure || samePosition || cantMove) return false;
+        if (!prev.figure) return false;
+        if (!prev.figure.canMoveTo(this, target)) return false;
         this.swapFigures(prev, target);
         this.moves.push({ figure: this.cells[to.x][to.y].figure!.name, from, to });
         return true;
     }
-    isEmptyVertical(from: Position, to: Position) {
-        if (!Cell.isVertical(from, to)) return false;
-        const min = Math.min(from.y, to.y);
-        const max = Math.max(from.y, to.y);
-        for (let y = min + 1; y < max; y++) {
-            if (!this.cells[from.x][y].isEmpty())
-                return false
-        }
-        return true
-    }
-    isEmptyHorizontal(from: Position, to: Position) {
-        if (!Cell.isHorizontal(from, to)) return false;
-        const min = Math.min(from.x, to.x);
-        const max = Math.max(from.x, to.x);
-        for (let x = min + 1; x < max; x++) {
-            if (!this.cells[x][from.y].isEmpty())
-                return false
-        }
-        return true
-    }
-    isEmptyDiagonal(from: Position, to: Position) {
-        if (!Cell.isDiagonal(from, to)) return false;
-        const path = Math.abs(to.y - from.y);
-        const dx = from.x < to.x ? 1 : -1
-        const dy = from.y < to.y ? 1 : -1
-        for (let i = 1; i < path; i++) {
-            const currPos = { x: from.x + dx * i, y: from.y + dy * i } as Position
-            if (!this.getCell(currPos).isEmpty()) return false;
-        }
-        return true;
-    }
-    isAttacked(position: Position, enemySide: Color): Figure | false {
-        const cell = this.getCell(position);
-        const enemies = this.getSideFigures(enemySide);
-        for (let i = 0; i < enemies.length; i++) {
-            const enemy = enemies[i];
-            if (enemy.canAttackTo(this, cell)) {
-                return enemy
-            }
-        }
-        return false;
+    getAllCells() {
+        return Object.keys(this.cells)
+        .map(column => this.cells[column])
+        .flat()
     }
     isCheck(side: Color): Figure | false {
         const king = this.getKing(side);
         if (!king) return false;
         const { position } = king;
-        return this.isAttacked(position, king.getEnemySide());
+        return Cell.isAttacked(this, position, king.getEnemySide());
     }
-    isCheckmate(side: Color) {
-        const king = this.getKing(side);
-        const { position } = king;
-        const attackingFigure = this.isAttacked(position, king.getEnemySide());
-        if (!attackingFigure) return false;
-        const friendlyFigures = this.getSideFigures(side);
-        for (let i = 0; i < friendlyFigures.length; i++) {
-            const f = friendlyFigures[i];
-            const m = f.getMoves(this);
-            if (m.length) return false;
-        }
-        return true;
-    }
-    isStalemate(side: Color) {
-        const king = this.getKing(side);
-        const { position } = king;
-        const attackingFigure = this.isAttacked(position, king.getEnemySide());
-        if (attackingFigure) return false;
-        const friendlyFigures = this.getSideFigures(side);
-        for (let i = 0; i < friendlyFigures.length; i++) {
-            const f = friendlyFigures[i];
-            const m = f.getMoves(this);
-            if (m.length) return false;
-        }
-        return true;
-    }
-    getAllFigures() {
-        return this.getAllCells()
-                .filter(cell => !cell.isEmpty())
-                .map(cell => cell.figure) as Figure[];
-        
-    }
-    getAllCells() {
-        return Object.keys(this.cells)
-            .map(column => this.cells[column])
-            .flat()
-    }
-    getNameFigures<T extends Figure>(name: FigureName) {
-        return this.getAllFigures().filter(figure => figure.name === name) as T[];
+    getCell(position: Position) {
+        return this.cells[position.x][position.y];
     }
     getSideFigures(side: Color) {
         return this.getAllFigures().filter(figure => figure.side === side);
     }
+    private isCheckmate(side: Color) {
+        return this.isCheck(side) && !this.sideHasMoves(side);
+    }
+    private isStalemate(side: Color) {
+        return !this.isCheck(side) && !this.sideHasMoves(side);
+    }
+    private sideHasMoves(side: Color) {
+        const figures = this.getSideFigures(side);
+        for (let i = 0; i < figures.length; i++) {
+            if (figures[i].getMoves(this).length) return true;
+        }
+        return false
+    }
+    private getAllFigures() {
+        return this.getAllCells()
+        .filter(cell => !cell.isEmpty())
+                .map(cell => cell.figure) as Figure[];
+        
+    }
+    private getNameFigures<T extends Figure>(name: FigureName) {
+        return this.getAllFigures().filter(figure => figure.name === name) as T[];
+    }
     private getKing(side: Color) {
         return this.getNameFigures('king').find(king => king.side === side) as King;
-    }
-    private getCell(position: Position) {
-        return this.cells[position.x][position.y];
     }
     private swapFigures(from: Cell, to: Cell) {
         if (!from.figure) throw new Error(`No figure was found but trying to swap`);
@@ -161,10 +103,7 @@ export default class Board {
         to.figure = from.figure;
         to.figure.position = targetPos;
         from.figure = null;
-        if (to.figure instanceof Pawn) {
-            to.figure.isFirstMove = false;
-        }
-        if (to.figure instanceof King){
+        if (to.figure instanceof Pawn || to.figure instanceof King || to.figure instanceof Rook) {
             to.figure.isFirstMove = false;
         }
     }

@@ -1,7 +1,7 @@
 import Figure from "./Figure";
 import type { Position } from "~/types/chess/Position";
 import type { Color } from "~/types/chess/Color";
-import type Cell from "~/models/chess/Cell";
+import Cell from "~/models/chess/Cell";
 import type Board from "../Board";
 
 export default class Bishop extends Figure {
@@ -10,7 +10,7 @@ export default class Bishop extends Figure {
     }
     isPossibleMove(board: Board, cell: Cell): boolean {
         if(!super.isPossibleMove(board, cell)) return false;
-        return board.isEmptyDiagonal(this.position, cell.position);
+        return Cell.isEmptyDiagonal(board, this.position, cell.position);
     }
     canMoveTo(board: Board, cell: Cell): boolean {
         if(!super.canMoveTo(board, cell)) return false;

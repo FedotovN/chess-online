@@ -1,6 +1,6 @@
 import { type Color } from "./Color";
 export enum GameOverType {
-    LOSE = 'Lose',
+    CHECKMATE = 'Checkmate',
     STALEMATE = 'Stalemate',
     THREEFOLD = 'Threefold',
     INSUFFICIENT = 'Insufficient',

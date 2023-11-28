@@ -1,5 +1,4 @@
 <script setup lang="ts">
-    import { useToast } from 'kneekeetah-vue-ui-kit';
     import Board from '~/models/chess/Board';
     import type Cell from '~/models/chess/Cell';
     import { type Color } from "~/types/chess/Color";
@@ -26,7 +25,7 @@
         const { x: targetX, y: targetY } = cell.position;
         const { x: currX, y: currY } = selected.value.position;
         selected.value = null;
-        const result = board.value.moveFigure({ x: currX, y: currY }, { x: targetX, y: targetY });
+        const result = board.value.doMove({ x: currX, y: currY }, { x: targetX, y: targetY });
         if (result) {
             emit('update:modelValue', board.value);
         } else {

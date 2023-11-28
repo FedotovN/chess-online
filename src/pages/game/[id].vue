@@ -33,7 +33,10 @@ import type { GameOverInfo } from '~/types/chess/Game';
             gameOverInfo.value = go;
             modal({
                 header: `${losed ? losed === getOpponent.value?.side ? 'You won' : 'You lose' : 'Stalemate'}`,        
-                content: `Game over, moves made: ${gameOverInfo.value.movesAmount}`,
+                content: `
+                    Game over, moves made: ${gameOverInfo.value.movesAmount}\n
+                    Time played: ${gameOverInfo.value.time}
+                `,
                 id: 'game-over-modal',
             })
             open('game-over-modal');
@@ -45,7 +48,6 @@ import type { GameOverInfo } from '~/types/chess/Game';
         <ChessOrganismHeader :game-id="(id as string)" :opponent="getOpponent" :current-side="getCurrentSide" @quit="quit" /> 
         <div class="flex-1 flex justify-center items-center">
             <div class="flex gap-2">
-                {{ board?.isCheckmate('white') }}
                 <div class="h-[500px] w-[500px]" v-if="board">
                     <ChessOrganismBoard v-model="board" :player-side="getPlayerSide" :current-side="getCurrentSide" />
                 </div>
