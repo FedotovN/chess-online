@@ -32,7 +32,7 @@ import type { GameOverInfo } from '~/types/chess/Game';
             const { losed } = go;
             gameOverInfo.value = go;
             modal({
-                header: `${losed === getOpponent.value?.side ? 'You won' : 'You lose'}`,        
+                header: `${losed ? losed === getOpponent.value?.side ? 'You won' : 'You lose' : 'Stalemate'}`,        
                 content: `Game over, moves made: ${gameOverInfo.value.movesAmount}`,
                 id: 'game-over-modal',
             })

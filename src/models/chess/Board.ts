@@ -21,16 +21,24 @@ export default class Board {
         this.addFigures();
     }
     isGameOver(): GameOverInfo | false {
-        // someday there will be a stalemate, treefold and unsifficient material draws
+        // someday there will be a treefold and unsifficient material draws
         const colors = ['white', 'black'] as Color[];
         for (let i = 0; i < colors.length; i++) {
             const c = colors[i]
-            if(!this.isCheckmate(c)) continue;
-            return {
-                type: GameOverType.LOSE,
-                losed: c,
-                time: '~min ~sec',
-                movesAmount: this.moves.length
+            if (this.isCheckmate(c)) {
+                return {
+                    type: GameOverType.LOSE,
+                    losed: c,
+                    time: '~min ~sec',
+                    movesAmount: this.moves.length
+                }
+            }
+            if (this.isStalemate(c)) {
+                return {
+                    type: GameOverType.STALEMATE,
+                    time: '~min ~sec',
+                    movesAmount: this.moves.length
+                }
             }
         }
         return false;
@@ -102,6 +110,19 @@ export default class Board {
         const { position } = king;
         const attackingFigure = this.isAttacked(position, king.getEnemySide());
         if (!attackingFigure) return false;
+        const friendlyFigures = this.getSideFigures(side);
+        for (let i = 0; i < friendlyFigures.length; i++) {
+            const f = friendlyFigures[i];
+            const m = f.getMoves(this);
+            if (m.length) return false;
+        }
+        return true;
+    }
+    isStalemate(side: Color) {
+        const king = this.getKing(side);
+        const { position } = king;
+        const attackingFigure = this.isAttacked(position, king.getEnemySide());
+        if (attackingFigure) return false;
         const friendlyFigures = this.getSideFigures(side);
         for (let i = 0; i < friendlyFigures.length; i++) {
             const f = friendlyFigures[i];
