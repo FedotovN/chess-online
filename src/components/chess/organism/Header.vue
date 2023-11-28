@@ -22,7 +22,7 @@
     }   
 </script>
 <template>
-    <div class="px-3 py-1 h-12 border-b flex items-center justify-between bg-gray-100">
+    <div class="px-3 py-1 h-12 border-b flex items-center justify-between bg-gray-100 w-full">
             <div class="flex items-center gap-3" v-if="opponent">
                 <small>Game against</small>
                 <div class="flex gap-2 items-center">
