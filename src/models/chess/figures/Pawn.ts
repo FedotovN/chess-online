@@ -13,8 +13,8 @@ export default class Pawn extends Figure {
     constructor(public position: Position, side: Color) {
         super("pawn", position, side);
     }
-    isPossibleMove(board: Board, cell: Cell): boolean {
-        if (!super.isPossibleMove(board, cell)) return false;
+    isOnPath(board: Board, cell: Cell): boolean {
+        if (!super.isOnPath(board, cell)) return false;
         const { x: currX, y: currY} = this.position;
         const { x: targetX, y: targetY } = cell.position;
         const isEnemy = !!cell.figure;
@@ -31,10 +31,10 @@ export default class Pawn extends Figure {
     }
     canMoveTo(board: Board, cell: Cell): boolean {
         if(!super.canMoveTo(board, cell)) return false;
-        return this.checkIsDanger(board, cell);
+        return !this.isCheckTo(board, cell);
     }
     canAttackTo(board: Board, cell: Cell): boolean {
-        const canMove = this.isPossibleMove(board, cell);
+        const canMove = this.isOnPath(board, cell);
         const isDiagonal = Cell.isEmptyDiagonal(board, this.position, cell.position);
         return canMove && isDiagonal;
     }

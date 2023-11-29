@@ -1,9 +1,7 @@
 <script setup lang="ts">
-    import { Dimension } from "~/types/chess/Position";
     import Board from '~/models/chess/Board';
     import type Cell from '~/models/chess/Cell';
     import { type Color } from "~/types/chess/Color";
-    import { getHorizontalNameByIndex } from "../../../types/chess/Position";
     const emit = defineEmits<{ (event: 'update:modelValue', value: Board): void }>();
     const props = defineProps<{ 
         modelValue: Board,
@@ -27,7 +25,7 @@
         const { x: targetX, y: targetY } = cell.position;
         const { x: currX, y: currY } = selected.value.position;
         selected.value = null;
-        const result = board.value.doMove({ x: currX, y: currY }, { x: targetX, y: targetY });
+        const result = board.value.move({ x: currX, y: currY }, { x: targetX, y: targetY });
         if (result) {
             emit('update:modelValue', board.value);
         } else {
@@ -45,25 +43,20 @@
     const isBlackSide = computed(() => props.playerSide === 'black')
 </script>
 <template>
-  <div class="flex h-full w-full">
-    <div class="w-full h-full flex flex-col flex-1">
-      <div class="flex w-full flex-1 border border-gray-700 rounded" v-click-outside="() => selected = null">
-        <div class="flex flex-col flex-1" v-for="column in board.cells" :class="{ 'rotate-180': isBlackSide }">
-          <div class="flex flex-1" v-for="cell in column">
-            <ChessAtomCell
-                :highlight="getHighlight(cell.position.x, cell.position.y)"
-                @drop.prevent="clickHandler(cell)"
-                @dragstart="clickHandler(cell)"
-                :class="{ 'rotate-180': isBlackSide }"
-                @click="clickHandler"
-                @dragover.prevent
-                :cell="cell"
-            />
-          </div>
+  <div class="w-full h-full flex flex-col flex-1">
+    <div class="flex w-full flex-1 border border-gray-700 rounded" v-click-outside="() => selected = null">
+      <div class="flex flex-col flex-1" v-for="column in board.cells" :class="{ 'rotate-180': isBlackSide }">
+        <div class="flex flex-1" v-for="cell in column">
+          <ChessAtomCell
+              :highlight="getHighlight(cell.position.x, cell.position.y)"
+              @drop.prevent="clickHandler(cell)"
+              @dragstart="clickHandler(cell)"
+              :class="{ 'rotate-180': isBlackSide }"
+              @click="clickHandler"
+              @dragover.prevent
+              :cell="cell"
+          />
         </div>
-      </div>
-      <div class="flex w-full pt-2">
-        <p class="flex-1 text-center font-bold text-sm text-gray-700" v-for="h in Dimension">{{ isBlackSide ? getHorizontalNameByIndex(7 - h) : getHorizontalNameByIndex(h) }}</p>
       </div>
     </div>
   </div>

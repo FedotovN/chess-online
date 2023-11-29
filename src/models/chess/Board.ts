@@ -13,6 +13,13 @@ import type { Color } from "~/types/chess/Color";
 import type { Position } from "~/types/chess/Position";
 import type { FigureName } from "~/types/chess/FigureName";
 import type { GameOverInfo } from "~/types/chess/Game";
+// Move Figure
+// Unmove Figure
+// Game Over
+// Get cells
+// Get figures
+// Is Check
+// Get moves
 export default class Board {
     cells: { [key: string]: Array<Cell> } = {};
     moves: ChessMove[] = [];
@@ -43,9 +50,7 @@ export default class Board {
     getTime() {
         return `${((Date.now() - this.startTimestamp) / 6000).toFixed(2)} minutes`;
     }   
-    doMove(from: Position, to: Position) {
-        // throw error ?
-        // undo move ?
+    move(from: Position, to: Position) {
         const prev = this.cells[from.x][from.y];
         const target = this.cells[to.x][to.y];
         if (!prev.figure) return false;
@@ -54,12 +59,23 @@ export default class Board {
         this.moves.push({ figure: this.cells[to.x][to.y].figure!.name, from, to });
         return true;
     }
+    swapFigures(from: Cell, to: Cell) {
+        if (!from.figure) throw new Error(`No figure was found but trying to swap`);
+        if (from.comparePosition(to.position)) return;
+        let { position: targetPos } = to;
+        to.figure = from.figure;
+        to.figure.position = targetPos;
+        from.figure = null;
+        if (to.figure instanceof Pawn || to.figure instanceof King || to.figure instanceof Rook) {
+            to.figure.isFirstMove = false;
+        }
+    }
     getAllCells() {
         return Object.keys(this.cells)
         .map(column => this.cells[column])
         .flat()
     }
-    isCheck(side: Color): Figure | false {
+    isCheck(side: Color) {
         const king = this.getKing(side);
         if (!king) return false;
         const { position } = king;
@@ -72,6 +88,7 @@ export default class Board {
         return this.getAllFigures().filter(figure => figure.side === side);
     }
     private isCheckmate(side: Color) {
+        console.log(this.isCheck(side));
         return this.isCheck(side) && !this.sideHasMoves(side);
     }
     private isStalemate(side: Color) {
@@ -95,17 +112,6 @@ export default class Board {
     }
     private getKing(side: Color) {
         return this.getNameFigures('king').find(king => king.side === side) as King;
-    }
-    private swapFigures(from: Cell, to: Cell) {
-        if (!from.figure) throw new Error(`No figure was found but trying to swap`);
-        if (from.comparePosition(to.position)) return;
-        let { position: targetPos } = to;
-        to.figure = from.figure;
-        to.figure.position = targetPos;
-        from.figure = null;
-        if (to.figure instanceof Pawn || to.figure instanceof King || to.figure instanceof Rook) {
-            to.figure.isFirstMove = false;
-        }
     }
     private addCells() {
         for (let x = 0; x < 8; x++) {

@@ -6,25 +6,25 @@ import type Board from "../Board";
 
 export default class Figure {
     constructor(public name: FigureName, public position: Position, public side: Color) {}
-    isPossibleMove(board: Board, cell: Cell) {
+    isOnPath(board: Board, cell: Cell) {
         const sameSide = cell.figure?.side === this.side;
         const samePosition = cell.comparePosition(this.position);
         return !sameSide && !samePosition;
     }
     canMoveTo(board: Board, cell: Cell){
         const isKing = cell.figure?.name === 'king';
-        return this.isPossibleMove(board, cell) && !isKing;
+        return this.isOnPath(board, cell) && !isKing;
     }
     canAttackTo(board: Board, cell: Cell) {
-        return this.isPossibleMove(board, cell);
+        return this.isOnPath(board, cell);
     }
-    checkIsDanger(board: Board, cell: Cell) {
+    isCheckTo(board: Board, cell: Cell) {
         const cpy = board.copy();
-        const f = cpy.cells[this.position.x][this.position.y].figure
+        const f = cpy.cells[this.position.x][this.position.y].figure;
         cpy.cells[this.position.x][this.position.y].figure = null;
         cpy.cells[cell.position.x][cell.position.y].figure = f;
-        (cpy.cells[cell.position.x][cell.position.y].figure as this).position = cell.position;
-        return !cpy.isCheck(this.side);
+        cpy.cells[cell.position.x][cell.position.y].figure!.position = cell.position;
+        return cpy.isCheck(this.side);
         
     }
     getEnemySide() {

@@ -9,8 +9,8 @@ export default class King extends Figure {
     constructor(public position: Position, side: Color) {
         super("king", position, side);
     }
-    isPossibleMove(board: Board, cell: Cell): boolean {
-        if(!super.isPossibleMove(board, cell)) return false;
+    isOnPath(board: Board, cell: Cell): boolean {
+        if(!super.isOnPath(board, cell)) return false;
         const { x: targetX, y: targetY } = cell.position;
         const { x: currX, y: currY } = this.position;
         const absX = Math.abs(targetX - currX);
@@ -23,6 +23,6 @@ export default class King extends Figure {
 
     canMoveTo(board: Board, cell: Cell): boolean {
         if(!super.canMoveTo(board, cell)) return false;
-        return this.checkIsDanger(board, cell);
+        return !this.isCheckTo(board, cell);
     }
 }
