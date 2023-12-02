@@ -17,7 +17,6 @@ export default class Rook extends Figure {
     }
 
     canMoveTo(board: Board, cell: Cell): boolean {
-        if (!super.canMoveTo(board, cell)) return false;
-        return !this.isCheckTo(board, cell);
+        return super.canMoveTo(board, cell) && !super.isCheckTo(board, cell);
     }
 }

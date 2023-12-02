@@ -6,7 +6,6 @@ import type Move from "~/types/chess/Move";
 import figures from "~/models/chess/figures";
 import type { FigureName } from "~/types/chess/FigureName";
 import ChessRoom from "~/models/chess/room/ChessRoom";
-// TODO do something with this nightmare please oh my god
 
 type PlainObjectBoard = { cells: { [key: string]: Array<object> }, moves: Array<object> };
 type PlainObjectFigure = { name: FigureName };
@@ -18,14 +17,14 @@ export function getFigureInstance(plainObject: PlainObjectFigure): Figure {
 }
 export function getCellInstance(plainObject: PlainObjectCell): Cell {
     plainObject.figure = plainObject.figure
-    ? getFigureInstance(plainObject.figure as PlainObjectFigure)
+    ? getFigureInstance({ ...plainObject.figure } as PlainObjectFigure)
     : null
     return plainToClass(Cell, plainObject);
 }
 export function getBoardInstance(plainObject: PlainObjectBoard): Board {
     const board = new Board();
     Object.keys(plainObject.cells).forEach(column => {
-        board.cells[column] = plainObject.cells[column].map(cell => getCellInstance(cell as PlainObjectCell));
+        board.cells[column] = plainObject.cells[column].map(cell => getCellInstance({ ...cell } as PlainObjectCell));
     });
     board.moves = plainObject.moves as Move[];
     return board;

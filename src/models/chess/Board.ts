@@ -6,20 +6,13 @@ import King from "./figures/King"
 import Queen from "./figures/Queen"
 import Bishop from "./figures/Bishop"
 import Figure from "./figures/Figure";
-import { plainToClass } from "class-transformer";
 import { GameOverType } from "~/types/chess/Game";
 import type ChessMove from "@/types/chess/Move";
 import type { Color } from "~/types/chess/Color";
 import type { Position } from "~/types/chess/Position";
 import type { FigureName } from "~/types/chess/FigureName";
 import type { GameOverInfo } from "~/types/chess/Game";
-// Move Figure
-// Unmove Figure
-// Game Over
-// Get cells
-// Get figures
-// Is Check
-// Get moves
+import { getBoardInstance } from "~/services/chess/helpers";
 export default class Board {
     cells: { [key: string]: Array<Cell> } = {};
     moves: ChessMove[] = [];
@@ -45,30 +38,24 @@ export default class Board {
         }).filter(i => i)[0];
     }
     copy() {
-        return plainToClass(Board, { ...this });
+        return getBoardInstance({ ...this });
     }
     getTime() {
         return `${((Date.now() - this.startTimestamp) / 6000).toFixed(2)} minutes`;
     }   
-    move(from: Position, to: Position) {
-        const prev = this.cells[from.x][from.y];
-        const target = this.cells[to.x][to.y];
-        if (!prev.figure) return false;
-        if (!prev.figure.canMoveTo(this, target)) return false;
-        this.swapFigures(prev, target);
-        this.moves.push({ figure: this.cells[to.x][to.y].figure!.name, from, to });
+    move(from: Cell, to: Cell) {
+        const { figure } = from;
+        if (!figure?.canMoveTo(this, to)) return false;
+        this.swapFigures(from, to);
+        this.moves.push({ figure: figure.name, from: from.position, to: to.position });
         return true;
     }
     swapFigures(from: Cell, to: Cell) {
-        if (!from.figure) throw new Error(`No figure was found but trying to swap`);
-        if (from.comparePosition(to.position)) return;
-        let { position: targetPos } = to;
-        to.figure = from.figure;
-        to.figure.position = targetPos;
+        const { figure } = from;
+        if (!figure) return;
+        figure.position = to.position
+        to.figure = figure;
         from.figure = null;
-        if (to.figure instanceof Pawn || to.figure instanceof King || to.figure instanceof Rook) {
-            to.figure.isFirstMove = false;
-        }
     }
     getAllCells() {
         return Object.keys(this.cells)
@@ -88,7 +75,6 @@ export default class Board {
         return this.getAllFigures().filter(figure => figure.side === side);
     }
     private isCheckmate(side: Color) {
-        console.log(this.isCheck(side));
         return this.isCheck(side) && !this.sideHasMoves(side);
     }
     private isStalemate(side: Color) {

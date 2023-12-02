@@ -30,8 +30,7 @@ export default class Pawn extends Figure {
         return inOneOrTwoSteps || enemyInOneStepDiagonal;
     }
     canMoveTo(board: Board, cell: Cell): boolean {
-        if(!super.canMoveTo(board, cell)) return false;
-        return !this.isCheckTo(board, cell);
+        return super.canMoveTo(board, cell) && !super.isCheckTo(board, cell);
     }
     canAttackTo(board: Board, cell: Cell): boolean {
         const canMove = this.isOnPath(board, cell);
