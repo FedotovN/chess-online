@@ -7,16 +7,18 @@
       modelValue: Board,
       currentSide: Color | null,
       playerSide: Color | null,
+      disabled: boolean,
   }>();
   const selected: Ref<Cell | null> = ref(null);
   const ourMove = computed(() => props.currentSide === props.playerSide);
   const toRotateBoard = computed(() => props.playerSide === 'black');
   const board = computed(() => props.modelValue);
   function selectFigure(cell: Cell) {
-    if (!cell.figure) return;
+    if (!cell.figure || cell.figure.getEnemySide() === props.playerSide) return;
     selected.value = cell
   }
   function clickHandler(cell: Cell) {
+    if (props.disabled) return;
     if (!ourMove.value) return;
     if (!selected.value) return selectFigure(cell);
     if(board.value.move(selected.value, cell))
@@ -28,8 +30,8 @@
   }
 </script>
 <template>
-  <div class="w-full h-full flex flex-col flex-1">
-    <div class="flex w-full flex-1 border border-gray-700 rounded" v-click-outside="() => selected = null">
+  <div :class="{ 'opacity-50 pointer-events-none': disabled }" class="max-w-[450px] md:max-w-[550px] lg:max-w-[575px] xl:max-w-[600px] aspect-square flex flex-col flex-1">
+    <div class="flex w-full flex-1 rounded overflow-hidden shadow-lg" v-click-outside="() => selected = null">
       <div class="flex flex-col flex-1" v-for="column in board.cells" :class="{ 'rotate-180': toRotateBoard }">
         <div class="flex flex-1" v-for="cell in column">
           <ChessAtomCell

@@ -1,7 +1,6 @@
 <script setup lang="ts">
     import Cell from "~/models/chess/Cell";
-import type { Color } from "~/types/chess/Color";
-    import {getHorizontalNameByIndex} from "../../../types/chess/Position";
+    import type { Color } from "~/types/chess/Color";
     const props = defineProps<{
         cell: Cell,
         highlight: boolean,
@@ -17,10 +16,10 @@ import type { Color } from "~/types/chess/Color";
     const enemyHighlight = computed(() => props.highlight && props.cell.figure);
 </script>
 <template>
-    <div @click="emit('click', cell)" class="flex relative select-none justify-center items-center flex-1 transition-all h-[64px] w-[64px]" :class="{
-        'bg-gray-600 hover:bg-gray-600 ': cell.side === 'black',
-        'bg-white hover:bg-white': cell.side === 'white',
-        'cursor-pointer hover:opacity-90': !!cell.figure || highlight 
+    <div @click="emit('click', cell)" class="flex relative select-none justify-center items-center flex-1 transition-all" :class="{
+        'bg-[#729556]': cell.side === 'black',
+        'bg-[#ebecd0]': cell.side === 'white',
+        'cursor-pointer': !!cell.figure || highlight 
     }">
         <img v-if="getFigureSvg" :src="getFigureSvg" class="h-full w-full" />
         <div v-if="highlight && !enemyHighlight" class="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 rounded-full h-4 w-4 bg-gray-800 border border-gray-600 shadow-lg" />

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { useModal, useToast } from 'kneekeetah-vue-ui-kit';
+    import { BaseButton, BaseLoader, useModal, useToast } from 'kneekeetah-vue-ui-kit';
     import Board from '~/models/chess/Board';
 import type { GameOverInfo } from '~/types/chess/Game';
     const { id } = useRoute().params;
@@ -45,10 +45,16 @@ import type { GameOverInfo } from '~/types/chess/Game';
 </script>
 <template>
     <div class="h-screen w-full flex flex-col" v-show="!loading">
-        <ChessOrganismHeader :game-id="(id as string)" :opponent="getOpponent" :current-side="getCurrentSide" @quit="quit" /> 
-        <div class="flex-1 flex justify-center items-center">
-              <div v-if="board">
-                  <ChessOrganismBoard v-model="board" :player-side="getPlayerSide" :current-side="getCurrentSide" />
+        <div class="flex items-center gap-2 absolute top-1/2 left-1/2 -translate-x-1/2 z-10 px-2 py-2 w-64 text-center rounded shadow bg-white" v-if="!getOpponent">
+            <BaseLoader />
+            <small class="text-gray-800">Waiting for opponent</small>
+        </div>
+        <div class="flex-1 flex justify-center items-center bg-[#363635] flex-col gap-2" v-if="board">
+              <div class="max-w-full px-3">
+                  <ChessOrganismBoard v-model="board" :disabled="!getOpponent" :player-side="getPlayerSide" :current-side="getCurrentSide" />
+              </div>
+              <div class="flex gap-2">
+                  <BaseButton color="alert" width="125px" @click="quit">Leave</BaseButton>
               </div>
         </div>
     </div>

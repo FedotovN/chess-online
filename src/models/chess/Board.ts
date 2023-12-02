@@ -47,6 +47,9 @@ export default class Board {
         const { figure } = from;
         if (!figure?.canMoveTo(this, to)) return false;
         this.swapFigures(from, to);
+        if (figure instanceof Pawn || figure instanceof King || figure instanceof Rook) {
+            figure.isFirstMove = false;
+        }
         this.moves.push({ figure: figure.name, from: from.position, to: to.position });
         return true;
     }

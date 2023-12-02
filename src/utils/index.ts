@@ -1,11 +1,11 @@
-import svgs from "~/assets/svg";
+import png from "~/assets/png";
 import { type Color as ChessColor } from "~/types/chess/Color";
 import type { FigureName } from "~/types/chess/FigureName";
 import type { Color } from "kneekeetah-vue-ui-kit/dist/src/types/colors";
 export const getSvgSrcFromFigure = (side: ChessColor, figure: FigureName) => {
     const uppercaseFirst = (string: string) => string[0].toUpperCase() + string.slice(1);
-    const name = uppercaseFirst(side) + uppercaseFirst(figure) as keyof typeof svgs;
-    return svgs[name];
+    const name = uppercaseFirst(side) + uppercaseFirst(figure) as keyof typeof png;
+    return png[name];
 }
 export function generateHashCode(str: string) {
     let hash = 0;
