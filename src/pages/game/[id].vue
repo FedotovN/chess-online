@@ -11,8 +11,6 @@
         },
         async set(board: Board | null) {
             if (!board) return;
-            console.log(board);
-            
             await updateBoard(board);
         }
     })

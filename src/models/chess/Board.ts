@@ -62,6 +62,9 @@ export default class Board {
         to.figure = figure;
         from.figure = null;
     }
+    getLastMove() {
+        return this.moves[this.moves.length - 1];
+    }
     getAllCells() {
         return Object.keys(this.cells)
         .map(column => this.cells[column])

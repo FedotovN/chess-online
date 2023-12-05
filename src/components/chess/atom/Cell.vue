@@ -6,6 +6,8 @@
         cell: Cell,
         highlight: boolean,
         playerSide: Color | null,
+        lastMoveFrom?: boolean,
+        lastMoveTo?: boolean,
     }>();
     const emit = defineEmits<{
         (event: 'click', value: Cell): void;
@@ -21,8 +23,10 @@
 </script>
 <template>
     <div @click="emit('click', cell)" class="flex relative select-none justify-center items-center flex-1 transition-all h-full min-w-full" :class="{
-        'bg-[#729556]': cell.side === 'black',
-        'bg-[#ebecd0]': cell.side === 'white',
+         'bg-[#568a95]': cell.side === 'black' && !lastMoveFrom && !lastMoveTo,
+        'bg-[#ebecd0]': cell.side === 'white' && !lastMoveTo && !lastMoveFrom,
+        'bg-orange-200': lastMoveFrom,
+        'bg-orange-300': lastMoveTo,
         'cursor-pointer': !!cell.figure || highlight 
     }">
         <img v-if="getFigureSvg" :src="getFigureSvg" class="h-full w-full" />

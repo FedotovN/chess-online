@@ -28,9 +28,6 @@
   function getHighlight(cell: Cell): boolean {
     return !!selected.value?.figure?.canMoveTo(board.value, cell);
   }
-  watch(board, (n, o) => {
-    
-  }, { deep: true });
 </script>
 <template>
   <div :class="{ 'opacity-50 pointer-events-none': disabled }" class="w-[460px] md:w-[480px] lg:w-[510px] aspect-square flex flex-col flex-1 max-w-full">
@@ -45,6 +42,8 @@
               @dragover.prevent
               :class="{ 'rotate-180': toRotateBoard }"
               :playerSide="playerSide"
+              :lastMoveFrom="board.moves.length ? cell.comparePosition(board.getLastMove().from) : false"
+              :lastMoveTo="board.moves.length ? cell.comparePosition(board.getLastMove().to) : false"
               :cell="cell"
           />
         </div>
