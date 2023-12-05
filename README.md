@@ -1,4 +1,16 @@
 # Chess online
-## Under development
+Under development
+## Demo
+![2023-12-05 23-23-47](https://github.com/FedotovN/chess-online/assets/53238017/399c1bba-c6ec-4a30-82ff-91349a393f6c)
+## Done
+- Checkmate
+- Stalemate
+- Pieces rules and constraints
+- Authentication
+- Realtime updates
+## Todo
+- Castle
+- En passant
+- Chat
+- Sounds
 
-![2023-11-25 02-21-00 (1)](https://github.com/FedotovN/chess-online/assets/53238017/e8dad490-a900-4e68-bea9-426336cc3f83)
