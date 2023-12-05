@@ -29,7 +29,7 @@ export const useGame = defineStore('game', {
         },
         getCurrentSide(state): Color | null {
             if (!state.currGame) return null;
-            return state.currGame.currentSide;
+            return state.currGame.board.side;
         }
     },
     actions: {
@@ -82,12 +82,12 @@ export const useGame = defineStore('game', {
                 console.error(e);
             }
         },
-        async updateBoard(board: Board, currentSide: Color) {
+        async updateBoard(board: Board) {
             try {
                 const { user } = useAuth();
                 if (!this.currGame) throw new Error("Trying lo update board but you are not in the game");
                 if (!user) throw new Error("Trying lo update board but you are not authenticated");
-                await ChessService.updateChessRoom(this.currGame.id, { board, currentSide } as ChessRoom);
+                await ChessService.updateChessRoom(this.currGame.id, { board } as ChessRoom);
             } catch(e) {
                 console.error(e);
             }

@@ -22,7 +22,7 @@ export default class Figure {
         const copy = board.copy();
         const curr = copy.getCell(this.position);
         const target = copy.getCell(cell.position);
-        copy.swapFigures(curr, target);
+        copy.moveFigure(curr, target);
         return copy.isCheck(this.side);
     }
     getEnemySide() {

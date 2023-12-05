@@ -11,7 +11,7 @@
   }>();
   const selected: Ref<Cell | null> = ref(null);
   const ourMove = computed(() => props.currentSide === props.playerSide);
-  const toRotateBoard = computed(() => props.playerSide === 'black');
+  const toRotateBoard = computed(() => props.playerSide === 'white');
   const board = computed(() => props.modelValue);
   function selectFigure(cell: Cell) {
     if (!cell.figure || cell.figure.getEnemySide() === props.playerSide) return;
@@ -28,19 +28,23 @@
   function getHighlight(cell: Cell): boolean {
     return !!selected.value?.figure?.canMoveTo(board.value, cell);
   }
+  watch(board, (n, o) => {
+    
+  }, { deep: true });
 </script>
 <template>
-  <div :class="{ 'opacity-50 pointer-events-none': disabled }" class="max-w-[450px] md:max-w-[550px] lg:max-w-[575px] xl:max-w-[600px] aspect-square flex flex-col flex-1">
-    <div class="flex w-full flex-1 rounded overflow-hidden shadow-lg" v-click-outside="() => selected = null">
-      <div class="flex flex-col flex-1" v-for="column in board.cells" :class="{ 'rotate-180': toRotateBoard }">
-        <div class="flex flex-1" v-for="cell in column">
+  <div :class="{ 'opacity-50 pointer-events-none': disabled }" class="w-[460px] md:w-[480px] lg:w-[510px] aspect-square flex flex-col flex-1 max-w-full">
+    <div class="flex w-full h-full flex-1 rounded overflow-hidden" v-click-outside="() => selected = null" :class="{ 'rotate-180': toRotateBoard}">
+      <div class="flex flex-col flex-1 w-full h-full" v-for="column in board.cells">
+        <div class="flex flex-1 w-full h-full" v-for="cell in column">
           <ChessAtomCell
               :highlight="getHighlight(cell)"
-              :class="{ 'rotate-180': toRotateBoard }"
               @drop.prevent="clickHandler(cell)"
               @dragstart="clickHandler(cell)"
               @click="clickHandler"
               @dragover.prevent
+              :class="{ 'rotate-180': toRotateBoard }"
+              :playerSide="playerSide"
               :cell="cell"
           />
         </div>

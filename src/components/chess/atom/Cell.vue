@@ -1,9 +1,11 @@
 <script setup lang="ts">
     import Cell from "~/models/chess/Cell";
     import type { Color } from "~/types/chess/Color";
+    import { getHorizontalNameByIndex, Dimension } from "~/types/chess/Position";
     const props = defineProps<{
         cell: Cell,
         highlight: boolean,
+        playerSide: Color | null,
     }>();
     const emit = defineEmits<{
         (event: 'click', value: Cell): void;
@@ -14,15 +16,29 @@
         if (name) return getSvgSrcFromFigure(color as Color, name);
     });
     const enemyHighlight = computed(() => props.highlight && props.cell.figure);
+    const isCornerLeft = props.cell.position.x === (props.playerSide === 'white' ? 7 : 0);
+    const isBottom = props.cell.position.y === (props.playerSide === 'white' ? 0 : 7);
 </script>
 <template>
-    <div @click="emit('click', cell)" class="flex relative select-none justify-center items-center flex-1 transition-all" :class="{
+    <div @click="emit('click', cell)" class="flex relative select-none justify-center items-center flex-1 transition-all h-full min-w-full" :class="{
         'bg-[#729556]': cell.side === 'black',
         'bg-[#ebecd0]': cell.side === 'white',
         'cursor-pointer': !!cell.figure || highlight 
     }">
         <img v-if="getFigureSvg" :src="getFigureSvg" class="h-full w-full" />
-        <div v-if="highlight && !enemyHighlight" class="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 rounded-full h-4 w-4 bg-gray-800 border border-gray-600 shadow-lg" />
-        <div v-else-if="enemyHighlight" class="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 rounded-full h-[98%] w-[98%] border-4 border-gray-800 bg-[rgba(0,0,0,.1)] shadow-xl" />
+        <div v-if="highlight && !enemyHighlight" class="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 rounded-full h-[25%] w-[25%] bg-gray-800 opacity-25 border border-gray-600 shadow-lg" />
+        <div v-else-if="enemyHighlight" class="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 rounded-full h-[85%] w-[85%] bg-gray-800 opacity-25 border-2 border-gray-800 shadow-lg" />
+        <div class="absolute left-[6px] top-[8px] -translate-y-1/2 -translate-x-1/2 font-bold text-xs" v-if="isCornerLeft">
+            <small :class="{
+                'text-[#729556]': cell.side === 'white',
+                'text-[#ebecd0]': cell.side === 'black',
+            }">{{ cell.position.y + 1 }}.</small>
+        </div>
+        <div class="absolute right-[4px] bottom-0 font-bold text-xs" v-if="isBottom">
+            <small :class="{
+                'text-[#729556]': cell.side === 'white',
+                'text-[#ebecd0]': cell.side === 'black',
+            }">{{ getHorizontalNameByIndex(7 - cell.position.x as typeof Dimension[number]) }}</small>
+        </div>
     </div>
 </template>

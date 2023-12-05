@@ -6,8 +6,9 @@ import type Move from "~/types/chess/Move";
 import figures from "~/models/chess/figures";
 import type { FigureName } from "~/types/chess/FigureName";
 import ChessRoom from "~/models/chess/room/ChessRoom";
+import type { Color } from "~/types/chess/Color";
 
-type PlainObjectBoard = { cells: { [key: string]: Array<object> }, moves: Array<object> };
+type PlainObjectBoard = { cells: { [key: string]: Array<object> }, moves: Array<object>, side: string };
 type PlainObjectFigure = { name: FigureName };
 type PlainObjectCell = { figure: object | null };
 
@@ -26,6 +27,7 @@ export function getBoardInstance(plainObject: PlainObjectBoard): Board {
     Object.keys(plainObject.cells).forEach(column => {
         board.cells[column] = plainObject.cells[column].map(cell => getCellInstance({ ...cell } as PlainObjectCell));
     });
+    board.side = plainObject.side as Color;
     board.moves = plainObject.moves as Move[];
     return board;
 }

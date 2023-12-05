@@ -19,7 +19,7 @@ export default class Pawn extends Figure {
         const { x: targetX, y: targetY } = cell.position;
         const isEnemy = !!cell.figure;
         const sameX = targetX === currX
-        const modifier = this.side === 'white' ? 1 : -1;
+        const modifier = this.side === 'black' ? 1 : -1;
         const inOneStep = currY - targetY === modifier;
         const inTwoSteps = (currY - targetY === modifier * 2) && Cell.isEmptyVertical(board, this.position, cell.position);
         const isDiagonal = inOneStep && Math.abs(targetX - currX) === 1
