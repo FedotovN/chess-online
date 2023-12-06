@@ -46,13 +46,14 @@ export default class Board {
     }   
     move(from: Cell, to: Cell) {
         const { figure } = from;
-        if (!figure?.canMoveTo(this, to)) return false;
-        const movingKing = figure instanceof King;
-        const toRook = to.figure && to.figure instanceof Rook;
-        if (movingKing && toRook) this.castle(from, to);
+        const canMove = figure && figure.canMoveTo(this, to);
+        const doingEnPassant = figure instanceof Pawn && this.checkEnPassant(figure, to);
+        if (!canMove) return false;
+        if (doingEnPassant) this.getCell(this.getLastMove().to).figure = null;
+        if (this.checkCastle(from, to)) this.castle(from, to);
         else this.moveFigure(from, to);
         this.side = this.side === 'white' ? 'black' : 'white';
-        this.moves.push({ figure: figure.name, from: from.position, to: to.position });
+        this.moves.push({ figure: figure.name, from: from.position, to: to.position, side: figure.side });
         return true;
     }
     castle(from: Cell, to: Cell): boolean {
@@ -79,6 +80,14 @@ export default class Board {
     }
     getLastMove() {
         return this.moves[this.moves.length - 1];
+    }
+    checkEnPassant(pawn: Pawn, cell: Cell) {
+        const last = this.getLastMove();
+        if (!last || last.figure !== 'pawn') return false;
+        const sameX =  last.to.x === cell.position.x;
+        const movedTwoSteps = last.to.y - last.from.y === pawn.getModifier() * 2;
+        const wentThrough = last.to.y - cell.position.y === pawn.getModifier()
+        return sameX && wentThrough && movedTwoSteps;
     }
     getAllCells() {
         return Object.keys(this.cells)
@@ -109,6 +118,9 @@ export default class Board {
             if (figures[i].getMoves(this).length) return true;
         }
         return false
+    }
+    private checkCastle(from: Cell, to: Cell) {
+        return from.figure instanceof King && to.figure instanceof Rook;
     }
     private getAllFigures() {
         return this.getAllCells()

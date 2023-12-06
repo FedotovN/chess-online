@@ -13,21 +13,25 @@ export default class Pawn extends Figure {
     constructor(public position: Position, side: Color) {
         super("pawn", position, side);
     }
+    getModifier() {
+        return this.side === 'black' ? 1 : -1;
+    }
     isOnPath(board: Board, cell: Cell): boolean {
         if (!super.isOnPath(board, cell)) return false;
         const { x: currX, y: currY} = this.position;
         const { x: targetX, y: targetY } = cell.position;
         const isEnemy = !!cell.figure;
         const sameX = targetX === currX
-        const modifier = this.side === 'black' ? 1 : -1;
+        const modifier = this.getModifier();
         const inOneStep = currY - targetY === modifier;
         const inTwoSteps = (currY - targetY === modifier * 2) && Cell.isEmptyVertical(board, this.position, cell.position);
         const isDiagonal = inOneStep && Math.abs(targetX - currX) === 1
         const enemyInFront = sameX && isEnemy
         const inOneOrTwoSteps = sameX && (inOneStep || this.isFirstMove && inTwoSteps);
         const enemyInOneStepDiagonal = isDiagonal && isEnemy
+        const enPassant = board.checkEnPassant(this, cell) && isDiagonal;
         if (enemyInFront) return false;
-        return inOneOrTwoSteps || enemyInOneStepDiagonal;
+        return inOneOrTwoSteps || enemyInOneStepDiagonal || enPassant;
     }
     canMoveTo(board: Board, cell: Cell): boolean {
         return super.canMoveTo(board, cell) && !super.isCheckTo(board, cell);
