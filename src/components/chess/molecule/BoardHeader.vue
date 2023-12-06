@@ -12,7 +12,7 @@
             <span :class="getCurrentSide === getPlayerSide ? 'text-green-300' : 'text-red-300'">{{ uppercasedCurrentSide }}</span>
             to move
         </small>
-        <small v-else>Game ID: {{ currGame.id }}</small>
+        <small v-else>Game ID: {{ currGame!.id }}</small>
     </div>
 </template>
 

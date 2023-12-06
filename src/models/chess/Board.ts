@@ -47,17 +47,32 @@ export default class Board {
     move(from: Cell, to: Cell) {
         const { figure } = from;
         if (!figure?.canMoveTo(this, to)) return false;
-        this.moveFigure(from, to);
-        if (figure instanceof Pawn || figure instanceof King || figure instanceof Rook) {
-            figure.isFirstMove = false;
-        }
+        const movingKing = figure instanceof King;
+        const toRook = to.figure && to.figure instanceof Rook;
+        if (movingKing && toRook) this.castle(from, to);
+        else this.moveFigure(from, to);
         this.side = this.side === 'white' ? 'black' : 'white';
         this.moves.push({ figure: figure.name, from: from.position, to: to.position });
+        return true;
+    }
+    castle(from: Cell, to: Cell): boolean {
+        const { x: rookX, y } = to.position;
+        const { x: kingX } = from.position;
+        const isOnLeft = kingX - rookX > 0;
+        const step = isOnLeft ? -2 : 2;
+        const rookStep = isOnLeft ? 1 : -1;
+        const targetCell = this.getCell({ x: kingX + step, y } as Position);
+        const rookCell = this.getCell({ x:  kingX + step + rookStep, y } as Position);
+        this.moveFigure(from, targetCell);
+        this.moveFigure(to, rookCell);
         return true;
     }
     moveFigure(from: Cell, to: Cell) {
         const { figure } = from;
         if (!figure) return;
+        if (figure instanceof Pawn || figure instanceof King || figure instanceof Rook) {
+            figure.isFirstMove = false;
+        }
         figure.position = to.position
         to.figure = figure;
         from.figure = null;
@@ -136,12 +151,12 @@ export default class Board {
         this.cells[5][7].figure = new Bishop({ x: 5, y: 7 } as Position, 'black')
     }
     private addQueens() {
-        this.cells[3][0].figure = new Queen({ x: 3, y: 0 } as Position, 'white')
-        this.cells[3][7].figure = new Queen({ x: 3, y: 7 } as Position, 'black')
+        this.cells[4][0].figure = new Queen({ x: 4, y: 0 } as Position, 'white')
+        this.cells[4][7].figure = new Queen({ x: 4, y: 7 } as Position, 'black')
     }
     private addKings() {
-        this.cells[4][0].figure = new King({ x: 4, y: 0 } as Position, 'white')
-        this.cells[4][7].figure = new King({ x: 4, y: 7 } as Position, 'black')
+        this.cells[3][0].figure = new King({ x: 3, y: 0 } as Position, 'white')
+        this.cells[3][7].figure = new King({ x: 3, y: 7 } as Position, 'black')
     }
     private addPawns() {
         for (let i = 0; i < 8; i++) {
