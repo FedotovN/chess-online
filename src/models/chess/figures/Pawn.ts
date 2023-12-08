@@ -16,6 +16,11 @@ export default class Pawn extends Figure {
     getModifier() {
         return this.side === 'black' ? 1 : -1;
     }
+    canEnPassant(board: Board, cell: Cell) {
+        const doingEnPassant = board.checkEnPassant(this, cell);
+        if (!doingEnPassant) return false;
+        return !this.isCheckTo(board, cell);
+    }
     isOnPath(board: Board, cell: Cell): boolean {
         if (!super.isOnPath(board, cell)) return false;
         const { x: currX, y: currY} = this.position;
@@ -29,7 +34,7 @@ export default class Pawn extends Figure {
         const enemyInFront = sameX && isEnemy
         const inOneOrTwoSteps = sameX && (inOneStep || this.isFirstMove && inTwoSteps);
         const enemyInOneStepDiagonal = isDiagonal && isEnemy
-        const enPassant = board.checkEnPassant(this, cell) && isDiagonal;
+        const enPassant = this.canEnPassant(board, cell) && isDiagonal;
         if (enemyInFront) return false;
         return inOneOrTwoSteps || enemyInOneStepDiagonal || enPassant;
     }

@@ -22,7 +22,7 @@
     const isBottom = props.cell.position.y === (props.playerSide === 'white' ? 0 : 7);
 </script>
 <template>
-    <div @click="emit('click', cell)" class="flex relative select-none justify-center items-center flex-1 transition-all h-full min-w-full" :class="{
+    <div @click="emit('click', cell)" class="aspect-square flex relative select-none justify-center items-center transition-all flex-1" :class="{
          'bg-[#568a95]': cell.side === 'black' && !lastMoveFrom && !lastMoveTo,
         'bg-[#ebecd0]': cell.side === 'white' && !lastMoveTo && !lastMoveFrom,
         'bg-orange-200': lastMoveFrom,

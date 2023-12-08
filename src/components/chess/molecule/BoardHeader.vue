@@ -1,23 +1,46 @@
 <template>
-    <div class="flex justify-between items-center py-2 w-full text-gray-300 h-10">
-        <div class="flex items-center gap-2" v-if="getOpponent">
-            <UserAtomPhoto :photo-url="getOpponent.photoURL" />
-            <small class="text-sm">{{ getOpponent.displayName }}</small>
+    <div class="flex justify-between items-center w-full text-gray-300 h-12">
+        <div class="flex items-center gap-2 overflow-hidden" v-if="getOpponent">
+            <div class="flex items-center gap-2 overflow-hidden">
+                <UserAtomPhoto :photo-url="getOpponent.photoURL" />
+                <small class="text-sm whitespace-nowrap overflow-hidden text-ellipsis">{{ getOpponent.displayName }}</small>
+            </div>
+            <div class="flex items-center flex-1 w-full">
+                <div class="lg:hidden flex gap-5 items-center w-full">
+                    <div class="flex items-center gap-1">
+                        <BaseButton flat class="w-full whitespace-nowrap">
+                            Go to chat
+                        </BaseButton>
+                        <small class="flex items-center justify-center rounded-full px-1 min-w-[calc(6_*_.25em)] bg-red-400 text-white">
+                            1
+                        </small>
+                    </div>
+                    <small class="w-full text-xs whitespace-nowrap overflow-hidden text-ellipsis">
+                        <span :class="getCurrentSide === getPlayerSide ? 'text-green-300' : 'text-red-300'">{{ uppercasedCurrentSide }}</span>
+                        to move
+                    </small>
+                </div>
+            </div>
         </div>
         <div class="flex items-center gap-2" v-else>
             <BaseLoader />
             <small class="text-sm">Waiting for opponent</small>
         </div>
-        <small class="text-xs" v-if="getOpponent">
-            <span :class="getCurrentSide === getPlayerSide ? 'text-green-300' : 'text-red-300'">{{ uppercasedCurrentSide }}</span>
-            to move
-        </small>
-        <small v-else>Game ID: {{ currGame!.id }}</small>
+        <div @click="copy" class="h-full flex-1 group text-end cursor-pointer" v-else>
+            <small class="text-blue-400 group-hover:text-blue-500 select-none">Invite link</small>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
-    import { BaseLoader } from "kneekeetah-vue-ui-kit"
+    import { BaseLoader, useToast, BaseButton } from "kneekeetah-vue-ui-kit"
     const { getCurrentSide, getOpponent, getPlayerSide, currGame } = storeToRefs(useGame());
     const uppercasedCurrentSide = computed(() => getCurrentSide.value ? getCurrentSide.value[0].toUpperCase() + getCurrentSide.value.slice(1) : '' );
+    const id = computed(() => currGame.value?.id);
+    function copy() {
+        if (!id.value) return;
+        const inviteLink = `${window.location.host}/game/invite/${id.value}`
+        navigator.clipboard.writeText(inviteLink);
+        useToast().add({ content: "Invite link copied to clipboard", delay: 5000 });
+    }
 </script>

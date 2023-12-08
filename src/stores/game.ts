@@ -90,6 +90,7 @@ export const useGame = defineStore('game', {
                 await ChessService.updateChessRoom(this.currGame.id, { board } as ChessRoom);
             } catch(e) {
                 console.error(e);
+                throw e
             }
         }
     }

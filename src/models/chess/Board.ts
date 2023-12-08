@@ -47,14 +47,17 @@ export default class Board {
     move(from: Cell, to: Cell) {
         const { figure } = from;
         const canMove = figure && figure.canMoveTo(this, to);
-        const doingEnPassant = figure instanceof Pawn && this.checkEnPassant(figure, to);
         if (!canMove) return false;
-        if (doingEnPassant) this.getCell(this.getLastMove().to).figure = null;
-        if (this.checkCastle(from, to)) this.castle(from, to);
+        if (this.checkEnPassant(figure, to)) this.enPassant(from, to);
+        else if (this.checkCastle(from, to)) this.castle(from, to);
         else this.moveFigure(from, to);
         this.side = this.side === 'white' ? 'black' : 'white';
         this.moves.push({ figure: figure.name, from: from.position, to: to.position, side: figure.side });
         return true;
+    }
+    enPassant(from: Cell, to: Cell) {
+        this.getCell(this.getLastMove().to).figure = null
+        this.moveFigure(from, to);
     }
     castle(from: Cell, to: Cell): boolean {
         const { x: rookX, y } = to.position;
@@ -81,13 +84,22 @@ export default class Board {
     getLastMove() {
         return this.moves[this.moves.length - 1];
     }
-    checkEnPassant(pawn: Pawn, cell: Cell) {
+    checkEnPassant(pawn: Figure, cell: Cell) {
+        if (!(pawn instanceof Pawn)) return false;
         const last = this.getLastMove();
         if (!last || last.figure !== 'pawn') return false;
         const sameX =  last.to.x === cell.position.x;
         const movedTwoSteps = last.to.y - last.from.y === pawn.getModifier() * 2;
-        const wentThrough = last.to.y - cell.position.y === pawn.getModifier()
+        const wentThrough = last.to.y - cell.position.y === pawn.getModifier();
         return sameX && wentThrough && movedTwoSteps;
+    }
+    getPromotedPawns(side: Color | null) {
+        if (!side) return [];
+        const horizon = side === 'white' ? 7 : 0;
+        const pawns = this.getNameFigures('pawn')
+            .filter(p => p.side === side)
+            .filter(p => p.position.y === horizon);
+        return pawns
     }
     getAllCells() {
         return Object.keys(this.cells)
