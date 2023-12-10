@@ -152,11 +152,11 @@ export default class Board {
     }
     private addFigures() {
         this.addPawns();
-        // this.addRooks();
-        // this.addKnights();
-        // this.addBishops();
-        // this.addQueens();
-        // this.addKings();
+        this.addRooks();
+        this.addKnights();
+        this.addBishops();
+        this.addQueens();
+        this.addKings();
     }
     private addKnights() {
         this.cells[1][0].figure = new Knight({ x: 1, y: 0 } as Position, 'white')

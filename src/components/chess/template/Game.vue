@@ -8,7 +8,9 @@
     const { updateBoard } = useGame();
     const toDisableBoard = computed(() => !getOpponent.value);
     const canPromote = computed(() => board.value?.getPromotedPawn(getPlayerSide.value!));
+    const isGameOver = computed(() => !!board.value?.isGameOver());
     const { add, open, close } = useModal();
+    const footer = ref(null);
     add({ header: 'Promote a pawn', component: PromotedPawnForm, id: 'promote-pawn' });
     add({ header: 'Game over', component: GameOverOverview, id: 'game-over' });    
     async function promotePawn() {
@@ -31,9 +33,13 @@
             }
         }
     })
+    watch(isGameOver, v => {
+        if (!v) return;
+        open('game-over', { gameOverInfo: board.value?.isGameOver() });
+    })
 </script>
 <template>
-    <div class="flex flex-col w-full max-h-full">
+    <div class="flex flex-col w-full h-full">
         <ChessMoleculeBoardHeader />
             <div class="overflow-hidden flex-1 w-full flex gap-2 justify-center items-center" v-if="board">
                 <div class="hidden lg:flex rounded overflow-hidden max-h-full w-full border shadow bg-gray-100 aspect-square">

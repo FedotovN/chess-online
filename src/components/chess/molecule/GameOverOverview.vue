@@ -3,7 +3,7 @@
     import { GameOverType, type GameOverInfo } from '~/types/chess/Game';
     const emit = defineEmits<{
         (e: 'rematch'): void,
-        (e: 'leave'): void,
+        (e: 'bruh'): void,
     }>();
     const props = withDefaults(defineProps<{
         gameOverInfo: GameOverInfo,
@@ -14,6 +14,10 @@
     });
     const info = computed(() => props.gameOverInfo);
     const uppercasedWinner = computed(() => info.value?.winner ? info.value.winner[0].toUpperCase() + info.value.winner?.slice(1) : '');
+    function onLeave() {
+        console.log('bruh');
+        emit('bruh');
+    }
 </script>
 <template>
     <div class="flex flex-col gap-2 w-full pb-2">
@@ -32,7 +36,7 @@
                     <span class="h-px top-1/2 w-full absolute bg-gray-300"></span>
                     <small class="absolute top-1/2 -translate-y-1/2  left-1/2 -translate-x-1/2 px-2 bg-white z-10 text-gray-700 font-bold">or</small>
                 </div>
-                <BaseButton @click="emit('leave')">Leave</BaseButton>
+                <BaseButton @click="onLeave">Leave</BaseButton>
             </div>
         </div>
     </div>

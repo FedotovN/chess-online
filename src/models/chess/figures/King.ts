@@ -28,7 +28,7 @@ export default class King extends Figure {
         const curr = copy.getCell(this.position);
         const target = copy.getCell(cell.position);
         copy.castle(curr, target);
-        return copy.isCheck(this.side);
+        return !copy.isCheck(this.side);
     }
     canMoveTo(board: Board, cell: Cell): boolean {
         const canCastle = this.isFirstMove
@@ -37,7 +37,7 @@ export default class King extends Figure {
             && cell.figure.side === this.side
             && cell.figure.isFirstMove === true
             && Cell.isEmptyHorizontal(board, this.position, cell.position);
-        if (canCastle) return !this.canCastleTo(board, cell);
+        if (canCastle) return this.canCastleTo(board, cell);
         return super.canMoveTo(board, cell) && !super.isCheckTo(board, cell);
     }
 }
