@@ -8,7 +8,7 @@
    }>();
   const props = defineProps<{
       modelValue?: Board,
-      value: Board,
+      value?: Board,
       currentSide: Color | null,
       playerSide: Color | null,
       disabled: boolean,
@@ -16,7 +16,7 @@
   const selected: Ref<Cell | null> = ref(null);
   const ourMove = computed(() => props.currentSide === props.playerSide);
   const toRotateBoard = computed(() => props.playerSide === 'white');
-  const board = computed(() => props.modelValue || props.value);
+  const board = computed(() => props.modelValue || props.value || new Board());
   function selectFigure(cell: Cell) {
     if (!cell.figure || cell.figure.getEnemySide() === props.playerSide) return;
     selected.value = cell

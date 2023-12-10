@@ -21,7 +21,7 @@
     "@vuelidate/validators": "^2.0.4",
     "class-transformer": "^0.5.1",
     "firebase": "^10.5.2",
-    "kneekeetah-vue-ui-kit": "^0.1.0",
+    "kneekeetah-vue-ui-kit": "^0.1.2",
     "pinia": "^2.1.7",
     "tailwindcss": "^3.3.5"
   }

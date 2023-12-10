@@ -17,18 +17,15 @@ export default class Board {
     cells: { [key: string]: Array<Cell> } = {};
     moves: ChessMove[] = [];
     side: Color = 'white';
-    startTimestamp: number;
     constructor() {
         this.addCells();
         this.addFigures();
-        this.startTimestamp = Date.now();
     }
     isGameOver(): GameOverInfo | false {
         const getInfo = (type: GameOverType, side?: Color) => {
             return {
                 type,
-                time: this.getTime(),
-                losed: side,
+                winner: side === 'white' ? 'black' : 'white',
                 movesAmount: this.moves.length,
              } as GameOverInfo
         }
@@ -41,9 +38,9 @@ export default class Board {
     copy() {
         return getBoardInstance({ ...this });
     }
-    getTime() {
-        return `${((Date.now() - this.startTimestamp) / 6000).toFixed(2)} minutes`;
-    }   
+    switchSide() {
+        this.side = this.side === 'white' ? 'black' : 'white';
+    }
     move(from: Cell, to: Cell) {
         const { figure } = from;
         const canMove = figure && figure.canMoveTo(this, to);
@@ -51,8 +48,8 @@ export default class Board {
         if (this.checkEnPassant(figure, to)) this.enPassant(from, to);
         else if (this.checkCastle(from, to)) this.castle(from, to);
         else this.moveFigure(from, to);
-        this.side = this.side === 'white' ? 'black' : 'white';
         this.moves.push({ figure: figure.name, from: from.position, to: to.position, side: figure.side });
+        this.switchSide();
         return true;
     }
     enPassant(from: Cell, to: Cell) {
@@ -93,13 +90,12 @@ export default class Board {
         const wentThrough = last.to.y - cell.position.y === pawn.getModifier();
         return sameX && wentThrough && movedTwoSteps;
     }
-    getPromotedPawns(side: Color | null) {
-        if (!side) return [];
+    getPromotedPawn(side: Color) {
         const horizon = side === 'white' ? 7 : 0;
         const pawns = this.getNameFigures('pawn')
             .filter(p => p.side === side)
             .filter(p => p.position.y === horizon);
-        return pawns
+        return pawns[0];
     }
     getAllCells() {
         return Object.keys(this.cells)
@@ -156,11 +152,11 @@ export default class Board {
     }
     private addFigures() {
         this.addPawns();
-        this.addRooks();
-        this.addKnights();
-        this.addBishops();
-        this.addQueens();
-        this.addKings();
+        // this.addRooks();
+        // this.addKnights();
+        // this.addBishops();
+        // this.addQueens();
+        // this.addKings();
     }
     private addKnights() {
         this.cells[1][0].figure = new Knight({ x: 1, y: 0 } as Position, 'white')

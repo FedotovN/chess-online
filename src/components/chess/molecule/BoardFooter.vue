@@ -13,8 +13,9 @@
     import { BaseButton, useToast } from "kneekeetah-vue-ui-kit";
     const { leave } = useGame();
     async function onLeave() {
-        await leave();
-        useRouter().push("/");
+        await useRouter().push("/");
         useToast().add({ content: "You've leaved the game" });
+        await leave();
     }
+    defineExpose({ onLeave });
 </script>

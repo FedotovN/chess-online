@@ -25,9 +25,9 @@
         <div class="flex items-center gap-2" v-else>
             <BaseLoader />
             <small class="text-sm">Waiting for opponent</small>
-        </div>
-        <div @click="copy" class="h-full flex-1 group text-end cursor-pointer" v-else>
-            <small class="text-blue-400 group-hover:text-blue-500 select-none">Invite link</small>
+            <div @click="copy" class="h-full flex-1 group text-end cursor-pointer">
+                <small class="text-blue-400 group-hover:text-blue-500 select-none">Invite link</small>
+            </div>
         </div>
     </div>
 </template>

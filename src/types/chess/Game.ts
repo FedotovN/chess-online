@@ -8,7 +8,6 @@ export enum GameOverType {
 }
 export interface GameOverInfo {
     type: GameOverType,
-    losed?: Color,
-    time: string,
+    winner?: Color,
     movesAmount: number,
 }
