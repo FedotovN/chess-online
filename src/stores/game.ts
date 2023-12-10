@@ -1,5 +1,6 @@
 import ChessRoom, { type Player } from "~/models/chess/room/ChessRoom";
 import ChessService from "@/services/chess";
+import ChatService from "~/services/chat";
 import type { Unsubscribe } from "firebase/auth";
 import type Board from "~/models/chess/Board";
 import type { Color } from "~/types/chess/Color";
@@ -37,7 +38,9 @@ export const useGame = defineStore('game', {
             try {
                 const { user } = useAuth();
                 if (!user) throw new Error("Not authenticated yet trying to create chess room");
-                return await ChessService.createChessRoom();
+                const room = await ChessService.createChessRoom();
+                await ChatService.create(room.id);
+                return room;
             } catch (e) {
                 console.error(e);
                 throw e;
@@ -51,6 +54,7 @@ export const useGame = defineStore('game', {
         async join(id: string) {
             try {
                 const { user } = useAuth();
+                
                 if (!user) throw new Error("Not authenticated yet trying to join chess room");
                 this.currGame = await ChessService.joinChessRoom(id, user);
                 this.listen(room => this.currGame = room);

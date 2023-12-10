@@ -12,3 +12,6 @@ a {
     color: blue;
     cursor: pointer;
 }
+.no-scrollbar::-webkit-scrollbar {
+    width: 0;
+}

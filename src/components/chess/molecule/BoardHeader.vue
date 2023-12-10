@@ -6,20 +6,17 @@
                 <small class="text-sm whitespace-nowrap overflow-hidden text-ellipsis">{{ getOpponent.displayName }}</small>
             </div>
             <div class="flex items-center flex-1 w-full">
-                <div class="lg:hidden flex gap-5 items-center w-full">
+                <div class="lg:hidden flex gap-3 items-center w-full">
                     <div class="flex items-center gap-1">
-                        <BaseButton flat class="w-full whitespace-nowrap">
+                        <BaseButton flat class="w-full whitespace-nowrap" @click="emit('chat')">
                             Go to chat
                         </BaseButton>
-                        <small class="flex items-center justify-center rounded-full px-1 min-w-[calc(6_*_.25em)] bg-red-400 text-white">
-                            1
-                        </small>
                     </div>
-                    <small class="w-full text-xs whitespace-nowrap overflow-hidden text-ellipsis">
-                        <span :class="getCurrentSide === getPlayerSide ? 'text-green-300' : 'text-red-300'">{{ uppercasedCurrentSide }}</span>
-                        to move
-                    </small>
                 </div>
+                <small class="w-full text-xs whitespace-nowrap overflow-hidden text-ellipsis">
+                    <span :class="getCurrentSide === getPlayerSide ? 'text-green-300' : 'text-red-300'">{{ uppercasedCurrentSide }}</span>
+                    to move
+                </small>
             </div>
         </div>
         <div class="flex items-center gap-2" v-else>
@@ -37,6 +34,9 @@
     const { getCurrentSide, getOpponent, getPlayerSide, currGame } = storeToRefs(useGame());
     const uppercasedCurrentSide = computed(() => getCurrentSide.value ? getCurrentSide.value[0].toUpperCase() + getCurrentSide.value.slice(1) : '' );
     const id = computed(() => currGame.value?.id);
+    const emit = defineEmits<{
+        (e: 'chat'): void;
+    }>();
     function copy() {
         if (!id.value) return;
         const inviteLink = `${window.location.host}/game/invite/${id.value}`

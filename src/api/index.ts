@@ -1,5 +1,5 @@
 import { firestore, auth } from "~/api/config";
-import { collection, getDocs, type DocumentData, getDoc, doc, query, QueryConstraint, onSnapshot, type WithFieldValue, setDoc, updateDoc, addDoc } from "firebase/firestore";
+import { collection, getDocs, type DocumentData, getDoc, doc, query, QueryConstraint, onSnapshot, type WithFieldValue, setDoc, updateDoc, addDoc, deleteDoc } from "firebase/firestore";
 import { onIdTokenChanged, type User as FirebaseUser, type NextOrObserver, type Unsubscribe} from "firebase/auth";
 
 type CollectionPath = string; 
@@ -47,9 +47,15 @@ export async function updateDocumentEntity<T extends WithFieldValue<object>>(pat
     const ref = doc(firestore, path);
     return updateDoc(ref, JSON.parse(JSON.stringify(data)));
 }
+export async function deleteDocument(path: DocumentPath) {
+    if (!isDocumentPath(path))
+        throw new TypeError("Provided path is not a document pointer");
+    const ref = doc(firestore, path);
+    return deleteDoc(ref);
+}
 export function subscribeToDocumentChanges<T>(path: DocumentPath, callback: (entity: T) => void): Unsubscribe {
     if (!isDocumentPath(path))
-        throw new TypeError("Provided path is not a documents pointer");
+        throw new TypeError("Provided path is not a document pointer");
     const ref = doc(firestore, path);
     return onSnapshot(ref, snapshot => {
         const retrieved = snapshot.data() as T | undefined;

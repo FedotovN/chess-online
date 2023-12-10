@@ -1,4 +1,5 @@
 import { useToast } from "kneekeetah-vue-ui-kit";
+import ChatService from "~/services/chat";
 export default function useGameRoom(roomId: string) {
     const { join, currGame } = useGame();
     const { add } = useToast()
