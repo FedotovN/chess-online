@@ -23,10 +23,9 @@
 </script>
 <template>
     <div @click="emit('click', cell)" class="aspect-square flex relative select-none justify-center items-center transition-all flex-1" :class="{
-         'bg-[#568a95]': cell.side === 'black' && !lastMoveFrom && !lastMoveTo,
+         'bg-[#769656]': cell.side === 'black' && !lastMoveFrom && !lastMoveTo,
         'bg-[#ebecd0]': cell.side === 'white' && !lastMoveTo && !lastMoveFrom,
-        'bg-orange-200': lastMoveFrom,
-        'bg-orange-300': lastMoveTo,
+        'bg-[#baca44]': lastMoveFrom || lastMoveTo,
         'cursor-pointer': !!cell.figure || highlight 
     }">
         <img v-if="getFigureSvg" :src="getFigureSvg" class="h-full w-full" />

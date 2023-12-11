@@ -1,11 +1,6 @@
 <template>
     <div class="flex justify-between items-center w-full text-gray-300 h-12">
         <BaseButton @click="onLeave" color="alert" flat>Leave</BaseButton>
-        <div class="px-4 rounded shadow bg-gray-300 overflow-hidden">
-            <p class="text-gray-700">
-                4:30
-            </p>
-        </div>
     </div>
 </template>
 

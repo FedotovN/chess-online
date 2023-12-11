@@ -1,4 +1,5 @@
 import type { Unsubscribe } from "firebase/auth";
+import { orderBy } from "firebase/firestore"
 import type Message from "~/types/chat/Message";
 import { type MessageContent } from "~/types/chat/Message";
 import { setDocumentEntity, deleteDocument, updateDocumentEntity, subscribeToCollectionChanges  } from "~/api";
@@ -20,7 +21,7 @@ class ChatService {
         await updateDocumentEntity(`chats/${roomId}/messages/${messageId}`, { updatedAt, content });
     }
     listen(roomId: string, callback: (messages: Message[]) => void): Unsubscribe {
-        return subscribeToCollectionChanges<Message>(`chats/${roomId}/messages`, callback);
+        return subscribeToCollectionChanges<Message>(`chats/${roomId}/messages`, callback, orderBy('createdAt'));
     }
 }
 export default new ChatService();

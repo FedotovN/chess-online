@@ -54,7 +54,6 @@ export const useGame = defineStore('game', {
         async join(id: string) {
             try {
                 const { user } = useAuth();
-                
                 if (!user) throw new Error("Not authenticated yet trying to join chess room");
                 this.currGame = await ChessService.joinChessRoom(id, user);
                 this.listen(room => this.currGame = room);
