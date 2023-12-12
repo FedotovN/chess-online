@@ -28,9 +28,9 @@
     }
 </script>
 <template>
-    <form @submit.prevent="onSubmit" class="flex flex-col px-2 py-1 bg-white shadow h-full w-full md:w-[380px]">
+    <form @submit.prevent="onSubmit" class="flex flex-col px-2 py-1 shadow-md border-neutral-700 h-full w-full md:w-[380px] text-gray-300 md:border-2 rounded">
         <div class="flex justify-center py-2">
-            <p class="text-gray-700">Sign Up</p>
+            <p class="text-gray-300">Sign Up</p>
         </div>
         <div class="flex flex-col gap-10 mb-8 mt-6">
             <BaseInput  autocomplete="off" :error-message="v$.email.$errors[0]?.$message.toString()" v-model="localValue.email" placeholder="Email" />
