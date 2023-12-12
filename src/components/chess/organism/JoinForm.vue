@@ -13,8 +13,8 @@
     }
 </script>
 <template>
-    <div class="flex flex-col pb-6">
-        <p class="text-sm text-gray-700">Enter game id to join the game!</p>
+    <div class="flex flex-col pb-6 text-gray-300">
+        <p class="text-sm">Enter game id to join the game!</p>
         <form @submit.prevent="joinGame" class="flex gap-2 pt-6">
             <BaseInput v-model="id" :error-message="error" placeholder="Game id"></BaseInput>
             <BaseButton width="125px">Join</BaseButton>

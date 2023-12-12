@@ -1,4 +1,6 @@
+import type { Player } from "~/models/chess/room/ChessRoom";
 import { type Color } from "./Color";
+import type Move from "./Move";
 export enum GameOverType {
     CHECKMATE = 'Checkmate',
     STALEMATE = 'Stalemate',
@@ -8,6 +10,8 @@ export enum GameOverType {
 }
 export interface GameOverInfo {
     type: GameOverType,
-    winner?: Color,
-    movesAmount: number,
+    winnerUid?: string,
+    winnerSide?: Color,
+    moves: Move[],
+    gameId: string,
 }

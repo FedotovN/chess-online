@@ -1,5 +1,5 @@
 <template>
-    <div class="border rounded inline-flex" :class="{
+    <div class="rounded inline-flex" :class="{
         'self-end bg-indigo-500 text-white': isOur,
         'self-start bg-white text-gray-700': !isOur
     }">

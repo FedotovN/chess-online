@@ -15,9 +15,9 @@
     }
 </script>
 <template>
-    <div class="flex flex-col w-full gap-4">
+    <div class="flex flex-col w-full gap-4 text-gray-300">
         <div class="flex justify-between">
-            <p class="text-gray-800">Your side</p>
+            <p>Your side</p>
             <BaseToggle v-model="form.isWhite" truthy-label="White" falsy-label="Black" />
         </div>     
         <BaseButton rounded @click="createGame">

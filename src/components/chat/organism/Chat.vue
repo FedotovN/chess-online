@@ -39,7 +39,7 @@
     });
 </script>
 <template>
-    <div class="bg-white w-full px-2 flex flex-col h-full">
+    <div class="bg-neutral-800 w-full flex flex-col max-h-full aspect-square px-2 h-full">
         <main class="flex flex-col justify-start items-start w-full gap-2 flex-1 overflow-y-scroll no-scrollbar py-2 px-2" v-if="messages.length" ref="messagesContainer">
             <ChatMoleculeMessage v-for="message in messages" :content="message.content" :is-our="uid === message.createdByUid" />
         </main>

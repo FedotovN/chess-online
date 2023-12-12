@@ -18,13 +18,22 @@ a {
 .base-input-wrapper input {
     background: rgb(64, 64, 64) !important;
     appearance: none;
-    border-color: rgb(107, 107, 107) !important;
+    border-color: rgb(62, 62, 62) !important;
+}
+.overlay-model-content {
+    background-color: rgb(38, 38, 38) !important;
+}
+.overlay-modal-header {
+    color: rgb(179, 179, 179) !important;
+}
+.overlay-modal-header svg {
+    fill: rgb(179, 179, 179);
 }
 .base-input-wrapper input:-webkit-autofill,
     input:-webkit-autofill:hover,
     input:-webkit-autofill:focus,
     input:-webkit-autofill:active{
-        -webkit-box-shadow: 0 0 0 30px rgba(61, 61, 61, 0.982) inset !important;
+        -webkit-box-shadow: 0 0 0 30px rgba(61, 61, 61) inset !important;
         -webkit-text-fill-color: rgb(237, 237, 237)
     }
 .base-input-label:not(.highlight) {

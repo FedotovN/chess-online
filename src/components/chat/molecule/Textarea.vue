@@ -45,6 +45,6 @@
 </script>
 <template>
     <div class="w-full">
-        <textarea ref="textarea" v-model="localValue" class="w-full resize-none appearance-none border rounded overflow-hidden outline-none px-2 py-1" @keydown.enter="onEnter" />
+        <textarea ref="textarea" v-model="localValue" class="w-full resize-none appearance-none border border-neutral-600 rounded overflow-hidden outline-none px-2 py-1 bg-neutral-700 text-gray-300" @keydown.enter="onEnter" />
     </div>
 </template>

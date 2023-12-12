@@ -1,9 +1,12 @@
 <script setup lang="ts">
     import NewGameForm from '~/components/chess/organism/NewGameForm.vue';
+    import JoinForm from '~/components/chess/organism/JoinForm.vue';
     import { useModal } from "kneekeetah-vue-ui-kit";
     const { add, open } = useModal();
     add({ header: 'Create a game', component: NewGameForm, id: 'create-game' });
+    add({ header: 'Join game', component: JoinForm, id: 'join-game' });
     const createGame = () => open('create-game');
+    const joinGame = () => open('join-game');
     const buttons = [
         [ 
             {
@@ -16,6 +19,7 @@
                 title: 'Join game',
                 icon: 'fa-solid fa-door-open',
                 description: 'Using your friend\'s room\'s ID',
+                callback: joinGame
             },
         ],
         [
@@ -28,7 +32,7 @@
     ]
 </script>
 <template>
-    <div class="flex flex-col gap-4 px-3">
+    <div class="w-full flex flex-col gap-4 px-3">
                 <div class="flex w-full justify-center">
                     <h1 class="text-4xl whitespace-nowrap text-ellipsis overflow-hidden">Play chess</h1>
                 </div>

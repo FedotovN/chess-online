@@ -43,20 +43,17 @@
 <template>
     <div class="flex flex-col w-full h-full">
         <ChessMoleculeBoardHeader @chat="open('chat', { chatId: currGame!.id, uid: useAuth().user!.uid })" />
-        <div class="overflow-hidden flex-1 w-full flex gap-2 justify-center items-center" v-if="board">
-            <div class="hidden lg:flex rounded overflow-hidden max-h-full w-full shadow aspect-square">
+        <div class="overflow-hidden flex-1 flex justify-center items-center gap-2" v-if="board">
+            <div class="lg:block hidden w-full h-full justify-center items-center shadow rounded overflow-hidden border border-neutral-700">
                 <ChatOrganismChat :uid="useAuth().user!.uid" :chat-id="currGame.id" v-if="currGame && useAuth().user" />
             </div>
-            <div class="w-full h-full items-center justify-center flex flex-col px-2">
-            <ChessOrganismBoard
-                v-model="board"
-                :disabled="toDisableBoard"
-                :player-side="getPlayerSide"
-                :current-side="getCurrentSide"
-            />
-            </div>
-            <div class="hidden xl:flex rounded overflow-hidden max-h-full w-full border shadow bg-gray-100 aspect-square">
-                Moves
+            <div class="w-full h-full items-center justify-center flex flex-col">
+                <ChessOrganismBoard
+                    v-model="board"
+                    :disabled="toDisableBoard"
+                    :player-side="getPlayerSide"
+                    :current-side="getCurrentSide"
+                />
             </div>
         </div>
         <ChessMoleculeBoardFooter ref="footer" />
