@@ -9,9 +9,24 @@ p, a, small, h1, h2, h3, h4, h5, h6, span {
     font-family: 'DM Sans', sans-serif !important; 
 }
 a {
-    color: blue;
+    color: rgb(134, 239, 172);
     cursor: pointer;
 }
 .no-scrollbar::-webkit-scrollbar {
     width: 0;
+}
+.base-input-wrapper input {
+    background: rgb(64, 64, 64) !important;
+    appearance: none;
+    border-color: rgb(107, 107, 107) !important;
+}
+.base-input-wrapper input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active{
+        -webkit-box-shadow: 0 0 0 30px rgba(61, 61, 61, 0.982) inset !important;
+        -webkit-text-fill-color: rgb(237, 237, 237)
+    }
+.base-input-label:not(.highlight) {
+    color: rgb(194, 194, 194) !important;
 }

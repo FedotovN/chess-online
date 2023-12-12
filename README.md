@@ -8,9 +8,10 @@ Under development
 - Pieces rules and constraints
 - Authentication
 - Realtime updates
-## Todo
 - Castle
 - En passant
 - Chat
+## Todo
 - Sounds
+- Final refactor
 
