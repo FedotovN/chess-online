@@ -7,7 +7,7 @@
     <div class="flex flex-col h-screen w-full justify-center items-center bg-neutral-900 text-gray-300">
         <AppOrganismHeader />
         <main class="flex-col flex flex-1 w-full px-2 justify-center items-center">
-            <div class="max-w-full justify-center items-center flex flex-col gap-6">
+            <div class="max-w-full justify-center items-center flex flex-col gap-6 w-[525px]">
                 <AppOrganismPlayButtons ref="buttons" :is-logged-in="!!user" />
                 <Suspense v-if="user">
                     <template #default>

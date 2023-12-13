@@ -21,7 +21,6 @@
     const gameOverInfo = computed(() => lastGame.value?.gameOverInfo);
     const players = computed(() => gameOverInfo?.value?.players);
     const winner = computed(() => gameOverInfo.value?.winner);
-    const opponent = computed(() => players.value?.find(p => p?.uid !== userId.value));
     const player = computed(() => players.value?.find(p => p?.uid === userId.value));
     const wonTheGame = computed(() => winner.value && winner.value?.uid === userId.value);
     const playerSide = computed(() => player.value?.side);
@@ -29,7 +28,7 @@
     const playerBySide = (side: Color) => players.value?.find(p => p.side === side);
 </script>
 <template>
-    <div class="flex flex-col gap-4 px-3 w-full max-w-full overflow-hidden h-72 text-gray-300">
+    <div class="flex flex-col justify-center gap-4 px-3 max-w-full overflow-hidden h-72 text-gray-300">
         <div class="flex w-full justify-center">
             <h1 class="text-2xl whitespace-nowrap text-ellipsis overflow-hidden">Last game</h1>
         </div>        

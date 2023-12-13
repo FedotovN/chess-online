@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import UserForm from "~/components/app/organism/UserForm.vue"
-    import { useToast, useModal, BaseButton } from 'kneekeetah-vue-ui-kit';
+    import { useModal, BaseButton } from 'kneekeetah-vue-ui-kit';
     const { user } = storeToRefs(useAuth());
     const { add, open } = useModal();
     add({ header: 'Settings', id: 'user-modal', component: UserForm });
