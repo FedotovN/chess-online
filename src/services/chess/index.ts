@@ -12,7 +12,7 @@ class ChessService {
         const board = new Board()
         const room = new ChessRoom(
             [null, null], id, { ...board } as Board,
-            GameStatus.NOT_STARTED, new Date(), [], 'white'
+            GameStatus.NOT_STARTED, new Date(), 'white'
         );
         await setDocumentEntity(`games/${id}`, JSON.parse(JSON.stringify(room)));
         return room;

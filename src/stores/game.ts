@@ -1,10 +1,10 @@
 import ChessRoom, { GameStatus, type Player } from "~/models/chess/room/ChessRoom";
 import ChessService from "@/services/chess";
+import UserService from "@/services/users";
 import ChatService from "~/services/chat";
 import type { Unsubscribe } from "firebase/auth";
 import type Board from "~/models/chess/Board";
 import type { Color } from "~/types/chess/Color";
-import type { GameOverInfo, GameOverType } from "~/types/chess/Game";
 import { getGameOverInfo } from "~/services/chess/helpers";
 export const useGame = defineStore('game', {
     state: () => ({
@@ -84,7 +84,9 @@ export const useGame = defineStore('game', {
                 if (!user) throw new Error("Trying to end game but you are not authenticated");
                 const info = getGameOverInfo(this.currGame.board as Board, this.currGame.id, this.currGame.players as Player[]);
                 if (info) {
+                    const drawOrCheckmate = info.winner ? info.winner.uid === user.uid ? 1 : -1 : 0;
                     await ChessService.setGameOver(this.currGame.id, info);
+                    await UserService.addGame(user.uid, this.currGame.id, drawOrCheckmate);
                 } else {
                     throw new Error("Trying to end game but can't find game over info");
                 }

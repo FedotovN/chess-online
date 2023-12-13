@@ -1,7 +1,6 @@
 import type User from "~/models/auth/User";
 import type { Color } from "~/types/chess/Color";
 import type Board from "~/models/chess/Board";
-import type Move from "~/types/chess/Move";
 import { type GameOverInfo } from "~/types/chess/Game";
 export interface Player extends User {
     side: Color,

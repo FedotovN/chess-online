@@ -4,6 +4,6 @@ export default class User implements Partial<UserInfo> {
     constructor(
         public displayName: string | null, public email: string | null,
         public photoURL: string | null, public stats: UserStats | null,
-        public uid: string, 
+        public uid: string, public games: string[]
     ) {}
 }

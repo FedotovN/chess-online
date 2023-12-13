@@ -43,11 +43,11 @@
     })
 </script>
 <template>
-    <div class="flex flex-col w-full h-full">
+    <div class="flex flex-col w-full h-full" v-if="currGame && useAuth().user">
         <ChessMoleculeBoardHeader @chat="open('chat', { chatId: currGame!.id, uid: useAuth().user!.uid })" />
         <div class="overflow-hidden flex-1 flex justify-center items-center gap-2" v-if="board">
             <div class="lg:block hidden w-full h-full justify-center items-center shadow rounded overflow-hidden border border-neutral-700">
-                <ChatOrganismChat :uid="useAuth().user!.uid" :chat-id="currGame.id" v-if="currGame && useAuth().user" />
+                <ChatOrganismChat :uid="useAuth().user!.uid" :chat-id="currGame.id" />
             </div>
             <div class="w-full h-full items-center justify-center flex flex-col">
                 <ChessOrganismBoard

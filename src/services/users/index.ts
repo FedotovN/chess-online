@@ -18,5 +18,29 @@ class UsersService {
     async getLeaderboard(amount: number) {
         return await getAllCollectionEntities<User>('users', orderBy('stats.score', 'desc'), limit(amount));
     }
+    async addGame(uid: string, gameId: string, stats: 1 | 0 | -1) {
+        const info = await this.getUserInfo(uid);
+        if (!info) throw new Error(`Trying to add new game to stats but cant find user with uid ${uid}`);
+        if (info.games) {
+            if (info.games.find(id => id === uid)) return;    
+        } else {
+            info.games = []
+        }
+        info.games.push(gameId);
+        if (!info.stats) 
+            info.stats = { defeated: 0, gamesPlayed: 0, draw: 0, score: 0, won: 0 };
+        info.stats.gamesPlayed += 1;
+        const wasDefeated = stats === -1;
+        const draw = stats === 0;
+        const won = stats === 1;
+        info.stats.draw += draw ? 1 : 0;
+        info.stats.won += won ? 1 : 0;
+        info.stats.defeated += wasDefeated ? 1 : 0;
+        info.stats.score = won 
+        ? info.stats.score + 15 : draw
+        ? info.stats.score : wasDefeated
+        ? info.stats.score >= 10 ? info.stats.score - 10 : 0 : info.stats.score;
+        await this.setUserToDatabase(info);
+    }
 }
 export default new UsersService();
