@@ -82,7 +82,7 @@ export const useGame = defineStore('game', {
                 const { user } = useAuth();
                 if (!this.currGame) throw new Error("Trying to end game but you are not in the game");
                 if (!user) throw new Error("Trying to end game but you are not authenticated");
-                const info = getGameOverInfo(this.currGame.board as Board, this.currGame.id, this.currGame.players as Player[]);
+                const info = getGameOverInfo(this.currGame.board as Board, this.currGame.id, this.currGame.players as [Player, Player]);
                 if (info) {
                     const drawOrCheckmate = info.winner ? info.winner.uid === user.uid ? 1 : -1 : 0;
                     await ChessService.setGameOver(this.currGame.id, info);

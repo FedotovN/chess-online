@@ -10,14 +10,14 @@ import ChessRoom, { type Player } from "~/models/chess/room/ChessRoom";
 type PlainObjectBoard = { cells: { [key: string]: Array<object> }, moves: Array<object> };
 type PlainObjectFigure = { name: FigureName };
 type PlainObjectCell = { figure: object | null };
-export function getGameOverInfo(board: Board, gameId: string, players: Player[]) {
+export function getGameOverInfo(board: Board, gameId: string, players: [Player, Player]) {
     const info = board.isGameOver();
     if (!info) return;
     const { side, type } = info;
-    const winner = players.find(p => p?.side === side) || null;
+    const winner = players.find(p => p?.side !== side) || null;
     if (winner && type) {
      return {
-            winner, gameId, type
+            winner, gameId, type, players
         }
     }
 }

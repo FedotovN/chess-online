@@ -1,87 +1,43 @@
 <script setup lang="ts">
-    import { GameOverType, type GameOverInfo } from '~/types/chess/Game';
-    import { BaseTooltip } from 'kneekeetah-vue-ui-kit';
+    import { BaseTooltip, useToast, BaseButton } from 'kneekeetah-vue-ui-kit';
     import { getPositionNameByPosition } from '~/types/chess/Position';
+    import UserService from "~/services/users"
+    import ChessService from "~/services/chess";
+    import type ChessRoom from '~/models/chess/room/ChessRoom';
+    import type { Color } from '~/types/chess/Color';
     const { user } = storeToRefs(useAuth());
-    const gameOverInfo: GameOverInfo = {
-        moves: [ 
-            {
-                figure: 'bishop',
-                from: { x: 0, y: 0 },
-                to: { x: 1, y: 1 },
-                side: 'white',
-            },
-            {
-                figure: 'bishop',
-                from: { x: 0, y: 0 },
-                to: { x: 1, y: 1 },
-                side: 'white',
-            },
-            {
-                figure: 'king',
-                from: { x: 0, y: 0 },
-                to: { x: 1, y: 1 },
-                side: 'black',
-            },
-            {
-                figure: 'king',
-                from: { x: 0, y: 0 },
-                to: { x: 1, y: 1 },
-                side: 'black',
-            },
-            {
-                figure: 'king',
-                from: { x: 0, y: 0 },
-                to: { x: 1, y: 1 },
-                side: 'black',
-            },
-            {
-                figure: 'king',
-                from: { x: 0, y: 0 },
-                to: { x: 1, y: 1 },
-                side: 'black',
-            },
-            {
-                figure: 'king',
-                from: { x: 0, y: 0 },
-                to: { x: 1, y: 1 },
-                side: 'black',
-            },{
-                figure: 'king',
-                from: { x: 0, y: 0 },
-                to: { x: 1, y: 1 },
-                side: 'black',
-            },
-            {
-                figure: 'king',
-                from: { x: 0, y: 0 },
-                to: { x: 1, y: 1 },
-                side: 'black',
-            },
-            {
-                figure: 'king',
-                from: { x: 0, y: 0 },
-                to: { x: 1, y: 1 },
-                side: 'black',
+    const lastGame: Ref<ChessRoom | null> = ref(null);
+    if (user.value) {
+        const id = await UserService.getLastGame(user.value.uid);
+        if (id) {
+            try {
+                lastGame.value = await ChessService.getChessRoom(id);
+            } catch (e) {
+                useToast().add({ content: 'Error while looking for last game', color: 'alert', delay: 5000});
             }
-         ],
-        type: GameOverType.CHECKMATE,
-        winnerSide: 'white',
-        winnerUid: user.value.uid
+        }
     }
-    const wonTheGame = computed(() => gameOverInfo.winnerUid && gameOverInfo.winnerUid === user.value?.uid);
-    const playerSide = computed(() => 'white');
+    const userId = computed(() => user.value?.uid);
+    const gameOverInfo = computed(() => lastGame.value?.gameOverInfo);
+    const players = computed(() => gameOverInfo?.value?.players);
+    const winner = computed(() => gameOverInfo.value?.winner);
+    const opponent = computed(() => players.value?.find(p => p?.uid !== userId.value));
+    const player = computed(() => players.value?.find(p => p?.uid === userId.value));
+    const wonTheGame = computed(() => winner.value && winner.value?.uid === userId.value);
+    const playerSide = computed(() => player.value?.side);
+    const moves = computed(() => lastGame.value?.board.moves.toReversed());
+    const playerBySide = (side: Color) => players.value?.find(p => p.side === side);
 </script>
 <template>
-    <div class="flex flex-col gap-4 px-3 max-w-full overflow-hidden">
+    <div class="flex flex-col gap-4 px-3 w-full max-w-full overflow-hidden h-72 text-gray-300">
         <div class="flex w-full justify-center">
             <h1 class="text-2xl whitespace-nowrap text-ellipsis overflow-hidden">Last game</h1>
         </div>        
-        <div class="w-full border border-neutral-800 rounded shadow px-3 py-2 overflow-hidden max-w-full">
+        <div class="w-full border border-neutral-800 rounded shadow px-3 py-2 overflow-hidden max-w-full" v-if="lastGame && gameOverInfo">
             <div class="flex flex-col gap-3 w-full max-w-full">
                 <div class="flex justify-between items-center">
                     <h2 class="text-3xl">
-                        {{ gameOverInfo.type }}
+                        {{ gameOverInfo?.type }}
                     </h2>
                     <i class="text-6xl fa-solid fa-smile text-green-300" v-if="wonTheGame === true"></i>
                     <i class="text-6xl fa-solid fa-face-sad-cry text-red-300" v-else-if="wonTheGame === false"></i>
@@ -93,24 +49,28 @@
                         <h2 class="text-xl text-red-300" v-else-if="wonTheGame === false">Lose</h2>
                         <h2 class="text-xl text-blue-300" v-else>Draw</h2>
                         <span class="h-2 w-2 bg-gray-300 rounded-full" v-if="wonTheGame === true || wonTheGame === false"></span>
-                        <p><span class="font-bold">40</span> moves</p>
+                        <p><span class="font-bold">{{ moves?.length }}</span> moves</p>
                     </div>
                 </div>
                 <div class="flex flex-col gap-2 overflow-hidden max-w-full">
                     <div class="flex gap-2 items-center">
                         <p class="text-lg font-bold">Last moves</p>
                     </div>
-                    <div class="flex gap-4 overflow-hidden max-w-full rounded-lg shadow-inner shadow-black border border-gray-900 p-3">
-                        <div class="relative flex justify-center items-center rounded-full h-10 aspect-square border-2" :class="{ 'border-green-300': move.side === playerSide }" v-for="move in gameOverInfo.moves">
+                    <div class="flex gap-4 overflow-hidden max-w-full rounded-lg shadow-inner shadow-black border border-gray-900 p-3" v-if="moves">
+                        <div class="relative flex justify-center items-center rounded-full h-10 aspect-square border-2" :class="{ 'border-green-300': move.side === playerSide }" v-for="(move, ind) in moves">
                             <img :src="getSvgSrcFromFigure(move.side, move.figure)" class="relative h-[85%] z-10">
-                            <span class="absolute h-1 w-4 -right-1/2 mr-px" :class="{ 'bg-green-300': move.side === playerSide, 'bg-gray-300': move.side !== playerSide }"></span>
+                            <span v-if="ind !== moves.length - 1" class="absolute h-1 w-4 -right-1/2 mr-px" :class="{ 'bg-green-300': move.side === playerSide, 'bg-gray-300': move.side !== playerSide }"></span>
                             <BaseTooltip allow-h-t-m-l>
-                                <p>{{ move.side }} moves his {{ move.figure }} from {{ getPositionNameByPosition(move.from) }} to {{ getPositionNameByPosition(move.to) }}</p>
+                                <p>{{ playerBySide(move.side)?.displayName }} moves his {{ move.figure }} from {{ getPositionNameByPosition(move.from) }} to {{ getPositionNameByPosition(move.to) }}</p>
                             </BaseTooltip>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="flex flex-col gap-4 items-center w-full border border-neutral-800  rounded shadow px-3 py-2 overflow-hidden max-w-full" v-else>
+            <p class="text-gray-400">There's no games yet <i class="fa-solid fa-wind pl-2"></i></p>
+            <small>Go ahead and start your <span class="text-purple-400 font-bold">game master</span> journey! <i class="fa-solid fa-arrow-up text-green-300 pl-2"></i></small>
         </div>
     </div>
 </template>

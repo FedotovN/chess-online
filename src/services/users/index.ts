@@ -18,6 +18,14 @@ class UsersService {
     async getLeaderboard(amount: number) {
         return await getAllCollectionEntities<User>('users', orderBy('stats.score', 'desc'), limit(amount));
     }
+    async getLastGame(uid: string) {
+        const games = await this.getGames(uid);
+        if (!games) return null
+        return games[games.length - 1];
+    }
+    async getGames(uid: string) {
+        return (await this.getUserInfo(uid))?.games;
+    }
     async addGame(uid: string, gameId: string, stats: 1 | 0 | -1) {
         const info = await this.getUserInfo(uid);
         if (!info) throw new Error(`Trying to add new game to stats but cant find user with uid ${uid}`);

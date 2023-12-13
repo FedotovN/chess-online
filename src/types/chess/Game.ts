@@ -7,8 +7,8 @@ export enum GameOverType {
     INSUFFICIENT = 'Insufficient',
     AGREEMENT = 'Agreement',
 }
-type WinnerInfo = Partial<Player> | { displayName: string, side: Color };
 export interface GameOverInfo {
     type: GameOverType,
-    winner?: WinnerInfo,
+    winner?: Player,
+    players: [Player, Player],
 }
