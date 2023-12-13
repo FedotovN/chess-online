@@ -14,8 +14,6 @@
       disabled: boolean,
   }>();
   const selected: Ref<Cell | null> = ref(null);
-  const ourMove = computed(() => props.currentSide === props.playerSide);
-  const toRotateBoard = computed(() => props.playerSide === 'white');
   const board = computed(() => props.modelValue || props.value || new Board());
   function selectFigure(cell: Cell) {
     if (!cell.figure || cell.figure.getEnemySide() === props.playerSide) return;
@@ -23,7 +21,6 @@
   }
   function clickHandler(cell: Cell) {
     if (props.disabled) return;
-    if (!ourMove.value) return;
     if (!selected.value) return selectFigure(cell);
     if(board.value.move(selected.value, cell)) {
       emit('update', board.value);
@@ -34,9 +31,10 @@
   function getHighlight(cell: Cell): boolean {
     return !!selected.value?.figure?.canMoveTo(board.value, cell);
   }
+  const toRotateBoard = props.playerSide === 'white';
 </script>
 <template>
-  <div :class="{ 'opacity-75 pointer-events-none': disabled }" class="max-h-full max-w-full aspect-square flex flex-col">
+  <div :class="{ 'pointer-events-none': disabled }" class="max-h-full max-w-full aspect-square flex flex-col">
     <div class="flex h-full w-full rounded overflow-hidden" v-click-outside="() => selected = null" :class="{ 'rotate-180': toRotateBoard}">
       <div class="flex flex-col h-full w-full aspect-[1/8]" v-for="column in board.cells">
         <div class="flex w-full h-full aspect-[1/8]" v-for="cell in column">

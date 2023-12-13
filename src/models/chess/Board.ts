@@ -11,35 +11,28 @@ import type ChessMove from "@/types/chess/Move";
 import type { Color } from "~/types/chess/Color";
 import type { Position } from "~/types/chess/Position";
 import type { FigureName } from "~/types/chess/FigureName";
-import type { GameOverInfo } from "~/types/chess/Game";
 import { getBoardInstance } from "~/services/chess/helpers";
 export default class Board {
     cells: { [key: string]: Array<Cell> } = {};
     moves: ChessMove[] = [];
-    side: Color = 'white';
     constructor() {
         this.addCells();
         this.addFigures();
     }
-    isGameOver(): GameOverInfo | false {
-        const getInfo = (type: GameOverType, side?: Color) => {
-            return {
-                type,
-                winner: side === 'white' ? 'black' : 'white',
-                movesAmount: this.moves.length,
-             } as GameOverInfo
-        }
+    isGameOver(): { type: GameOverType, side: Color } | false {
         return (['white', 'black'] as const).map((side: Color) => {
-            if (this.isCheckmate(side)) return getInfo(GameOverType.CHECKMATE, side);
-            else if (this.isStalemate(side)) return getInfo(GameOverType.STALEMATE, side);
+            if (this.isCheckmate(side)) return { type: GameOverType.CHECKMATE, side };
+            else if (this.isStalemate(side)) return { type: GameOverType.STALEMATE, side };
             return false;
         }).filter(i => i)[0];
     }
     copy() {
         return getBoardInstance({ ...this });
     }
-    switchSide() {
-        this.side = this.side === 'white' ? 'black' : 'white';
+    undoLastMove() {
+        if (!this.moves.length) return;
+        const { from, to } = this.getLastMove();
+        this.move(this.getCell(to), this.getCell(from));
     }
     move(from: Cell, to: Cell) {
         const { figure } = from;
@@ -49,7 +42,6 @@ export default class Board {
         else if (this.checkCastle(from, to)) this.castle(from, to);
         else this.moveFigure(from, to);
         this.moves.push({ figure: figure.name, from: from.position, to: to.position, side: figure.side });
-        this.switchSide();
         return true;
     }
     enPassant(from: Cell, to: Cell) {

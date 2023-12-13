@@ -2,14 +2,18 @@ import type { Unsubscribe } from "firebase/auth";
 import { getDocumentEntity, setDocumentEntity, updateDocumentEntity, subscribeToDocumentChanges } from "~/api";
 import type User from "~/models/auth/User";
 import Board from "~/models/chess/Board";
-import ChessRoom, { type Player } from "~/models/chess/room/ChessRoom";
+import ChessRoom, { GameStatus, type Player } from "~/models/chess/room/ChessRoom";
 import { generateHashCode } from "~/utils";
 import { getRoomInstance } from "./helpers";
+import type { GameOverInfo } from "~/types/chess/Game";
 class ChessService {
     async createChessRoom() {
         const id = generateHashCode(Math.random().toString()).toString();
         const board = new Board()
-        const room = new ChessRoom([null, null], id, { ...board } as Board, 'white');
+        const room = new ChessRoom(
+            [null, null], id, { ...board } as Board,
+            GameStatus.NOT_STARTED, new Date(), [], 'white'
+        );
         await setDocumentEntity(`games/${id}`, JSON.parse(JSON.stringify(room)));
         return room;
     };
@@ -35,7 +39,6 @@ class ChessService {
             throw new Error(`Room is full already but to you are trying to connect:\n${id}\n`);
         }
         const opponent = players.find(player => !!player);
-        //TODO add side configuration 
         const side = opponent 
             ? opponent.side === 'white' ? 'black' : 'white'
             : 'white'
@@ -48,6 +51,14 @@ class ChessService {
         const target = await this.getChessRoom(id);
         target.players = target.players.map(player => player?.uid === uid ? null : player) as [Player | null, Player | null];
         return updateDocumentEntity(`games/${id}`, target);
+    }
+    async setGameOver(id: string, gameOverInfo: GameOverInfo) {
+        const target = await this.getChessRoom(id);
+        if (target.status !== GameStatus.FINISHED) {
+            target.gameOverInfo = gameOverInfo;
+            target.status = GameStatus.FINISHED;
+            return updateDocumentEntity(`games/${id}`, target);
+        }
     }
 }
 export default new ChessService();

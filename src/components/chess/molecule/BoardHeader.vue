@@ -14,7 +14,7 @@
                     </div>
                 </div>
                 <small class="w-full text-xs whitespace-nowrap overflow-hidden text-ellipsis">
-                    <span :class="getCurrentSide === getPlayerSide ? 'text-green-300' : 'text-red-300'">{{ uppercasedCurrentSide }}</span>
+                    <span :class="getMovingSide === getPlayerSide ? 'text-green-300' : 'text-red-300'">{{ uppercasedCurrentSide }}</span>
                     to move
                 </small>
             </div>
@@ -31,8 +31,8 @@
 
 <script setup lang="ts">
     import { BaseLoader, useToast, BaseButton } from "kneekeetah-vue-ui-kit"
-    const { getCurrentSide, getOpponent, getPlayerSide, currGame } = storeToRefs(useGame());
-    const uppercasedCurrentSide = computed(() => getCurrentSide.value ? getCurrentSide.value[0].toUpperCase() + getCurrentSide.value.slice(1) : '' );
+    const { getMovingSide, getOpponent, getPlayerSide, currGame } = storeToRefs(useGame());
+    const uppercasedCurrentSide = computed(() => getMovingSide.value ? getMovingSide.value[0].toUpperCase() + getMovingSide.value.slice(1) : '' );
     const id = computed(() => currGame.value?.id);
     const emit = defineEmits<{
         (e: 'chat'): void;

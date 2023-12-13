@@ -5,13 +5,22 @@ import { plainToClass } from "class-transformer"
 import type Move from "~/types/chess/Move";
 import figures from "~/models/chess/figures";
 import type { FigureName } from "~/types/chess/FigureName";
-import ChessRoom from "~/models/chess/room/ChessRoom";
-import type { Color } from "~/types/chess/Color";
+import ChessRoom, { type Player } from "~/models/chess/room/ChessRoom";
 
-type PlainObjectBoard = { cells: { [key: string]: Array<object> }, moves: Array<object>, side: string };
+type PlainObjectBoard = { cells: { [key: string]: Array<object> }, moves: Array<object> };
 type PlainObjectFigure = { name: FigureName };
 type PlainObjectCell = { figure: object | null };
-
+export function getGameOverInfo(board: Board, gameId: string, players: Player[]) {
+    const info = board.isGameOver();
+    if (!info) return;
+    const { side, type } = info;
+    const winner = players.find(p => p?.side === side) || null;
+    if (winner && type) {
+     return {
+            winner, gameId, type
+        }
+    }
+}
 export function getFigureInstance(plainObject: PlainObjectFigure): Figure {
     const FigureConstructor = figures[plainObject.name];
     return plainToClass(FigureConstructor, plainObject);
@@ -27,7 +36,6 @@ export function getBoardInstance(plainObject: PlainObjectBoard): Board {
     Object.keys(plainObject.cells).forEach(column => {
         board.cells[column] = plainObject.cells[column].map(cell => getCellInstance({ ...cell } as PlainObjectCell));
     });
-    board.side = plainObject.side as Color;
     board.moves = plainObject.moves as Move[];
     return board;
 }

@@ -1,9 +1,11 @@
-import ChessRoom, { type Player } from "~/models/chess/room/ChessRoom";
+import ChessRoom, { GameStatus, type Player } from "~/models/chess/room/ChessRoom";
 import ChessService from "@/services/chess";
 import ChatService from "~/services/chat";
 import type { Unsubscribe } from "firebase/auth";
 import type Board from "~/models/chess/Board";
 import type { Color } from "~/types/chess/Color";
+import type { GameOverInfo, GameOverType } from "~/types/chess/Game";
+import { getGameOverInfo } from "~/services/chess/helpers";
 export const useGame = defineStore('game', {
     state: () => ({
         currGame: null as ChessRoom | null,
@@ -28,9 +30,9 @@ export const useGame = defineStore('game', {
             if (!user || !players.length || players.length < 2) return null;
             return players.find(p => p?.uid === user.uid)?.side || null;
         },
-        getCurrentSide(state): Color | null {
+        getMovingSide(state): Color | null {
             if (!state.currGame) return null;
-            return state.currGame.board.side;
+            return state.currGame.movingSide;
         }
     },
     actions: {
@@ -75,26 +77,31 @@ export const useGame = defineStore('game', {
                 console.error(e);
             }
         },
-        async send(room: ChessRoom) {
+        async setGameOver() {
             try {
                 const { user } = useAuth();
-                if (!this.currGame) throw new Error("Trying lo update game but you are not in the game");
-                if (!user) throw new Error("Trying lo update game but you are not authenticated");
-                await ChessService.updateChessRoom(this.currGame.id, room);
+                if (!this.currGame) throw new Error("Trying to end game but you are not in the game");
+                if (!user) throw new Error("Trying to end game but you are not authenticated");
+                const info = getGameOverInfo(this.currGame.board as Board, this.currGame.id, this.currGame.players as Player[]);
+                if (info) {
+                    await ChessService.setGameOver(this.currGame.id, info);
+                } else {
+                    throw new Error("Trying to end game but can't find game over info");
+                }
             } catch(e) {
                 console.error(e);
             }
         },
-        async updateBoard(board: Board) {
+        async move(room: Partial<ChessRoom>) {
             try {
                 const { user } = useAuth();
-                if (!this.currGame) throw new Error("Trying lo update board but you are not in the game");
-                if (!user) throw new Error("Trying lo update board but you are not authenticated");
-                await ChessService.updateChessRoom(this.currGame.id, { board } as ChessRoom);
+                if (!this.currGame) throw new Error("Trying lo update game but you are not in the game");
+                if (!user) throw new Error("Trying lo update game but you are not authenticated");
+                const status = this.currGame.status === GameStatus.NOT_STARTED ? GameStatus.PROCESS : this.currGame.status;
+                await ChessService.updateChessRoom(this.currGame.id, { ...room, status } as ChessRoom);
             } catch(e) {
                 console.error(e);
-                throw e
             }
-        }
+        },
     }
 })

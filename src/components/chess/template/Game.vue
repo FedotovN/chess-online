@@ -5,21 +5,22 @@
     import { useModal } from 'kneekeetah-vue-ui-kit';
     import Board from '~/models/chess/Board';
     import type Figure from '~/models/chess/figures/Figure';
-    const { getPlayerSide, getCurrentSide, getOpponent, getBoard, currGame } = storeToRefs(useGame());
-    const { updateBoard } = useGame();
-    const toDisableBoard = computed(() => !getOpponent.value);
+    const { getPlayerSide, getMovingSide, getOpponent, getBoard, currGame } = storeToRefs(useGame());
+    const { move, setGameOver } = useGame();
+    const ourMove = computed(() => getMovingSide.value === getPlayerSide.value);
+    const toDisableBoard = computed(() => !getOpponent.value || !ourMove.value);
     const canPromote = computed(() => board.value?.getPromotedPawn(getPlayerSide.value!));
     const isGameOver = computed(() => !!board.value?.isGameOver());
     const { add, open, close } = useModal();
     const footer = ref(null);
     add({ header: 'Promote a pawn', component: PromotedPawnForm, id: 'promote-pawn' });
     add({ header: 'Game over', component: GameOverOverview, id: 'game-over' });    
-    add({ header: `Chat with ${getOpponent.value?.displayName}`, component: ChatOrganismChat, id: 'chat'});
+    add({ header: `Chat`, component: ChatOrganismChat, id: 'chat'});
     async function promotePawn() {
         const pawn = board.value.getCell(canPromote.value.position).figure;
         open('promote-pawn', { 'pawn': pawn, side: getPlayerSide.value }, { promote: async (figure: Figure) => {
                 board.value.getCell(figure.position).figure = figure;
-                await updateBoard(board.value);
+                await move({ board: board.value, movingSide: getMovingSide.value === 'white' ? 'black' : 'white' });
                 close();
             }
         })
@@ -31,12 +32,13 @@
         async set(board: Board) {
             if (canPromote.value) promotePawn();
             else {
-                await updateBoard(board);
+                await move({ board, movingSide: getMovingSide.value === 'white' ? 'black' : 'white' });
             }
         }
     })
-    watch(isGameOver, v => {
+    watch(isGameOver, async v => {
         if (!v) return;
+        await setGameOver();
         open('game-over', { gameOverInfo: board.value?.isGameOver() });
     })
 </script>
@@ -52,7 +54,7 @@
                     v-model="board"
                     :disabled="toDisableBoard"
                     :player-side="getPlayerSide"
-                    :current-side="getCurrentSide"
+                    :current-side="getMovingSide"
                 />
             </div>
         </div>
