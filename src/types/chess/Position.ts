@@ -7,4 +7,4 @@ export type Vertical = Row;
 export type PositionName = `${Horizontal}${Vertical}`;
 export type Position = { x: Row, y: Row };
 export const getHorizontalNameByIndex = (x: Row) => { return Horizontal[x] };
-export const getPositionNameByPosition = (p: Position): PositionName => { return `${getHorizontalNameByIndex(p.x)}${p.y}` };
+export const getPositionNameByPosition = (p: Position): PositionName => { return `${getHorizontalNameByIndex(p.x)}${(p.y + 1 as Row)}` };

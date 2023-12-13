@@ -28,7 +28,7 @@
     const playerBySide = (side: Color) => players.value?.find(p => p.side === side);
 </script>
 <template>
-    <div class="flex flex-col justify-center gap-4 px-3 max-w-full overflow-hidden h-72 text-gray-300">
+    <div class="flex flex-col justify-center gap-4 px-3 max-w-full overflow-hidden h-72 text-gray-300 w-full">
         <div class="flex w-full justify-center">
             <h1 class="text-2xl whitespace-nowrap text-ellipsis overflow-hidden">Last game</h1>
         </div>        
@@ -47,15 +47,15 @@
                         <h2 class="text-xl text-green-300" v-if="wonTheGame === true">Win</h2>
                         <h2 class="text-xl text-red-300" v-else-if="wonTheGame === false">Lose</h2>
                         <h2 class="text-xl text-blue-300" v-else>Draw</h2>
-                        <span class="h-2 w-2 bg-gray-300 rounded-full" v-if="wonTheGame === true || wonTheGame === false"></span>
+                        <span class="h-2 w-2 bg-gray-300 rounded-full"></span>
                         <p><span class="font-bold">{{ moves?.length }}</span> moves</p>
                     </div>
                 </div>
                 <div class="flex flex-col gap-2 overflow-hidden max-w-full">
                     <div class="flex gap-2 items-center">
-                        <p class="text-lg font-bold">Last moves</p>
+                        <p class="text-lg font-bold">Moves made</p>
                     </div>
-                    <div class="flex gap-4 overflow-hidden max-w-full rounded-lg shadow-inner shadow-black border border-gray-900 p-3" v-if="moves">
+                    <div class="flex gap-4 overflow-x-scroll no-scrollbar max-w-full rounded-lg shadow-inner shadow-black border border-gray-900 p-3" v-if="moves">
                         <div class="relative flex justify-center items-center rounded-full h-10 aspect-square border-2" :class="{ 'border-green-300': move.side === playerSide }" v-for="(move, ind) in moves">
                             <img :src="getSvgSrcFromFigure(move.side, move.figure)" class="relative h-[85%] z-10">
                             <span v-if="ind !== moves.length - 1" class="absolute h-1 w-4 -right-1/2 mr-px" :class="{ 'bg-green-300': move.side === playerSide, 'bg-gray-300': move.side !== playerSide }"></span>

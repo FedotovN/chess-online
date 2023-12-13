@@ -5,6 +5,8 @@
     import { useModal } from 'kneekeetah-vue-ui-kit';
     import Board from '~/models/chess/Board';
     import type Figure from '~/models/chess/figures/Figure';
+    import { getGameOverInfo } from '~/services/chess/helpers';
+    import type { Player } from '~/models/chess/room/ChessRoom';
     const { getPlayerSide, getMovingSide, getOpponent, getBoard, currGame } = storeToRefs(useGame());
     const { move, setGameOver } = useGame();
     const ourMove = computed(() => getMovingSide.value === getPlayerSide.value);
@@ -38,8 +40,8 @@
     })
     watch(isGameOver, async v => {
         if (!v) return;
+        open('game-over', { gameOverInfo: getGameOverInfo(board.value, currGame.value!.id, currGame.value!.players as [Player, Player]) });
         await setGameOver();
-        open('game-over', { gameOverInfo: board.value?.isGameOver() });
     })
 </script>
 <template>

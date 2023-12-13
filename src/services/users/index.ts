@@ -41,13 +41,22 @@ class UsersService {
         const wasDefeated = stats === -1;
         const draw = stats === 0;
         const won = stats === 1;
-        info.stats.draw += draw ? 1 : 0;
-        info.stats.won += won ? 1 : 0;
-        info.stats.defeated += wasDefeated ? 1 : 0;
-        info.stats.score = won 
-        ? info.stats.score + 15 : draw
-        ? info.stats.score : wasDefeated
-        ? info.stats.score >= 10 ? info.stats.score - 10 : 0 : info.stats.score;
+        switch (stats) {
+            case 1:
+                info.stats.won += won ? 1 : 0;
+                info.stats.score += 15
+                break;
+            case 0:
+                info.stats.draw += draw ? 1 : 0;
+                break;
+            case -1:
+                info.stats.defeated += wasDefeated ? 1 : 0;
+                info.stats.score -= 10;
+                info.stats.score = info.stats.score < 0 ? 0 : info.stats.score;
+                break;
+            default:
+                break;
+        }
         await this.setUserToDatabase(info);
     }
 }

@@ -84,9 +84,9 @@ export const useGame = defineStore('game', {
                 if (!user) throw new Error("Trying to end game but you are not authenticated");
                 const info = getGameOverInfo(this.currGame.board as Board, this.currGame.id, this.currGame.players as [Player, Player]);
                 if (info) {
-                    const drawOrCheckmate = info.winner ? info.winner.uid === user.uid ? 1 : -1 : 0;
+                    const winOrDrawOrLose = info.winner ? info.winner.uid === user.uid ? 1 : -1 : 0;
                     await ChessService.setGameOver(this.currGame.id, info);
-                    await UserService.addGame(user.uid, this.currGame.id, drawOrCheckmate);
+                    await UserService.addGame(user.uid, this.currGame.id, winOrDrawOrLose);
                 } else {
                     throw new Error("Trying to end game but can't find game over info");
                 }
@@ -99,8 +99,8 @@ export const useGame = defineStore('game', {
                 const { user } = useAuth();
                 if (!this.currGame) throw new Error("Trying lo update game but you are not in the game");
                 if (!user) throw new Error("Trying lo update game but you are not authenticated");
-                const status = this.currGame.status === GameStatus.NOT_STARTED ? GameStatus.PROCESS : this.currGame.status;
-                await ChessService.updateChessRoom(this.currGame.id, { ...room, status } as ChessRoom);
+                const gameStatusAfterMove = this.currGame.status === GameStatus.NOT_STARTED ? GameStatus.PROCESS : this.currGame.status;
+                await ChessService.updateChessRoom(this.currGame.id, { ...room, status: gameStatusAfterMove } as ChessRoom);
             } catch(e) {
                 console.error(e);
             }

@@ -5,15 +5,11 @@
         (e: 'rematch'): void,
         (e: 'bruh'): void,
     }>();
-    const props = withDefaults(defineProps<{
+    const props = defineProps<{
         gameOverInfo: GameOverInfo,
-    }>(), { 
-        gameOverInfo: {
-            movesAmount: 0, type: GameOverType.CHECKMATE, winner: 'white', time: '0',
-        }
-    });
-    const info = computed(() => props.gameOverInfo);
-    const uppercasedWinner = computed(() => info.value?.winner ? info.value.winner[0].toUpperCase() + info.value.winner?.slice(1) : '');
+    }>()
+    const winner = computed(() => props.gameOverInfo.winner);
+    const uppercasedWinner = computed(() => winner.value ? winner.value.side[0].toUpperCase() + winner.value.side.slice(1) : '');
     function onLeave() {
         console.log('bruh');
         emit('bruh');

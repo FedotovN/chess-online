@@ -6,6 +6,7 @@ import type Move from "~/types/chess/Move";
 import figures from "~/models/chess/figures";
 import type { FigureName } from "~/types/chess/FigureName";
 import ChessRoom, { type Player } from "~/models/chess/room/ChessRoom";
+import { GameOverType } from "~/types/chess/Game";
 
 type PlainObjectBoard = { cells: { [key: string]: Array<object> }, moves: Array<object> };
 type PlainObjectFigure = { name: FigureName };
@@ -13,12 +14,11 @@ type PlainObjectCell = { figure: object | null };
 export function getGameOverInfo(board: Board, gameId: string, players: [Player, Player]) {
     const info = board.isGameOver();
     if (!info) return;
+    const isCheckmate = info.type === GameOverType.CHECKMATE;
     const { side, type } = info;
-    const winner = players.find(p => p?.side !== side) || null;
-    if (winner && type) {
-     return {
-            winner, gameId, type, players
-        }
+    const winner = isCheckmate ? players.find(p => p?.side !== side) : undefined;
+    return {
+        winner, gameId, type, players
     }
 }
 export function getFigureInstance(plainObject: PlainObjectFigure): Figure {
