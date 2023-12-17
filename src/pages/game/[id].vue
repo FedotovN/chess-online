@@ -1,9 +1,27 @@
 <script setup lang="ts">
-    import { BaseLoader } from 'kneekeetah-vue-ui-kit';
+    import { BaseLoader, useToast } from 'kneekeetah-vue-ui-kit';
     const { id } = useRoute().params;
     const loading = ref(true);
-    useGameRoom(id as string).then(() => {
-        loading.value = false;
+    const { join, currGame } = useGame();
+    const { add } = useToast()
+    useAuth().onAuthResolve(async user => {
+        if (currGame) return;
+        if (!user) {
+            add({ content: "Let's login first!", color: "secondary", delay: 5000 });
+            return navigateTo("/auth/login");
+        }
+        try {
+            await join(id as string);
+            add({ content: `You've connected to the game`, color: "primary", delay: 5000 });
+            
+        } catch (e) {
+            await navigateTo("/");
+            add({ content: `Error while connecting to the game`, color: "alert", delay: 5000 });
+            console.error(e);
+        } finally {
+            console.log(useGame().currGame);
+            loading.value = false;
+        }
     });
 </script>
 <template>

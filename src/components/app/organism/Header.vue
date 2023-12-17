@@ -13,7 +13,7 @@
         </h1>
     </div>
     <div class="flex-1 gap-2 flex justify-end items-center overflow-hidden h-full">
-        <div class="flex items-center gap-2 text-sm whitespace-nowrap text-ellipsis overflow-hidden cursor-pointer h-full hover:opacity-75 transition-all" v-if="user" @click="open('user-modal')">
+        <div class="flex items-center gap-2 text-sm whitespace-nowrap text-ellipsis overflow-hidden cursor-pointer h-full hover:opacity-75 transition-all" v-if="user" @click="open({ id: 'user-modal' })">
             <p class="inline-flex gap-2 items-center overflow-hidden text-ellipsis">
                 <span class="inline-block max-w-[150px] text-purple-400 font-bold overflow-hidden text-ellipsis">
                     {{ user?.stats?.score }} exp.

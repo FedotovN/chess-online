@@ -2,7 +2,6 @@
     import NewGameForm from '~/components/chess/organism/NewGameForm.vue';
     import JoinGameForm from "~/components/chess/organism/JoinForm.vue";
     import { useModal } from "kneekeetah-vue-ui-kit";
-import { mergeProps } from 'vue';
     const { add, open } = useModal();
     add({ header: 'Create a game', component: NewGameForm, id: 'create-game' });
     add({ header: 'Join a game', component: JoinGameForm, id: 'join-game' });
@@ -16,14 +15,14 @@ import { mergeProps } from 'vue';
                 title: 'Create a game',
                 icon: 'fa-solid fa-play',
                 description: 'And use invite link to play with your friend',
-                callback: () => open('create-game'),
+                callback: () => open({ id: 'create-game' }),
                 requireLogin: true,
             },
             {
                 title: 'Join game',
                 icon: 'fa-solid fa-door-open',
                 description: 'Using your friend\'s room\'s ID',
-                callback: () => open('join-game'),
+                callback: () => open({ id: 'join-game'}),
                 requireLogin: true,
             },
         ],
@@ -32,6 +31,7 @@ import { mergeProps } from 'vue';
                 title: 'Create a Board',
                 icon: 'fa-solid fa-chess-board',
                 description: 'Play offline.',
+                callback: () => useRouter().push(`/game/singleplayer`),
             },
         ]
     ]

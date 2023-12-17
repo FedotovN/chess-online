@@ -33,16 +33,15 @@ export default class Board {
         if (!this.moves.length) return;
         const { from, to } = this.getLastMove();
         this.move(this.getCell(to), this.getCell(from));
+        this.moves = this.moves.slice(0, -2);
     }
     move(from: Cell, to: Cell) {
         const { figure } = from;
-        const canMove = figure && figure.canMoveTo(this, to);
-        if (!canMove) return false;
+        if (!figure) throw new Error(`No figure found in ${from.position} but trying to move to ${to.position}`);
         if (this.checkEnPassant(figure, to)) this.enPassant(from, to);
         else if (this.checkCastle(from, to)) this.castle(from, to);
         else this.moveFigure(from, to);
         this.moves.push({ figure: figure.name, from: from.position, to: to.position, side: figure.side });
-        return true;
     }
     enPassant(from: Cell, to: Cell) {
         this.getCell(this.getLastMove().to).figure = null

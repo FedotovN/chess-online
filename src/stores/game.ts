@@ -12,27 +12,23 @@ export const useGame = defineStore('game', {
         unsubs: {} as { [key: string]: Unsubscribe },
     }),
     getters: {
-        getOpponent(state): Player | null {
-            if (!state.currGame) return null;
-            const { user } = useAuth();
-            const { players } = state.currGame;
-            if (!user || !players.length || players.length < 2) return null;
-            return players.find(p => p?.uid !== user.uid) || null;
-        },
         getBoard(state): Board | null {
             if (!state.currGame) return null;
             return state.currGame.board as Board;
         },
-        getPlayerSide(state): Color | null {
-            if (!state.currGame) return null;
-            const { user } = useAuth();
-            const { players } = state.currGame;
-            if (!user || !players.length || players.length < 2) return null;
-            return players.find(p => p?.uid === user.uid)?.side || null;
-        },
         getMovingSide(state): Color | null {
             if (!state.currGame) return null;
             return state.currGame.movingSide;
+        },
+        getPlayers(state): [Player | null, Player | null] | null {
+            if (!state.currGame) return null;
+            return state.currGame.players;
+        },
+        getOurSide(): Color | null | undefined {
+            const { user } = useAuth();
+            const p = this.getPlayers || [];
+            if (!p.length || !user) return null;
+            return p.find(p => p?.uid === user.uid)?.side;
         }
     },
     actions: {
@@ -58,7 +54,9 @@ export const useGame = defineStore('game', {
                 const { user } = useAuth();
                 if (!user) throw new Error("Not authenticated yet trying to join chess room");
                 this.currGame = await ChessService.joinChessRoom(id, user);
-                this.listen(room => this.currGame = room);
+                this.listen(room => { 
+                    this.currGame = room
+                });
             } catch (e) {
                 console.error(e);
                 throw e;
@@ -94,13 +92,14 @@ export const useGame = defineStore('game', {
                 console.error(e);
             }
         },
-        async move(room: Partial<ChessRoom>) {
+        async move(board: Board) {
             try {
                 const { user } = useAuth();
                 if (!this.currGame) throw new Error("Trying lo update game but you are not in the game");
                 if (!user) throw new Error("Trying lo update game but you are not authenticated");
                 const gameStatusAfterMove = this.currGame.status === GameStatus.NOT_STARTED ? GameStatus.PROCESS : this.currGame.status;
-                await ChessService.updateChessRoom(this.currGame.id, { ...room, status: gameStatusAfterMove } as ChessRoom);
+                const movingSideAfterMove = this.currGame.movingSide === 'white' ? 'black' : 'white';
+                await ChessService.updateChessRoom(this.currGame.id, { board, status: gameStatusAfterMove, movingSide: movingSideAfterMove } as ChessRoom);
             } catch(e) {
                 console.error(e);
             }
