@@ -28,7 +28,7 @@
     }
 </script>
 <template>
-    <form @submit.prevent="onSubmit" class="flex flex-col px-2 py-1 shadow-md border-neutral-700 h-full w-full md:w-[380px] text-gray-300 md:border-2 rounded">
+    <form @submit.prevent="onSubmit" class="flex flex-col px-2 py-1 shadow-md border-neutral-700 h-full w-full max-w-full sm:min-w-[380px] text-gray-300 md:border-2 rounded">
         <div class="flex justify-center py-2">
             <p class="text-gray-300">Sign Up</p>
         </div>

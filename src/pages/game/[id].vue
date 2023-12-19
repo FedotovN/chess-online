@@ -18,7 +18,6 @@
             add({ content: `Error while connecting to the game`, color: "alert", delay: 5000 });
             console.error(e);
         } finally {
-            console.log(useGame().currGame);
             loading.value = false;
         }
     });

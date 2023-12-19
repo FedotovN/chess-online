@@ -27,7 +27,7 @@
     }
 </script>
 <template>
-    <form @submit.prevent="onSubmit" class="flex flex-col px-2 py-1 shadow-md h-full w-full min-w-[380px] text-gray-300 md:border-2 border-neutral-700 rounded">
+    <form @submit.prevent="onSubmit" class="flex flex-col px-2 py-1 shadow-md h-full w-full sm:min-w-[380px] max-w-full text-gray-300 md:border-2 border-neutral-700 rounded">
         <div class="flex justify-center py-2">
             <p class="text-gray-300">Chess online ♟️</p>
         </div>

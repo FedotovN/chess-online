@@ -35,25 +35,25 @@
         <div class="w-full border border-neutral-800 rounded shadow px-3 py-2 overflow-hidden max-w-full" v-if="lastGame && gameOverInfo">
             <div class="flex flex-col gap-3 w-full max-w-full">
                 <div class="flex justify-between items-center">
-                    <h2 class="text-3xl">
+                    <h2 class="text-2xl sm:text-3xl">
                         {{ gameOverInfo?.type }}
                     </h2>
-                    <i class="text-6xl fa-solid fa-smile text-green-300" v-if="wonTheGame === true"></i>
-                    <i class="text-6xl fa-solid fa-face-sad-cry text-red-300" v-else-if="wonTheGame === false"></i>
-                    <i class="text-6xl fa-solid fa-chess text-blue-300" v-else></i>
+                    <i class="text-4xl sm:text-5xl fa-solid fa-smile text-green-300" v-if="wonTheGame === true"></i>
+                    <i class="text-4xl sm:text-5xl fa-solid fa-face-sad-cry text-red-300" v-else-if="wonTheGame === false"></i>
+                    <i class="text-4xl sm:text-5xl fa-solid fa-chess text-blue-300" v-else></i>
                 </div>
                 <div class="flex w-full justify-between">
-                    <div class="flex gap-2 items-center">
-                        <h2 class="text-xl text-green-300" v-if="wonTheGame === true">Win</h2>
-                        <h2 class="text-xl text-red-300" v-else-if="wonTheGame === false">Lose</h2>
-                        <h2 class="text-xl text-blue-300" v-else>Draw</h2>
+                    <div class="flex gap-2 items-center text-md sm:text-xl">
+                        <h2 class="text-green-300" v-if="wonTheGame === true">Win</h2>
+                        <h2 class="text-red-300" v-else-if="wonTheGame === false">Lose</h2>
+                        <h2 class="text-blue-300" v-else>Draw</h2>
                         <span class="h-2 w-2 bg-gray-300 rounded-full"></span>
-                        <p><span class="font-bold">{{ moves?.length }}</span> moves</p>
+                        <p class="text-xs sm:text-sm"><span class="font-bold">{{ moves?.length }}</span> moves</p>
                     </div>
                 </div>
                 <div class="flex flex-col gap-2 overflow-hidden max-w-full">
                     <div class="flex gap-2 items-center">
-                        <p class="text-lg font-bold">Moves made</p>
+                        <p class="sm:text-lg text-md font-bold">Moves made</p>
                     </div>
                     <div class="flex gap-4 overflow-x-scroll no-scrollbar max-w-full rounded-lg shadow-inner shadow-black p-3" v-if="moves">
                         <div class="relative flex justify-center items-center rounded-full h-10 aspect-square border-2" :class="{ 'border-green-300': move.side === playerSide }" v-for="(move, ind) in moves">

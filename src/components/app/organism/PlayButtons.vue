@@ -54,10 +54,10 @@
                 <div v-for="button in row" @click="handleClick(button)" class="flex-1 h-full w-full relative">
                     <div class="h-full flex flex-col gap-2 border border-neutral-800 bg-neutral-900 py-2 px-3 shadow-sm rounded cursor-pointer select-none hover:border-green-200 hover:shadow-green-900 transition-all group relative hover:z-10 hover:shadow-2xl" :class="{ 'opacity-25 pointer-events-none': toDisable(button) }">
                         <div class="flex justify-between items-center group-hover:text-green-300 transition-all">
-                            <h2 class="text-xl">{{ button.title }}</h2>
+                            <h2 class="text-lg sm:text-xl">{{ button.title }}</h2>
                             <i :class="button.icon"></i>
                         </div>
-                        <p class="text-sm text-neutral-400">{{ button.description }}</p>
+                        <p class="sm:text-sm text-xs text-neutral-400">{{ button.description }}</p>
                     </div>
                     <div class="absolute border rounded border-red-300 w-full h-full top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 select-none" v-if="toDisable(button)">
                         <div class="h-full w-full justify-center items-center flex flex-col">
