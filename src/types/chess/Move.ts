@@ -1,9 +1,10 @@
+import type Figure from "~/models/chess/figures/Figure";
 import type { Color } from "./Color";
-import { type FigureName } from "./FigureName"
 import { type Position } from "./Position";
 export default interface Move {
-    figure: FigureName,
+    figure: Figure,
     from: Position,
     to: Position,
     side: Color,
+    takes?: Figure | null,
 }

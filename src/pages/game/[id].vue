@@ -2,10 +2,9 @@
     import { BaseLoader, useToast } from 'kneekeetah-vue-ui-kit';
     const { id } = useRoute().params;
     const loading = ref(true);
-    const { join, currGame } = useGame();
+    const { join } = useGame();
     const { add } = useToast()
     useAuth().onAuthResolve(async user => {
-        if (currGame) return;
         if (!user) {
             add({ content: "Let's login first!", color: "secondary", delay: 5000 });
             return navigateTo("/auth/login");

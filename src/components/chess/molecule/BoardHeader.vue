@@ -1,18 +1,11 @@
 <template>
     <div class="flex justify-between items-center w-full text-gray-300 h-12">
-        <div class="flex items-center gap-2 overflow-hidden" v-if="getOpponent">
+        <div class="flex w-full justify-between items-center gap-2 overflow-hidden" v-if="getOpponent">
             <div class="flex items-center gap-2 overflow-hidden">
                 <UserAtomPhoto :photo-url="getOpponent.photoURL" />
                 <small class="text-sm whitespace-nowrap overflow-hidden text-ellipsis">{{ getOpponent.displayName }}</small>
             </div>
-            <div class="flex items-center flex-1 w-full">
-                <div class="lg:hidden flex gap-3 items-center w-full">
-                    <div class="flex items-center gap-1">
-                        <BaseButton flat class="w-full whitespace-nowrap" @click="emit('chat')">
-                            Go to chat
-                        </BaseButton>
-                    </div>
-                </div>
+            <div class="flex items-center">
                 <small class="w-full text-xs whitespace-nowrap overflow-hidden text-ellipsis">
                     <span :class="getMovingSide === getOurSide ? 'text-green-300' : 'text-red-300'">{{ uppercasedCurrentSide }}</span>
                     to move

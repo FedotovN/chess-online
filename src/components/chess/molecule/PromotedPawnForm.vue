@@ -1,5 +1,5 @@
 <template>
-    <div class="flex gap-2 items-center justify-center">    
+    <div class="flex gap-2 items-center justify-center px-2">    
         <img
             :src="getSvgKey(name)"
             class="h-full py-2 px-1 flex-1 cursor-pointer hover:opacity-90 transition-all"
@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
     import figures from '~/models/chess/figures';
-import type Figure from '~/models/chess/figures/Figure';
+    import type Figure from '~/models/chess/figures/Figure';
     import type Pawn from '~/models/chess/figures/Pawn';
     import type { Color } from '~/types/chess/Color';
     import type { FigureName } from '~/types/chess/FigureName';

@@ -11,7 +11,7 @@ import type ChessMove from "@/types/chess/Move";
 import type { Color } from "~/types/chess/Color";
 import type { Position } from "~/types/chess/Position";
 import type { FigureName } from "~/types/chess/FigureName";
-import { getBoardInstance } from "~/services/chess/helpers";
+import { getBoardInstance, getFigureInstance } from "~/services/chess/helpers";
 export default class Board {
     cells: { [key: string]: Array<Cell> } = {};
     moves: ChessMove[] = [];
@@ -31,21 +31,30 @@ export default class Board {
     }
     undoLastMove() {
         if (!this.moves.length) return;
-        const { from, to } = this.getLastMove();
+        const { from, to, takes } = this.getLastMove();
         this.move(this.getCell(to), this.getCell(from));
+        if (takes) {
+            const taken = getFigureInstance({ ...takes });
+            this.getCell(to).figure = taken;
+        }
         this.moves = this.moves.slice(0, -2);
     }
     move(from: Cell, to: Cell) {
         const { figure } = from;
+        let takes;
         if (!figure) throw new Error(`No figure found in ${from.position} but trying to move to ${to.position}`);
-        if (this.checkEnPassant(figure, to)) this.enPassant(from, to);
-        else if (this.checkCastle(from, to)) this.castle(from, to);
-        else this.moveFigure(from, to);
-        this.moves.push({ figure: figure.name, from: from.position, to: to.position, side: figure.side });
+        if (this.checkCastle(from, to)) this.castle(from, to);
+        else {
+            if (this.checkEnPassant(figure, to)) takes = this.enPassant(from, to);   
+            else takes = this.moveFigure(from, to);
+        }
+        this.moves.push({ figure, from: from.position, to: to.position, side: figure.side, takes });
     }
     enPassant(from: Cell, to: Cell) {
+        const takes = this.getCell(this.getLastMove().to).figure;
         this.getCell(this.getLastMove().to).figure = null
         this.moveFigure(from, to);
+        return takes;
     }
     castle(from: Cell, to: Cell): boolean {
         const { x: rookX, y } = to.position;
@@ -59,15 +68,18 @@ export default class Board {
         this.moveFigure(to, rookCell);
         return true;
     }
-    moveFigure(from: Cell, to: Cell) {
+    moveFigure(from: Cell, to: Cell): Figure | null {
         const { figure } = from;
-        if (!figure) return;
+        let takes = null
+        if (!figure) return null;
         if (figure instanceof Pawn || figure instanceof King || figure instanceof Rook) {
             figure.isFirstMove = false;
         }
+        if (to.figure) takes = to.figure;
         figure.position = to.position
         to.figure = figure;
         from.figure = null;
+        return takes;
     }
     getLastMove() {
         return this.moves[this.moves.length - 1];
@@ -75,7 +87,7 @@ export default class Board {
     checkEnPassant(pawn: Figure, cell: Cell) {
         if (!(pawn instanceof Pawn)) return false;
         const last = this.getLastMove();
-        if (!last || last.figure !== 'pawn') return false;
+        if (!last || last.figure.name !== 'pawn') return false;
         const sameX =  last.to.x === cell.position.x;
         const movedTwoSteps = last.to.y - last.from.y === pawn.getModifier() * 2;
         const wentThrough = last.to.y - cell.position.y === pawn.getModifier();

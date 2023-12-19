@@ -55,12 +55,12 @@
                     <div class="flex gap-2 items-center">
                         <p class="text-lg font-bold">Moves made</p>
                     </div>
-                    <div class="flex gap-4 overflow-x-scroll no-scrollbar max-w-full rounded-lg shadow-inner shadow-black border border-gray-900 p-3" v-if="moves">
+                    <div class="flex gap-4 overflow-x-scroll no-scrollbar max-w-full rounded-lg shadow-inner shadow-black p-3" v-if="moves">
                         <div class="relative flex justify-center items-center rounded-full h-10 aspect-square border-2" :class="{ 'border-green-300': move.side === playerSide }" v-for="(move, ind) in moves">
-                            <img :src="getSvgSrcFromFigure(move.side, move.figure)" class="relative h-[85%] z-10">
+                            <img :src="getSvgSrcFromFigure(move.side, move.figure.name)" class="relative h-[85%] z-10">
                             <span v-if="ind !== moves.length - 1" class="absolute h-1 w-4 -right-1/2 mr-px" :class="{ 'bg-green-300': move.side === playerSide, 'bg-gray-300': move.side !== playerSide }"></span>
                             <BaseTooltip allow-h-t-m-l>
-                                <p>{{ playerBySide(move.side)?.displayName }} moves his {{ move.figure }} from {{ getPositionNameByPosition(move.from) }} to {{ getPositionNameByPosition(move.to) }}</p>
+                                <p>{{ playerBySide(move.side)?.displayName }} moves his {{ move.figure.name }} from {{ getPositionNameByPosition(move.from) }} to {{ getPositionNameByPosition(move.to) }}</p>
                             </BaseTooltip>
                         </div>
                     </div>

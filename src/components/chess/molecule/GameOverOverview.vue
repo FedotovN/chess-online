@@ -1,19 +1,15 @@
 <script lang="ts" setup>
     import { BaseButton } from 'kneekeetah-vue-ui-kit';
-    import { GameOverType, type GameOverInfo } from '~/types/chess/Game';
+    import { type GameOverInfo } from '~/types/chess/Game';
     const emit = defineEmits<{
         (e: 'rematch'): void,
-        (e: 'bruh'): void,
+        (e: 'leave'): void,
     }>();
     const props = defineProps<{
         gameOverInfo: GameOverInfo,
     }>()
     const winner = computed(() => props.gameOverInfo.winner);
     const uppercasedWinner = computed(() => winner.value ? winner.value.side[0].toUpperCase() + winner.value.side.slice(1) : '');
-    function onLeave() {
-        console.log('bruh');
-        emit('bruh');
-    }
 </script>
 <template>
     <div class="flex flex-col gap-2 w-full pb-2 text-gray-300">
@@ -32,7 +28,7 @@
                     <span class="h-px top-1/2 w-full absolute bg-neutral-600"></span>
                     <small class="absolute top-1/2 -translate-y-1/2  left-1/2 -translate-x-1/2 px-2 bg-neutral-800 z-10 font-bold">or</small>
                 </div>
-                <BaseButton @click="onLeave">Leave</BaseButton>
+                <BaseButton @click="emit('leave')">Leave</BaseButton>
             </div>
         </div>
     </div>
