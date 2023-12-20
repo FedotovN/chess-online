@@ -41,8 +41,8 @@
     board renders
     <div class="flex h-full w-full rounded overflow-hidden" v-click-outside="() => selected = null" :class="{ 'rotate-180': toRotateBoard}">
       board body
-      <div class="flex flex-col h-full w-full aspect-[1/8]" v-for="column in board.cells">
-        <div class="flex w-full h-full aspect-[1/8]" v-for="cell in column">
+      <div class="flex flex-col h-full w-full aspect-[1/8] justify-center items-center" v-for="column in board.cells">
+        <div class="flex w-full h-full aspect-[1/8] justify-center items-center" v-for="cell in column">
           <ChessAtomCell
               :highlight="getHighlight(cell)"
               @drop.prevent="clickHandler(cell)"
