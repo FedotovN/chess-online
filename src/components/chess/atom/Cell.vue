@@ -22,14 +22,13 @@
     const isBottom = props.cell.position.y === (props.playerSide === 'white' ? 0 : 7);
 </script>
 <template>
-    <div @click="emit('click', cell)" class="aspect-square flex relative select-none justify-center items-center transition-all flex-1" :class="{
+    <div @click="emit('click', cell)" class="aspect-square flex relative select-none transition-all flex-1 overflow-hidden max-h-full max-w-full" :class="{
          'bg-[#769656]': cell.side === 'black' && !lastMoveFrom && !lastMoveTo,
         'bg-[#ebecd0]': cell.side === 'white' && !lastMoveTo && !lastMoveFrom,
         'bg-[#baca44]': lastMoveFrom || lastMoveTo,
         'cursor-pointer': !!cell.figure || highlight 
     }">
-    board cell
-        <img v-if="getFigureSvg" :src="getFigureSvg" class="h-full w-full" />
+        <img v-if="getFigureSvg" :src="getFigureSvg" class="h-full w-[64px] " />
         <div v-if="highlight && !enemyHighlight" class="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 rounded-full h-[25%] w-[25%] bg-gray-800 opacity-25 border border-gray-600 shadow-lg" />
         <div v-else-if="enemyHighlight" class="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 rounded-full h-[85%] w-[85%] bg-gray-800 opacity-25 border-2 border-gray-800 shadow-lg" />
         <div class="absolute left-[6px] top-[8px] -translate-y-1/2 -translate-x-1/2 font-bold text-xs" v-if="isCornerLeft">
