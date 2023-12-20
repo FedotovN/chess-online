@@ -23,7 +23,7 @@
     });
 </script>
 <template>
-    <div class="overflow-hidden h-screen flex justify-center items-center flex-col bg-neutral-800 px-2">
+    <div class="overflow-hidden h-d-screen flex justify-center items-center flex-col bg-neutral-800 px-2">
         <div class="flex flex-col gap-2 items-center text-gray-300" v-if="loading">
             <BaseLoader label="Joining room..."></BaseLoader>
         </div>
