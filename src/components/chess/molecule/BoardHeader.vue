@@ -23,9 +23,10 @@
 </template>
 
 <script setup lang="ts">
-    import { BaseLoader, useToast, BaseButton } from "kneekeetah-vue-ui-kit"
+    import { uppercaseColor } from "~/utils";
+    import { BaseLoader, useToast } from "kneekeetah-vue-ui-kit"
     const { getMovingSide, getOurSide, getPlayers, currGame } = storeToRefs(useGame());
-    const uppercasedCurrentSide = computed(() => getMovingSide.value ? getMovingSide.value[0].toUpperCase() + getMovingSide.value.slice(1) : '' );
+    const uppercasedCurrentSide = computed(() => getMovingSide.value ? uppercaseColor(getMovingSide.value)  : '' );
     const getOpponent = computed(() => getPlayers.value?.find(p => p?.side !== getOurSide.value));
     const id = computed(() => currGame.value?.id);
     const emit = defineEmits<{

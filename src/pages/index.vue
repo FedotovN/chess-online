@@ -1,11 +1,10 @@
 <script setup lang="ts">
-    import { BaseButton, BaseLoader } from 'kneekeetah-vue-ui-kit';
+    import { BaseLoader } from 'kneekeetah-vue-ui-kit';
     const { user } = storeToRefs(useAuth());
-    const toAuthPage = (key: string) => useRouter().push(`/auth/${key}`);
 </script>
 <template>
-    <div class="flex flex-col h-screen w-full justify-center items-center bg-neutral-900 text-gray-300">
-        <AppOrganismHeader />
+    <div class="flex flex-col h-d-screen w-full justify-center items-center bg-neutral-900 text-gray-300">
+        <AppOrganismHeader class="sticky top-0" />
         <main class="flex-col flex flex-1 w-full px-2 justify-center items-center">
             <div class="max-w-full justify-center items-center flex flex-col gap-6 w-[525px]">
                 <AppOrganismPlayButtons ref="buttons" :is-logged-in="!!user" />

@@ -31,24 +31,23 @@ export default class Board {
     }
     undoLastMove() {
         if (!this.moves.length) return;
-        const { from, to, takes } = this.getLastMove();
-        this.move(this.getCell(to), this.getCell(from));
-        if (takes) {
-            const taken = getFigureInstance({ ...takes });
-            this.getCell(to).figure = taken;
-        }
-        this.moves = this.moves.slice(0, -2);
+        const { from, to, takes, figure } = this.getLastMove();
+        this.getCell(to).figure = null;
+        if (takes) this.getCell(to).figure = takes;
+        this.getCell(from).figure = figure;
+        this.moves = this.moves.slice(0, -1);
     }
     move(from: Cell, to: Cell) {
         const { figure } = from;
-        let takes;
         if (!figure) throw new Error(`No figure found in ${from.position} but trying to move to ${to.position}`);
+        let moved = getFigureInstance({ ...figure });
+        let takes;
         if (this.checkCastle(from, to)) this.castle(from, to);
         else {
             if (this.checkEnPassant(figure, to)) takes = this.enPassant(from, to);   
             else takes = this.moveFigure(from, to);
         }
-        this.moves.push({ figure, from: from.position, to: to.position, side: figure.side, takes });
+        this.moves.push({ figure: moved, from: from.position, to: to.position, side: figure.side, takes });
     }
     enPassant(from: Cell, to: Cell) {
         const takes = this.getCell(this.getLastMove().to).figure;
@@ -75,7 +74,7 @@ export default class Board {
         if (figure instanceof Pawn || figure instanceof King || figure instanceof Rook) {
             figure.isFirstMove = false;
         }
-        if (to.figure) takes = to.figure;
+        if (to.figure) takes = to.figure as Figure;
         figure.position = to.position
         to.figure = figure;
         from.figure = null;

@@ -2,6 +2,12 @@
 @tailwind utilities;
 @tailwind base;
 @tailwind components;
+@layer utilities {
+    .h-d-screen {
+        height: 100vh;
+        height: 100dvh;
+    }
+}
 body::-webkit-scrollbar {
     width: 0;
 }

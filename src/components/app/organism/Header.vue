@@ -6,7 +6,7 @@
     add({ header: 'Settings', id: 'user-modal', component: UserForm });
 </script>
 <template>
-<header class="w-full flex items-center justify-between px-3 shadow bg-neutral-800 h-14 border-b border-neutral-700">
+<header class="w-full flex items-center justify-between px-3 shadow bg-neutral-800 bg-opacity-75 backdrop-blur h-14 border-b border-neutral-700 z-20">
     <div class="flex items-start gap-3 select-none">
         <h1 class="border-neutral-700 sm:text-xl text-lg">
             <span class="text-green-300">Nuxt</span> <i class="fa-solid fa-chess-knight text-green-300"></i> Chess

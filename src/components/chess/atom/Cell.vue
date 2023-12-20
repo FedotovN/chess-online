@@ -28,7 +28,7 @@
         'bg-[#baca44]': lastMoveFrom || lastMoveTo,
         'cursor-pointer': !!cell.figure || highlight 
     }">
-        <!-- <div class="flex h-full w-full justify-center items-center overflow-hidden max-h-full max-w-full">
+        <div class="flex h-full w-full justify-center items-center overflow-hidden max-h-full max-w-full">
             <img v-if="getFigureSvg" :src="getFigureSvg" class="h-full max-h-full" />
         </div>
         <div v-if="highlight && !enemyHighlight" class="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 rounded-full h-[25%] w-[25%] bg-gray-800 opacity-25 border border-gray-600 shadow-lg" />
@@ -44,6 +44,6 @@
                 'text-[#729556]': cell.side === 'white',
                 'text-[#ebecd0]': cell.side === 'black',
             }">{{ getHorizontalNameByIndex(7 - cell.position.x as typeof Dimension[number]) }}</small>
-        </div> -->
+        </div>
     </div>
 </template>
