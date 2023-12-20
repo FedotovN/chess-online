@@ -21,7 +21,7 @@
     }
 </script>
 <template>
-    <div class="flex flex-col w-screen h-d-screen bg-neutral-800 px-3">
+    <div class="flex flex-col max-w-screen w-screen h-d-screen bg-neutral-800 px-3">
         <div class="h-14 flex items-center justify-center">
             <p class="text-gray-300">{{ uppercased }} moves</p>
         </div>

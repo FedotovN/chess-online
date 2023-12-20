@@ -49,7 +49,7 @@
     const toDisableBoard = computed(() => getMovingSide.value !== getOurSide.value || getPlayers.value?.indexOf(null) !== -1);
 </script>
 <template>
-    <div class="w-full h-full overflow-hidden items-center justify-center flex flex-col" v-if="getBoard && getOurSide">
+    <div class="w-full h-full max-w-full overflow-hidden items-center justify-center flex flex-col" v-if="getBoard && getOurSide">
         <ChessOrganismBoard
             :value="getBoard"
             @update="onBoardUpdate"
