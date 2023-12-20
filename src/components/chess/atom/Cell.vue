@@ -28,6 +28,7 @@
         'bg-[#baca44]': lastMoveFrom || lastMoveTo,
         'cursor-pointer': !!cell.figure || highlight 
     }">
+    board cell
         <img v-if="getFigureSvg" :src="getFigureSvg" class="h-full w-full" />
         <div v-if="highlight && !enemyHighlight" class="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 rounded-full h-[25%] w-[25%] bg-gray-800 opacity-25 border border-gray-600 shadow-lg" />
         <div v-else-if="enemyHighlight" class="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 rounded-full h-[85%] w-[85%] bg-gray-800 opacity-25 border-2 border-gray-800 shadow-lg" />

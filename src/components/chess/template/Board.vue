@@ -51,7 +51,7 @@
 <template>
     board: {{ getBoard?.moves.length }}
     side: {{ getOurSide }}
-    <div class="w-full h-full items-center justify-center flex flex-col">
+    <div class="w-full h-full items-center justify-center flex flex-col bg-black">
         <ChessOrganismBoard
             :value="getBoard"
             @update="onBoardUpdate"
