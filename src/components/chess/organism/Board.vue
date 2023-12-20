@@ -37,10 +37,10 @@
   const toRotateBoard = props.side === 'white';
 </script>
 <template>
-  <div :class="{ 'pointer-events-none opacity-75': disabled }" class="flex h-full w-full aspect-square text-white">
-    <div class="flex"  v-click-outside="() => selected = null" :class="{ 'rotate-180': toRotateBoard}">
-      <div class="flex flex-col" v-for="column in board.cells">
-        <div class="flex" v-for="cell in column">
+  <div :class="{ 'pointer-events-none opacity-75': disabled }" class="flex h-full max-w-full aspect-square justify-center items-center">
+    <div class="flex max-h-full w-full rounded overflow-hidden" v-click-outside="() => selected = null" :class="{ 'rotate-180': toRotateBoard}">
+      <div class="flex flex-col w-full max-h-full flex-1" v-for="column in board.cells">
+        <div class="flex w-full max-h-full bg-[#ebecd0]" v-for="cell in column">
           <ChessAtomCell
               :highlight="getHighlight(cell)"
               @drop.prevent="clickHandler(cell)"
