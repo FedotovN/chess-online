@@ -9,7 +9,6 @@
     const room: Ref<ChessRoom | null> = ref(null);
     try {
         room.value = await ChessService.getChessRoom(id as string);            
-        console.log('server val:', room.value);
         loading.value = false;
     } catch (e) {
         add({ content: "Error while getting the game. Does it exists?", color: 'alert' });
@@ -20,6 +19,14 @@
         if(!room.value) return null;
         return room.value.players.find(player => player !== null);
     });
+    useSeoMeta({
+        title: `Play chess with ${ invitedBy.value?.displayName }`,
+        ogTitle: 'Play chess',
+        description: `You\'ve been invited to chess room with id ${ room.value?.id }`,
+        ogDescription: `You\'ve been invited to chess room with id ${ room.value?.id }`,
+        ogImage: 'https://images.chesscomfiles.com/uploads/v1/images_users/tiny_mce/PedroPinhata/phpZTvydV.png',
+        twitterCard: 'summary_large_image',
+    })
     const onJoin = () => {
         push(`/game/${id}`);
     };
