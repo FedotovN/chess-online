@@ -51,15 +51,18 @@
     }
     function checkForGameCases(board: Board | null) {
         if (!board) return;
-        if (board.isGameOver()) handleGameOver(board);
+        if (board.isGameOver()) return handleGameOver(board);
         if (board.getPromotedPawn(getOurSide.value!)) return handlePawnPromotion(board)
         return true;
     }
     async function onBoardUpdate(newBoard: Board) {
-        if(await checkForGameCases(newBoard))
-            await move(newBoard);
+        if (newBoard.getPromotedPawn(getOurSide.value!))
+            if (!await handlePawnPromotion(newBoard)) return;
+        await move(newBoard);
     }
-    watch(getBoard, () => { checkForGameCases(getBoard.value) }, { immediate: true });
+    watch(getBoard, () => { 
+        checkForGameCases(getBoard.value);
+     }, { immediate: true });
     const toDisableBoard = computed(() => getMovingSide.value !== getOurSide.value || getPlayers.value?.indexOf(null) !== -1);
 </script>
 <template>
