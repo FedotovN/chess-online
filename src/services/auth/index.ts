@@ -19,8 +19,7 @@ class AuthService {
     }
     async signup(name: string, email: string, password: string) {
         const { user } = await createUserWithEmailAndPassword(auth, email, password);
-        const { photoURL, uid } = user;
-        const newUser = new User(name, email, photoURL, defaultStats, uid)
+        const newUser = this.getDefaultUser({ ...user, displayName: name });
         return newUser
     }
     async login (email: string, password: string) {
@@ -29,6 +28,10 @@ class AuthService {
     async loginWithGoogle() {
         const provider = new GoogleAuthProvider();
         return (await signInWithPopup(auth, provider)).user;
+    }
+    getDefaultUser(firebaseInfo: FirebaseUser) {
+        const { displayName, email, photoURL, uid } = firebaseInfo;
+        return new User(displayName, email, photoURL, defaultStats, uid, []);
     }
     async logout() {
         await auth.signOut();

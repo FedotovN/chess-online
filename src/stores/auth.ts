@@ -1,11 +1,6 @@
 import AuthService from "@/services/auth";
 import UserService from "@/services/users";
-import User from "~/models/auth/User"
-async function handleAuthenticatedUser(uid: string): Promise<User | undefined> {
-    const info = await UserService.getUserInfo(uid);
-    if (!info) throw new Error(`User logged into the account but has no info in database. Prevent login.\nuid: ${uid}`);
-    return info
-}
+import User from "~/models/auth/User";
 async function getCurrUserData() {
     try {
         const firebaseState = await AuthService.waitForAuthToResolve();
@@ -28,7 +23,8 @@ export const useAuth = defineStore('auth', {
         async login(email: string, password: string) {
             try {
                 const { uid } = await AuthService.login(email, password);
-                const info = await handleAuthenticatedUser(uid);
+                const info = await UserService.getUserInfo(uid);
+                if (!info) throw new Error(`User logged into the account but has no info in database. Prevent login.\nuid: ${uid}`);
                 this.user = info;
             } catch (e) {
                 console.error(e);
@@ -37,9 +33,14 @@ export const useAuth = defineStore('auth', {
         },
         async signInWithGoogle() {
             try {
-                const { uid } = await AuthService.loginWithGoogle();
-                const info = await handleAuthenticatedUser(uid);
-                this.user = info;
+                const firebaseUser = await AuthService.loginWithGoogle();
+                const info = await UserService.getUserInfo(firebaseUser.uid);
+                if (info) {
+                    this.user = info;
+                    return;
+                }
+                const user = AuthService.getDefaultUser(firebaseUser);
+                this.user = await UserService.setUserToDatabase(user);
             } catch (e) {
                 console.error(e);
                 throw e;
