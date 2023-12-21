@@ -7,7 +7,7 @@
     useAuth().onAuthResolve(async user => {
         if (!user) {
             add({ content: "Let's login first!", color: "secondary", delay: 5000 });
-            return navigateTo("/auth/login");
+            return navigateTo({ path: "/auth/login", query: { redirect: useRoute().path }});
         }
         try {
             await join(id as string);

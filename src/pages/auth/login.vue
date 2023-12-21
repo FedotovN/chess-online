@@ -17,7 +17,9 @@
         loading.value = true;
         try {
             await signIn(usingGoogle)
-            await push('/');
+            const { redirect } = useRoute().query;
+            if (redirect) await push(redirect as string);
+            else await push('/')
             const { user } = useAuth();
             if (!user) throw new Error("Just logged in but no user in store");
             add({ content: `Welcome, ${ user.displayName }`, color: 'success', delay: 5000 });

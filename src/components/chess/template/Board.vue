@@ -62,7 +62,7 @@
     }
     watch(getBoard, () => { 
         checkForGameCases(getBoard.value);
-     }, { immediate: true });
+    }, { immediate: true });
     const toDisableBoard = computed(() => getMovingSide.value !== getOurSide.value || getPlayers.value?.indexOf(null) !== -1);
 </script>
 <template>
