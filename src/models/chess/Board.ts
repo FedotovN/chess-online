@@ -33,7 +33,7 @@ export default class Board {
         if (!this.moves.length) return;
         const { from, to, takes, figure } = this.getLastMove();
         this.getCell(to).figure = null;
-        if (takes) this.getCell(to).figure = takes;
+        if (takes) this.getCell(takes.position).figure = takes;
         this.getCell(from).figure = figure;
         this.moves = this.moves.slice(0, -1);
     }
@@ -91,6 +91,9 @@ export default class Board {
         const movedTwoSteps = last.to.y - last.from.y === pawn.getModifier() * 2;
         const wentThrough = last.to.y - cell.position.y === pawn.getModifier();
         return sameX && wentThrough && movedTwoSteps;
+    }
+    promotePawn(position: Position, to: Knight | Queen | Bishop | Rook) {
+        this.getCell(position).figure = to;
     }
     getPromotedPawn(side: Color) {
         const horizon = side === 'white' ? 7 : 0;

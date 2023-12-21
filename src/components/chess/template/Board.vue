@@ -6,7 +6,7 @@
     import { getGameOverInfo } from '~/services/chess/helpers';
     import type { Player } from '~/models/chess/room/ChessRoom';
     const { getBoard, getMovingSide, getOurSide, getPlayers, currGame } = storeToRefs(useGame());
-    const { add, open } = useModal();
+    const { add, open, close } = useModal();
     const { move, setGameOver } = useGame();
     const emit = defineEmits<{
         (e: 'leave'): void,
@@ -29,11 +29,25 @@
     }
     function handlePawnPromotion(board: Board) {
         const pawn = board.getPromotedPawn(getOurSide.value!);
-        open({ 
-            id: 'pawn-promotion',
-            props: { pawn, side: getOurSide.value },
-            onClose: () => { getBoard.value?.undoLastMove() }
-         });
+        let promoted = false;
+        return new Promise(res => {
+            open({ 
+                id: 'pawn-promotion',
+                props: { pawn, side: getOurSide.value },
+                emits: { 
+                    promote: figure => { 
+                        board.promotePawn(figure.position, figure);
+                        promoted = true;
+                        res(true);
+                        close();
+                    }
+                },
+                onClose: () => {
+                    if (!promoted) getBoard.value?.undoLastMove();
+                    res(false);
+                }
+             });
+        })
     }
     function checkForGameCases(board: Board | null) {
         if (!board) return;
@@ -41,9 +55,9 @@
         if (board.getPromotedPawn(getOurSide.value!)) return handlePawnPromotion(board)
         return true;
     }
-    function onBoardUpdate(newBoard: Board) {
-        if (checkForGameCases(newBoard)) 
-            return move(newBoard);
+    async function onBoardUpdate(newBoard: Board) {
+        if(await checkForGameCases(newBoard))
+            await move(newBoard);
     }
     watch(getBoard, () => { checkForGameCases(getBoard.value) }, { immediate: true });
     const toDisableBoard = computed(() => getMovingSide.value !== getOurSide.value || getPlayers.value?.indexOf(null) !== -1);

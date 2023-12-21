@@ -21,14 +21,15 @@
     if (!hasFigure(cell) || !isOurFigure(cell)) return;
     selected.value = cell
   }
-  function clickHandler(cell: Cell) {
+  async function clickHandler(cell: Cell) {
     if (props.disabled) return;
     if (!selected.value) return selectFigure(cell);
-    if (isOurFigure(cell)) return selectFigure(cell);
     if (canMoveTo(cell)) {
       board.value.move(selected.value, cell);
       emit('update', board.value);
+      return;
     };
+    if (isOurFigure(cell)) return selectFigure(cell);
     selected.value = null;
   }
   function getHighlight(cell: Cell): boolean {
@@ -37,7 +38,7 @@
   const toRotateBoard = props.side === 'white';
 </script>
 <template>
-  <div :class="{ 'pointer-events-none opacity-75': disabled }" class="flex h-full max-w-full aspect-square justify-center items-center">
+  <div :class="{ 'pointer-events-none': disabled }" class="flex h-full max-w-full aspect-square justify-center items-center">
     <div class="flex max-h-full w-full rounded overflow-hidden" v-click-outside="() => selected = null" :class="{ 'rotate-180': toRotateBoard}">
       <div class="flex flex-col w-full max-h-full flex-1 relative" v-for="column in board.cells">
         <div class="flex w-full max-h-full bg-[#ebecd0]" v-for="cell in column">
