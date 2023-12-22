@@ -38,24 +38,26 @@
   const toRotateBoard = props.side === 'white';
 </script>
 <template>
-  <div :class="{ 'pointer-events-none': disabled }" class="flex h-full max-w-full aspect-square justify-center items-center">
-    <div class="flex max-h-full w-full rounded overflow-hidden" v-click-outside="() => selected = null" :class="{ 'rotate-180': toRotateBoard}">
-      <div class="flex flex-col w-full max-h-full flex-1 relative" v-for="column in board.cells">
-        <div class="flex w-full max-h-full bg-[#ebecd0]" v-for="cell in column">
-          <ChessAtomCell
-              :highlight="getHighlight(cell)"
-              @drop.prevent="clickHandler(cell)"
-              @dragstart="clickHandler(cell)"
-              @click="clickHandler"
-              @dragover.prevent
-              :class="{ 'rotate-180': toRotateBoard }"
-              :playerSide="side"
-              :lastMoveFrom="board.moves.length ? cell.comparePosition(board.getLastMove().from) : false"
-              :lastMoveTo="board.moves.length ? cell.comparePosition(board.getLastMove().to) : false"
-              :cell="cell"
-          />
+  <div class="h-full max-w-full flex justify-center items-center">
+    <div :class="{ 'pointer-events-none': disabled }" class="flex h-full max-w-full aspect-square justify-center items-center">
+      <div class="flex max-h-full w-full rounded overflow-hidden" v-click-outside="() => selected = null" :class="{ 'rotate-180': toRotateBoard}">
+        <div class="flex flex-col w-full max-h-full flex-1 relative" v-for="column in board.cells">
+          <div class="flex w-full max-h-full bg-[#ebecd0]" v-for="cell in column">
+            <ChessAtomCell
+                :highlight="getHighlight(cell)"
+                @drop.prevent="clickHandler(cell)"
+                @dragstart="clickHandler(cell)"
+                @click="clickHandler"
+                @dragover.prevent
+                :class="{ 'rotate-180': toRotateBoard }"
+                :playerSide="side"
+                :lastMoveFrom="board.moves.length ? cell.comparePosition(board.getLastMove().from) : false"
+                :lastMoveTo="board.moves.length ? cell.comparePosition(board.getLastMove().to) : false"
+                :cell="cell"
+            />
+          </div>
         </div>
       </div>
     </div>
-  </div>
+</div>
 </template>

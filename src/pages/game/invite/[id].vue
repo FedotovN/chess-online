@@ -19,6 +19,7 @@
         if(!room.value) return null;
         return room.value.players.find(player => player !== null);
     });
+    const ourSide = invitedBy.value?.side === 'white' ? 'black' : 'white';
     useSeoMeta({
         title: `Play chess with ${ invitedBy.value?.displayName }`,
         ogTitle: 'Play chess',
@@ -47,7 +48,7 @@
                 <div class="w-full flex flex-col gap-2 items-center">
                     <small class="text-green-300">Current board state:</small>
                     <div class="w-full px-8">
-                        <ChessOrganismBoard disabled :value="room?.board" v-if="room" />
+                        <ChessOrganismBoard :side="ourSide" disabled :value="room?.board" v-if="room" />
                     </div>
                 </div>
             </main>

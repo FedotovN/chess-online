@@ -1,9 +1,12 @@
 <script setup lang="ts">
-    import { BaseLoader, useToast } from 'kneekeetah-vue-ui-kit';
+    import LeaveForm from '~/components/chess/molecule/LeaveForm.vue';
+    import { BaseLoader, useModal, useToast } from 'kneekeetah-vue-ui-kit';
     const { id } = useRoute().params;
     const loading = ref(true);
-    const { join } = useGame();
+    const { add: addModal, open, close } = useModal();
+    const { join, leave, create } = useGame();
     const { add } = useToast()
+    addModal({ id: 'leave-form', component: LeaveForm });
     useAuth().onAuthResolve(async user => {
         if (!user) {
             add({ content: "Let's login first!", color: "secondary", delay: 5000 });
@@ -21,12 +24,31 @@
             loading.value = false;
         }
     });
+    async function toLeave() {
+        await leave();
+        useRouter().push('/');
+        useToast().add({ content: 'You left the game' });
+        close();
+    }
+    function onLeave() {
+        open({
+            id: 'leave-form',
+            emits: {
+                leave: toLeave
+            }
+        });
+    }
+    async function onRematch() {
+        await toLeave();
+        const { id } = await create();
+        useRouter().push(`game/${id}`);
+    }
 </script>
 <template>
-    <div class="overflow-hidden h-d-screen flex justify-center items-center flex-col bg-neutral-800 px-2">
+    <div class="overflow-hidden h-d-screen w-full flex justify-center items-center flex-col bg-neutral-800 px-2">
         <div class="flex flex-col gap-2 items-center text-gray-300" v-if="loading">
             <BaseLoader label="Joining room..."></BaseLoader>
         </div>
-        <ChessTemplateGame v-else />
+        <ChessTemplateGameOnline @leave="onLeave" @rematch="onRematch" />
     </div>
 </template>
