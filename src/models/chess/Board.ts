@@ -97,7 +97,7 @@ export default class Board {
     }
     getPromotedPawn(side: Color) {
         const horizon = side === 'white' ? 7 : 0;
-        const pawns = this.getNameFigures('pawn')
+        const pawns = this.getNameFigures<Pawn>('pawn')
             .filter(p => p.side === side)
             .filter(p => p.position.y === horizon);
         return pawns[0];

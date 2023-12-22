@@ -30,7 +30,7 @@ class UsersService {
         const info = await this.getUserInfo(uid);
         if (!info) throw new Error(`Trying to add new game to stats but cant find user with uid ${uid}`);
         if (info.games) {
-            if (info.games.find(id => id === uid)) return;    
+            if (info.games.find(id => id === gameId)) return;    
         } else {
             info.games = []
         }

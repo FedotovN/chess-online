@@ -1,77 +1,70 @@
 <script setup lang="ts">
     import Board from '~/models/chess/Board';
-    import PromotedPawnForm from '../molecule/PromotedPawnForm.vue';
-    import GameOverOverview from '../molecule/GameOverOverview.vue';
+    import type Pawn from '~/models/chess/figures/Pawn';
+    import type { Color } from '~/types/chess/Color';
     import { useModal } from 'kneekeetah-vue-ui-kit';
-    import { getGameOverInfo } from '~/services/chess/helpers';
-    import type { Player } from '~/models/chess/room/ChessRoom';
-    const { getBoard, getMovingSide, getOurSide, getPlayers, currGame } = storeToRefs(useGame());
+    import PromotedPawnForm from '../molecule/PromotedPawnForm.vue';
+    import type Figure from '~/models/chess/figures/Figure';
+import type { GameOverType } from '~/types/chess/Game';
     const { add, open, close } = useModal();
-    const { move, setGameOver } = useGame();
-    const emit = defineEmits<{
-        (e: 'leave'): void,
-        (e: 'rematch'): void,
+    add({ component: PromotedPawnForm, id: 'pawn-promotion', header: 'Promote a pawn' });
+    const props = defineProps<{
+        board: Board,   
+        side: Color,
     }>();
-    add({ id: 'game-over', content: 'Game over modal', component: GameOverOverview, });
-    add({ id: 'pawn-promotion', content: 'Pawn promotion modal', component: PromotedPawnForm });
-    async function handleGameOver(board: Board) {
-        await setGameOver();
-        open({
-            id: 'game-over',
+    const emit = defineEmits<{
+        (e: 'update', value: Board): void,
+        (e: 'game-over', value: { type: GameOverType, side: Color }): void,
+    }>();
+    const proppedBoard = computed(() => props.board);
+    const localValue = ref(proppedBoard.value) as Ref<Board>;
+    watch(proppedBoard,
+        v => { 
+            if(v) localValue.value = v;
+            
+        },
+    { immediate: true });
+    function openPawnPromotionModal(pawn: Pawn) {
+        let promoted = false;
+        open({ 
+            id: 'pawn-promotion',
             props: {
-                gameOverInfo: getGameOverInfo(board, currGame.value?.id!, getPlayers?.value as [Player, Player]),
+                pawn,
+                side: props.side,
             },
-            emits: {
-                leave: () => emit('leave'),
-                rematch: () => emit('rematch'),
+            emits: { 
+                promote: (figure: Figure) => {
+                    localValue.value.getCell(figure.position).figure = figure;
+                    emit('update', localValue.value);
+                    promoted = true;
+                    close();
+                }
             },
+            onClose: () => {
+                if (!promoted)
+                    localValue.value.undoLastMove();
+            }
         });
     }
-    function handlePawnPromotion(board: Board) {
-        const pawn = board.getPromotedPawn(getOurSide.value!);
-        let promoted = false;
-        return new Promise(res => {
-            open({ 
-                id: 'pawn-promotion',
-                props: { pawn, side: getOurSide.value },
-                emits: { 
-                    promote: figure => { 
-                        board.promotePawn(figure.position, figure);
-                        promoted = true;
-                        res(true);
-                        close();
-                    }
-                },
-                onClose: () => {
-                    if (!promoted) getBoard.value?.undoLastMove();
-                    res(false);
-                }
-             });
-        })
+    function onBoardUpdate(board: Board) {
+        const promoted = board.getPromotedPawn(props.side);
+        if (promoted) {
+            openPawnPromotionModal(promoted);
+            return;
+        }
+        localValue.value = board;
+        emit('update', localValue.value);
     }
-    function checkForGameCases(board: Board | null) {
-        if (!board) return;
-        if (board.isGameOver()) return handleGameOver(board);
-        if (board.getPromotedPawn(getOurSide.value!)) return handlePawnPromotion(board)
-        return true;
-    }
-    async function onBoardUpdate(newBoard: Board) {
-        if (newBoard.getPromotedPawn(getOurSide.value!))
-            if (!await handlePawnPromotion(newBoard)) return;
-        await move(newBoard);
-    }
-    watch(getBoard, () => { 
-        checkForGameCases(getBoard.value);
-    }, { immediate: true });
-    const toDisableBoard = computed(() => getMovingSide.value !== getOurSide.value || getPlayers.value?.indexOf(null) !== -1);
+    watch(localValue, () => {
+        const isGameOver = localValue.value.isGameOver();
+        if(!isGameOver) return;
+            emit('game-over', isGameOver);
+    }, { deep: true, immediate: true });
 </script>
 <template>
-    <div class="w-full h-full max-w-full overflow-hidden items-center justify-center flex flex-col" v-if="getBoard && getOurSide">
-        <ChessOrganismBoard
-            :value="getBoard"
-            @update="onBoardUpdate"
-            :disabled="toDisableBoard"
-            :side="getOurSide"
-        />
-    </div>
+    <ChessOrganismBoard
+        :value="localValue"
+        :side="side"
+        @update="onBoardUpdate"
+    />
 </template>

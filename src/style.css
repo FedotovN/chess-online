@@ -32,7 +32,7 @@ a {
 .overlay-model-content {
     background-color: rgb(38, 38, 38) !important;
 }
-.overlay-modal-header {
+.overlay-modal-header, .overlay-modal-body {
     color: rgb(179, 179, 179) !important;
 }
 .overlay-modal-header svg {
