@@ -6,7 +6,7 @@
     const { add: addModal, open, close } = useModal();
     const { join, leave, create } = useGame();
     const { add } = useToast()
-    addModal({ id: 'leave-form', component: LeaveForm });
+    addModal({ id: 'leave-form', header: 'Are you sure?', component: LeaveForm });
     useAuth().onAuthResolve(async user => {
         if (!user) {
             add({ content: "Let's login first!", color: "secondary", delay: 5000 });
