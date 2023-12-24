@@ -3,7 +3,7 @@
     v-show="toShowChat">
     <div class="flex flex-col w-full h-full text-gray-300 overflow-hidden">
       <header class="flex justify-between items-center h-10 border-b border-neutral-700 px-2">
-        <p class="text-xs">Chat with Nikita Fedotov</p>
+        <p class="text-xs">Chat</p>
         <BaseButton flat color="alert" @click="toShowChat = false"><i class="fa-solid fa-xmark"></i></BaseButton>
       </header>
       <div class="h-full overflow-hidden">
