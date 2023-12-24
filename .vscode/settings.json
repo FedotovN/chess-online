@@ -1,10 +1,10 @@
 {
-    // Default (format when you paste)
-    "editor.formatOnPaste": true,
-    // Default (format when you save)
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-        "source.fixAll": true
-    },
-    "C_Cpp.errorSquiggles": "disabled"
+  // Default (format when you paste)
+  "editor.formatOnPaste": true,
+  // Default (format when you save)
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
+  "C_Cpp.errorSquiggles": "disabled"
 }

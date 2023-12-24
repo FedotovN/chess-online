@@ -1,5 +1,5 @@
 <template>
-    <p class="p-1 text-sm whitespace-pre h-full text-ellipsis overflow-hidden">
-        <slot></slot>
-    </p>
+  <p class="flex items-center text-sm whitespace-pre h-full text-ellipsis overflow-hidden max-w-full">
+    <slot></slot>
+  </p>
 </template>
