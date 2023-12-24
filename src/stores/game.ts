@@ -1,4 +1,5 @@
-import ChessRoom, { GameStatus, type Player } from '~/models/chess/room/ChessRoom';
+import { GameStatus, type Player } from '~/models/chess/room/ChessRoom';
+import type ChessRoom from '~/models/chess/room/ChessRoom';
 import ChessService from '@/services/chess';
 import UserService from '@/services/users';
 import ChatService from '~/services/chat';
@@ -52,11 +53,11 @@ export const useGame = defineStore('game', {
       const { id } = this.currGame;
       this.unsubs[id] = ChessService.listenToChessRoom(id, callback)!;
     },
-    async join(id: string) {
+    async join(id: string, side?: Color) {
       try {
         const { user } = useAuth();
         if (!user) throw new Error('Not authenticated yet trying to join chess room');
-        this.currGame = await ChessService.joinChessRoom(id, user);
+        this.currGame = await ChessService.joinChessRoom(id, user, side);
         this.listen((room) => {
           this.currGame = room;
         });

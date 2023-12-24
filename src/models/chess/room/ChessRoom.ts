@@ -10,14 +10,12 @@ export enum GameStatus {
   PROCESS = 'In process',
   FINISHED = 'Finished'
 }
-export default class ChessRoom {
-  constructor(
-    public players: [Player | null, Player | null],
-    public id: string,
-    public board: Board,
-    public status: GameStatus,
-    public createdAt: Date,
-    public movingSide: Color,
-    public gameOverInfo?: GameOverInfo
-  ) {}
+export default interface ChessRoom {
+  players: [Player | null, Player | null];
+  id: string;
+  board: Board;
+  status: GameStatus;
+  createdAt: Date;
+  movingSide: Color;
+  gameOverInfo?: GameOverInfo;
 }

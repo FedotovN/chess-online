@@ -45,7 +45,7 @@ const toDisable = (button: Button) => {
 }
 </script>
 <template>
-  <div class="flex flex-col gap-4 px-3">
+  <div class="flex flex-col gap-4 w-full">
     <div class="flex w-full justify-center">
       <h1 class="text-4xl whitespace-nowrap text-ellipsis overflow-hidden">Play chess</h1>
     </div>
