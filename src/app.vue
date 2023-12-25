@@ -1,14 +1,19 @@
 <script setup lang="ts">
-    import { OverlayToast, OverlayModal } from 'kneekeetah-vue-ui-kit';
-    const loading = ref(true);
-    useAuth().onAuthResolve(() => {
-        loading.value = false;
-    })
+import useAudio from "~/composables/useAudio";
+import { OverlayToast, OverlayModal, BaseButton } from 'kneekeetah-vue-ui-kit';
+const loading = ref(true);
+useAuth().onAuthResolve(() => {
+  loading.value = false;
+}
+)
+if (process.client) {
+  await useAudio().add('../assets/audio/6a897efd83627af.mp3', 'chess-move');
+}
 </script>
 <template>
-    <div class="w-full min-h-screen" v-show="!loading">
-        <OverlayToast />
-        <OverlayModal />
-        <nuxt-page />
-    </div>
+  <div class="w-full min-h-screen" v-show="!loading">
+    <OverlayToast />
+    <OverlayModal />
+    <nuxt-page />
+  </div>
 </template>
