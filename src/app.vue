@@ -8,7 +8,7 @@ useAuth().onAuthResolve(() => {
 )
 if (process.client) {
   try {
-    await useAudio().add('../assets/audio/6a897efd83627af.mp3', 'chess-move');
+    await useAudio().add('6a897efd83627af', 'chess-move');
   } catch (e) {
     console.error(e);
   }

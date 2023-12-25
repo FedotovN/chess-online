@@ -2,11 +2,12 @@ type AudioElement = {
   name: string;
   audio: HTMLAudioElement;
 };
+
 const sounds = ref([]) as Ref<Array<AudioElement>>;
 const currAudio = ref(null) as Ref<null | HTMLAudioElement>;
 export default function useAudio() {
-  async function add(path: string, name: string) {
-    const sound = (await import(path)).default;
+  async function add(audioName: string, name: string) {
+    const sound = (await import(`~/public/audio/${audioName}.mp3`)).default;
     const audio = new Audio(sound);
     sounds.value.push({ name, audio });
   }
