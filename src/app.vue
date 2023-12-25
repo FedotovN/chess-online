@@ -7,7 +7,11 @@ useAuth().onAuthResolve(() => {
 }
 )
 if (process.client) {
-  await useAudio().add('../assets/audio/6a897efd83627af.mp3', 'chess-move');
+  try {
+    await useAudio().add('../assets/audio/6a897efd83627af.mp3', 'chess-move');
+  } catch (e) {
+    console.error(e);
+  }
 }
 </script>
 <template>
