@@ -17,6 +17,7 @@ export default function useAudio() {
       throw new Error(`Sound with name ${name} not found!`);
     }
     toPlay.audio.play();
+    currAudio.value = toPlay.audio;
   }
   function pause() {
     if (currAudio.value) {

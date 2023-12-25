@@ -26,6 +26,7 @@ async function clickHandler(cell: Cell) {
   if (!selected.value) return selectFigure(cell);
   if (canMoveTo(cell)) {
     board.value.move(selected.value, cell);
+    useAudio().stop();
     useAudio().play('chess-move');
     emit('update', board.value);
     return;
