@@ -7,6 +7,23 @@ import PromotedPawnForm from '../molecule/PromotedPawnForm.vue';
 import type Figure from '~/models/chess/figures/Figure';
 import type { GameOverType } from '~/types/chess/Game';
 const { add, open, close } = useModal();
+if (process.client) {
+  try {
+    const { add } = useAudio();
+    await Promise.all(
+      [
+        add('move-self', 'chess-move'),
+        add('capture', 'capture'),
+        add('promote', 'promote'),
+        add('move-check', 'check'),
+        add('castle', 'castle'),
+        add('game-end', 'game-over'),
+      ]
+    )
+  } catch (e) {
+    console.error(e);
+  }
+}
 add({ component: PromotedPawnForm, id: 'pawn-promotion', header: 'Promote a pawn' });
 const props = defineProps<{
   board: Board,
@@ -21,7 +38,6 @@ const localValue = ref(proppedBoard.value) as Ref<Board>;
 watch(proppedBoard,
   v => {
     if (v) localValue.value = v;
-
   },
   { immediate: true });
 function openPawnPromotionModal(pawn: Pawn) {
@@ -35,6 +51,7 @@ function openPawnPromotionModal(pawn: Pawn) {
     emits: {
       promote: (figure: Figure) => {
         localValue.value.getCell(figure.position).figure = figure;
+        localValue.value.getLastMove().isPromote = true;
         emit('update', localValue.value);
         promoted = true;
         close();
@@ -55,8 +72,31 @@ function onBoardUpdate(board: Board) {
   localValue.value = board;
   emit('update', localValue.value);
 }
+function playSound() {
+  const { stop, play } = useAudio();
+  stop();
+  if (localValue.value.isCheck('black') || localValue.value.isCheck('white')) {
+    play('check')
+    return;
+  }
+  const last = localValue.value.getLastMove() || {};
+  if (last.isPromote) {
+    play('promote');
+    return;
+  }
+  if (last.takes) {
+    play('capture');
+    return;
+  }
+  if (last.isCastle) {
+    play('castle');
+    return;
+  }
+  play('chess-move');
+}
+watch(() => localValue.value.moves, () => playSound());
 watch(localValue, () => {
-  const isGameOver = localValue.value.isGameOver();
+  const isGameOver = localValue.value.isGameOver(props.side);
   if (!isGameOver) return;
   emit('game-over', isGameOver);
 }, { deep: true, immediate: true });

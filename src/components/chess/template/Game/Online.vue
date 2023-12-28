@@ -8,6 +8,7 @@ const { getBoard, getMovingSide, getOurSide, currGame, getOpponent } = storeToRe
 const { move, setGameOver } = useGame();
 const { add, open } = useModal();
 add({ id: 'game-over', component: GameOverOverview, header: 'Game over' });
+await useAudio().add('notify', 'message');
 const emit = defineEmits<{
   (e: 'leave'): void,
   (e: 'rematch'): void,
@@ -32,6 +33,8 @@ async function onGameOver() {
 function onNewMessage(message: Message) {
   const isOur = message.createdByUid === user.value?.uid;
   if (isOur) return;
+  useAudio().stop();
+  useAudio().play('message');
   const toastText = `${getOpponent.value?.displayName}: ${message.content}`
   useToast().add({ content: toastText, delay: 2000 });
 }
