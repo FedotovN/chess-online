@@ -94,7 +94,7 @@ function playSound() {
   }
   play('chess-move');
 }
-watch(() => localValue.value.moves, () => playSound());
+watch(() => localValue.value.moves.length, () => playSound());
 watch(localValue, () => {
   const isGameOver = localValue.value.isGameOver(props.side);
   if (!isGameOver) return;
