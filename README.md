@@ -1,10 +1,7 @@
 # Nuxt Chess
 Web application for playing chess with friends.
-
- ![2023-12-29 23-21-38](https://github.com/FedotovN/chess-online/assets/53238017/79871635-4c51-4664-843e-c1a86d780f43)
-
 ## Demo
-![2023-12-14 02-22-35](https://github.com/FedotovN/chess-online/assets/53238017/2994fc87-d34d-4032-ae34-6045b2a0534a)
+ ![2023-12-29 23-21-38](https://github.com/FedotovN/chess-online/assets/53238017/79871635-4c51-4664-843e-c1a86d780f43
 ## Features
 - Authentication
 	- Firebase powered login and signup
